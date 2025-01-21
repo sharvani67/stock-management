@@ -8,6 +8,8 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     price: '',
     supplierName: '',
     brandName: '',
+    billNumber:'',
+    billDate:'',
   });
 
   const handleInputChange = (e) => {
@@ -28,6 +30,8 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
       price: '',
       supplierName: '',
       brandName: '',
+      billNumber:'',
+      billDate:'',
     });
   };
 
@@ -125,6 +129,36 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
                         id="brandName"
                         name="brandName"
                         value={formData.brandName}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group mb-3">
+                      <label htmlFor="billNumber"><strong>Bill Number:</strong></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="billNumber"
+                        name="billNumber"
+                        value={formData.billNumber}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group mb-3">
+                      <label htmlFor="billDate"><strong>Bill Date:</strong></label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="billDate"
+                        name="billDate"
+                        value={formData.billDate}
                         onChange={handleInputChange}
                         required
                       />

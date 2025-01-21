@@ -1,13 +1,21 @@
+
 import './App.css';
+import AllocationTable from './Components/Allocation/Allocation';
+import CentralStockTable from './Components/CentralStock/CentralStock';
+import UnitTable from './Components/Units/Units';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import Router components
 import AddPurchaseForm from './Components/Purchase/AddPurchase';
 import TablePurchase from './Components/Purchase/TablePurchase';
 import SiteTable from './Components/Sites/TableSite';
 import Table from './Components/User/TableUser';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddSiteForm from './Components/Sites/AddSite';
-import Supplier from './Components/Suppliers/Supplier';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import ProductTable from './Components/Products/Products';
+import Brand from './Components/Brands/Brands';
+import SupplierTable from './Components/Suppliers/Supplier';
 
 function App() {
   return (
@@ -20,7 +28,14 @@ function App() {
           <Route path="/add-purchase" element={<AddPurchaseForm />} />
           <Route path="/site" element={<SiteTable />} />
           <Route path="/add-site" element={<AddSiteForm />} />
-          <Route path="/supplier" element={<Supplier />} />
+          
+          <Route path="/products" element={<ProductTable />} />
+          <Route path="/brands" element={<Brand />} />
+          <Route path="/unit" element={<UnitTable />} />
+          <Route path="/allocations" element={<AllocationTable />} />
+          <Route path="/centralstock" element={<CentralStockTable />} />
+          <Route path="/suppliers" element={<SupplierTable />} />
+
         </Routes>
       </div>
     </Router>
