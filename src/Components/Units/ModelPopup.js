@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-const Units = ({ show, handleClose, title, details, onSave }) => {
+const Addunit = ({ show, handleClose, title, details, onSave }) => {
   const [formData, setFormData] = useState({
     serialNo: "",
     name: "",
@@ -105,4 +105,4 @@ const Units = ({ show, handleClose, title, details, onSave }) => {
   );
 };
 
-export default Units;
+export default Addunit;
