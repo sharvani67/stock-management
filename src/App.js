@@ -1,4 +1,8 @@
+
 import './App.css';
+import AllocationTable from './Components/Allocation/Allocation';
+import CentralStockTable from './Components/CentralStock/CentralStock';
+import UnitTable from './Components/Units/Units';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import Router components
 import AddPurchaseForm from './Components/Purchase/AddPurchase';
 import TablePurchase from './Components/Purchase/TablePurchase';
@@ -25,6 +29,9 @@ function App() {
           
           <Route path="/products" element={<ProductTable />} />
           <Route path="/brands" element={<Brand />} />
+          <Route path="/unit" element={<UnitTable />} />
+          <Route path="/allocations" element={<AllocationTable />} />
+          <Route path="/centralstock" element={<CentralStockTable />} />
         </Routes>
       </div>
     </Router>
