@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
-import AddProduct from "./AddProduct"; // Assuming you have the AddProduct modal component
+import AddProductModal from "./AddProduct"; // Assuming you renamed the AddProduct component to AddProductModal
 
 const ProductTable = () => {
   // Product data
@@ -58,11 +58,9 @@ const ProductTable = () => {
 
       {/* Add New Product Button */}
       <div className="d-flex justify-content-end mb-3">
-      <AddProduct
-        showModal={showModal}
-        handleClose={handleCloseModal}
-        onAddProduct={handleAddProduct}
-      />
+        <Button variant="success" onClick={handleShowModal}>
+          Add New Product
+        </Button>
       </div>
 
       {/* Table Wrapper */}
@@ -71,7 +69,11 @@ const ProductTable = () => {
       </div>
 
       {/* Add Product Modal */}
-      
+      <AddProductModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleSave={handleAddProduct}
+      />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import DataTable from "../../layout/DataTable";
-import AddBrand from "./AddBrand";
+import AddBrandModal from "./AddBrand"; // Assuming AddBrandModal is the modal component
 
 const Brand = () => {
   // Sample brand data
@@ -13,7 +13,7 @@ const Brand = () => {
 
   // State to manage showing/hiding the modal
   const [showModal, setShowModal] = useState(false);
-  
+
   // Functions to handle modal visibility
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -83,12 +83,9 @@ const Brand = () => {
 
       {/* Button to Add New Brand */}
       <div className="d-flex justify-content-end mb-3">
-      <AddBrand
-        showModal={showModal}
-        handleClose={handleCloseModal}
-        onAddBrand={handleAddBrand}
-      />
-      
+        <Button variant="success" onClick={handleShowModal}>
+          <FaPlus /> Add New Brand
+        </Button>
       </div>
 
       {/* DataTable with Brands */}
@@ -96,7 +93,12 @@ const Brand = () => {
         <DataTable columns={columns} data={brands} />
       </div>
 
-      
+      {/* Add Brand Modal */}
+      <AddBrandModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleSave={handleAddBrand}
+      />
     </div>
   );
 };
