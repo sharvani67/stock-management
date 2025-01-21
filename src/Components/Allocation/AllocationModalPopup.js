@@ -8,6 +8,7 @@ const StockModalPopup = ({ show, handleClose, title, details, onSave }) => {
     productName: "",
     stockOutward: "",
     remainingStock: "",
+    stockQuantity:"",
   });
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const StockModalPopup = ({ show, handleClose, title, details, onSave }) => {
         productName: "",
         stockOutward: "",
         remainingStock: "",
+        stockQuantity:"",
       });
     }
   }, [details]);
@@ -138,6 +140,24 @@ const StockModalPopup = ({ show, handleClose, title, details, onSave }) => {
                     id="remainingStock"
                     name="remainingStock"
                     value={formData.remainingStock}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="row mb-3 align-items-center">
+                <div className="col-4 text-end">
+                  <label htmlFor="stockQuantity" className="form-label">
+                    Stock Quantity:
+                  </label>
+                </div>
+                <div className="col-8">
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="stockQuantity"
+                    name="stockQuantity"
+                    value={formData.stockQuantity}
                     onChange={handleChange}
                     required
                   />

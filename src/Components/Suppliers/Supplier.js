@@ -1,79 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import AddSupplierModal from "./AddSupplier";
 
-import AddSupplier from './AddSupplier';
-
-const Supplier = () => {
+const SupplierTable = () => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [data, setData] = useState([
-    { suppliername: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', address: 'Admin' },
-    { suppliername: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', address: 'Site Manager' },
-    { suppliername: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', address: 'Admin' },
-    { suppliername: 'Hemanth', mobile: '123-456-7890', email: 'hemanth@example.com', address: 'Admin' },
-    { suppliername: 'Ganesh', mobile: '987-654-3210', email: 'ganesh@example.com', address: 'Site Manager' },
-    { suppliername: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', address: 'Site Manager' },
+    { supplierName: "ABC Traders", contact: "123-456-7890", address: "New York" },
+    { supplierName: "XYZ Supplies", contact: "987-654-3210", address: "San Francisco" },
   ]);
 
-  const handleEditClick = (user) => {
-    setSelectedUser(user);
-    setShowModal(true);
-  };
-
-  const handleAddNewUserClick = () => {
-    setSelectedUser(null); // No user is selected when adding a new user
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedUser(null);
-  };
-
-  const handleSave = (userData) => {
-    if (selectedUser) {
-      // Update the existing user
-      const updatedData = data.map((user) =>
-        user.suppliername === selectedUser.suppliername ? { ...user, ...userData } : user
-      );
-      setData(updatedData);
-    } else {
-      // Add a new user
-      setData([...data, { ...userData, suppliername: `${userData.suppliername}` }]);
-    }
+  const handleAddSupplier = (newSupplier) => {
+    setData([...data, newSupplier]);
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4">Suppliers</h1>
-      <button className="btn btn-primary mb-4" onClick={handleAddNewUserClick}>
+      <h1>Suppliers</h1>
+      <button
+        className="btn btn-primary mb-4"
+        onClick={() => setShowModal(true)}
+      >
         + Add New Supplier
       </button>
       <table className="table table-bordered table-striped">
         <thead className="thead-dark">
           <tr>
-            <th> Supplier Name</th>
-            <th>Mobile</th>
-            <th>Email</th>
+            <th>Supplier Name</th>
+            <th>Contact</th>
             <th>Address</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.map((supplier, index) => (
             <tr key={index}>
-              <td>{item.suppliername}</td>
-              <td>{item.mobile}</td>
-              <td>{item.email}</td>
-              <td>{item.address}</td>
+              <td>{supplier.supplierName}</td>
+              <td>{supplier.contact}</td>
+              <td>{supplier.address}</td>
               <td>
                 <button className="btn btn-info mr-2">
-                  <i className="fas fa-eye"></i> 
+                  <i className="fas fa-eye"></i> View
                 </button>
-                <button className="btn btn-warning mr-2" onClick={() => handleEditClick(item)}>
-                  <i className="fas fa-edit"></i> 
+                <button className="btn btn-warning mr-2">
+                  <i className="fas fa-edit"></i> Edit
                 </button>
                 <button className="btn btn-danger">
-                  <i className="fas fa-trash-alt"></i> 
+                  <i className="fas fa-trash-alt"></i> Delete
                 </button>
               </td>
             </tr>
@@ -81,15 +52,14 @@ const Supplier = () => {
         </tbody>
       </table>
 
-      {/* Modal Popup for Add/Edit */}
-      <AddSupplier
-        user={selectedUser}
-        showModal={showModal}
-        handleClose={handleCloseModal}
-        handleSave={handleSave}
+      {/* Modal for Adding Supplier */}
+      <AddSupplierModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleSave={handleAddSupplier}
       />
     </div>
   );
 };
 
-export default Supplier;
+export default SupplierTable;
