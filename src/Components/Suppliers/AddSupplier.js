@@ -1,101 +1,67 @@
-import React, { useState , bootstrap } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 
+const AddSupplierModal = ({ show, handleClose, handleSave }) => {
+  const [supplierName, setSupplierName] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
 
-const AddSupplier = ({ onSave }) => {
-    const [supplier, setSupplier] = useState({
-      suppliername: '',
-      mobile: '',
-      email: '',
-      address: '',
-    });
-  
-    const handleChange = (e) => {
-      setSupplier({
-        ...supplier,
-        [e.target.suppliername]: e.target.value,
-      });
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      onSave(supplier);
-      setSupplier({ suppliername: '', mobile: '', email: '', address: '' });
-      // Dismiss the modal after saving
-      const modal = document.getElementById('addSupplier');
-      const bootstrapModal = bootstrap.Modal.getInstance(modal);
-      bootstrapModal.hide();
-    };
-  
-    return (
-      <div className="modal fade" id="addSupplier" tabIndex="-1" aria-labelledby="addSupplierLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="addSupplierLabel">Add Supplier</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Supplier Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="suppliername"
-                    name="suppliername"
-                    value={supplier.suppliername}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="mobile" className="form-label">Contact Number</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="mobile"
-                    name="mobile"
-                    value={supplier.mobile}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    value={supplier.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="address" className="form-label">Address</label>
-                  <textarea
-                    className="form-control"
-                    id="address"
-                    name="address"
-                    rows="3"
-                    value={supplier.address}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" className="btn btn-primary">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleSubmit = () => {
+    if (supplierName && contact && address) {
+      handleSave({ supplierName, contact, address });
+      handleClose(); // Close the modal after saving
+    } else {
+      alert("Please fill all fields.");
+    }
   };
-  
-  export default AddSupplier;
-  
+
+  return (
+    <Modal show={show} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New Supplier</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group controlId="supplierName">
+            <Form.Label>Supplier Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter supplier name"
+              value={supplierName}
+              onChange={(e) => setSupplierName(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="contact" className="mt-3">
+            <Form.Label>Contact</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter contact number"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="address" className="mt-3">
+            <Form.Label>Address</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Enter address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Save
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export default AddSupplierModal;

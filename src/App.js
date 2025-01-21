@@ -7,6 +7,7 @@ import Table from './Components/User/TableUser';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddSiteForm from './Components/Sites/AddSite';
 import Supplier from './Components/Suppliers/Supplier';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   return (
