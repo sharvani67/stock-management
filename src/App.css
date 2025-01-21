@@ -1,38 +1,89 @@
-.App {
-  text-align: center;
+/* Table Styling */
+.table {
+  background-color: #f8f9fa;
+  border-collapse: collapse;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.table th, .table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.table th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table .btn {
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.table .btn-info {
+  background-color: #17a2b8;
+  border: none;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.table .btn-warning {
+  background-color: #ffc107;
+  border: none;
+  color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.table .btn-danger {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+}
+
+.table .btn:hover {
+  opacity: 0.8;
+}
+
+.table .btn i {
+  margin-right: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .table th, .table td {
+    padding: 8px;
   }
+
+  .table .btn {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  .table .btn-info, .table .btn-warning, .table .btn-danger {
+    font-size: 12px;
+  }
+}
+
+/* Add styling for the Add New User Button */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
 }

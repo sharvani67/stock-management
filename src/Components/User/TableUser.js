@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
+import ModalPopup from './AddUser';
 
-import AddSupplier from './AddSupplier';
-
-const Supplier = () => {
+const Table = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [data, setData] = useState([
-    { suppliername: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', address: 'Admin' },
-    { suppliername: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', address: 'Site Manager' },
-    { suppliername: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', address: 'Admin' },
-    { suppliername: 'Hemanth', mobile: '123-456-7890', email: 'hemanth@example.com', address: 'Admin' },
-    { suppliername: 'Ganesh', mobile: '987-654-3210', email: 'ganesh@example.com', address: 'Site Manager' },
-    { suppliername: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', address: 'Site Manager' },
+    { name: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', role: 'Admin' },
+    { name: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', role: 'Site Manager' },
+    { name: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', role: 'Admin' },
+    { name: 'Hemanth', mobile: '123-456-7890', email: 'hemanth@example.com', role: 'Admin' },
+    { name: 'Ganesh', mobile: '987-654-3210', email: 'ganesh@example.com', role: 'Site Manager' },
+    { name: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', role: 'Site Manager' },
   ]);
 
   const handleEditClick = (user) => {
@@ -33,38 +32,38 @@ const Supplier = () => {
     if (selectedUser) {
       // Update the existing user
       const updatedData = data.map((user) =>
-        user.suppliername === selectedUser.suppliername ? { ...user, ...userData } : user
+        user.name === selectedUser.name ? { ...user, ...userData } : user
       );
       setData(updatedData);
     } else {
       // Add a new user
-      setData([...data, { ...userData, suppliername: `${userData.suppliername}` }]);
+      setData([...data, { ...userData, name: `${userData.name}` }]);
     }
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4">Suppliers</h1>
+      <h1 className="mb-4">Users</h1>
       <button className="btn btn-primary mb-4" onClick={handleAddNewUserClick}>
-        + Add New Supplier
+        + Add New User
       </button>
       <table className="table table-bordered table-striped">
         <thead className="thead-dark">
           <tr>
-            <th> Supplier Name</th>
+            <th>Name</th>
             <th>Mobile</th>
             <th>Email</th>
-            <th>Address</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((item, index) => (
             <tr key={index}>
-              <td>{item.suppliername}</td>
+              <td>{item.name}</td>
               <td>{item.mobile}</td>
               <td>{item.email}</td>
-              <td>{item.address}</td>
+              <td>{item.role}</td>
               <td>
                 <button className="btn btn-info mr-2">
                   <i className="fas fa-eye"></i> 
@@ -82,7 +81,7 @@ const Supplier = () => {
       </table>
 
       {/* Modal Popup for Add/Edit */}
-      <AddSupplier
+      <ModalPopup
         user={selectedUser}
         showModal={showModal}
         handleClose={handleCloseModal}
@@ -92,4 +91,4 @@ const Supplier = () => {
   );
 };
 
-export default Supplier;
+export default Table;
