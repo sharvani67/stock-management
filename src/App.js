@@ -16,30 +16,36 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import ProductTable from './Components/Products/Products';
 import Brand from './Components/Brands/Brands';
 import SupplierTable from './Components/Suppliers/Supplier';
+import Sidebar from './Shared/SideBar/SideBar';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        {/* Define routes for different components */}
-        <Routes>
-          <Route path="/" element={<Table />} />
-          <Route path="/purchase" element={<TablePurchase />} />
-          <Route path="/add-purchase" element={<AddPurchaseForm />} />
-          <Route path="/site" element={<SiteTable />} />
-          <Route path="/add-site" element={<AddSiteForm />} />
-          
-          <Route path="/products" element={<ProductTable />} />
-          <Route path="/brands" element={<Brand />} />
-          <Route path="/unit" element={<UnitTable />} />
-          <Route path="/allocations" element={<AllocationTable />} />
-          <Route path="/centralstock" element={<CentralStockTable />} />
-          <Route path="/suppliers" element={<SupplierTable />} />
+        <div className="d-flex" id="wrapper">
+          {/* Sidebar Component */}
+          <Sidebar />
 
-        </Routes>
+          {/* Main content */}
+          <div id="page-content-wrapper" className="w-100">
+            <Routes>
+              <Route path="/users" element={<Table />} />
+              <Route path="/purchase" element={<TablePurchase />} />
+              <Route path="/add-purchase" element={<AddPurchaseForm />} />
+              <Route path="/site" element={<SiteTable />} />
+              
+              <Route path="/products" element={<ProductTable />} />
+              <Route path="/brands" element={<Brand />} />
+              <Route path="/unit" element={<UnitTable />} />
+              <Route path="/allocations" element={<AllocationTable />} />
+              <Route path="/centralstock" element={<CentralStockTable />} />
+              <Route path="/suppliers" element={<SupplierTable />} />
+            </Routes>
+          </div>
+        </div>
       </div>
-    </Router>
-  );
+    </Router>
+  );
 }
 
 export default App;

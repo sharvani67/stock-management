@@ -1,0 +1,41 @@
+/* Sidebar styles */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 1050; /* Make sure sidebar is on top */
+    transition: all 0.3s ease;
+  }
+  
+  #sidebar .nav-item {
+    margin-bottom: 15px;
+  }
+  
+  #sidebar .nav-link {
+    font-size: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  /* Hide sidebar on smaller screens */
+  @media (max-width: 768px) {
+    #sidebar {
+      display: none;
+    }
+  }
+  
+  /* Show the sidebar when it's toggled on smaller screens */
+  #sidebar.collapse.show {
+    display: block;
+  }
+  
+  /* For the button that appears when the sidebar is collapsed */
+  .d-md-none {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 1060; /* Button should appear above the sidebar */
+  }
+  

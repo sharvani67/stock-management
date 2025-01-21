@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 
-const AddSiteForm = ({ addSite }) => {
+const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   const [siteCode, setSiteCode] = useState('');
   const [siteName, setSiteName] = useState('');
   const [inchargeName, setInchargeName] = useState('');
@@ -25,6 +26,8 @@ const AddSiteForm = ({ addSite }) => {
     };
 
     addSite(newSite); // Function to add the site
+    handleClose(); // Close the modal after submission
+
     // Clear form after submission
     setSiteCode('');
     setSiteName('');
@@ -37,128 +40,90 @@ const AddSiteForm = ({ addSite }) => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
-          <div className="card shadow-lg">
-            <div className="card-header bg-primary text-white">
-              <h2 className="mb-0">Add New Site</h2>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Site Code:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={siteCode}
-                        onChange={(e) => setSiteCode(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Site Name:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={siteName}
-                        onChange={(e) => setSiteName(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Incharge Name:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={inchargeName}
-                        onChange={(e) => setInchargeName(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Location:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>City:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>State:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Site Manager:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={siteManager}
-                        onChange={(e) => setSiteManager(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group mb-3">
-                      <label>Incharge Mobile:</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={inchargeMobile}
-                        onChange={(e) => setInchargeMobile(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <button type="submit" className="btn btn-success btn-block mt-3">
-                  Add Site
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal show={showModal} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New Site</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="siteCode">
+            <Form.Label>Site Code:</Form.Label>
+            <Form.Control
+              type="text"
+              value={siteCode}
+              onChange={(e) => setSiteCode(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="siteName">
+            <Form.Label>Site Name:</Form.Label>
+            <Form.Control
+              type="text"
+              value={siteName}
+              onChange={(e) => setSiteName(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="inchargeName">
+            <Form.Label>Incharge Name:</Form.Label>
+            <Form.Control
+              type="text"
+              value={inchargeName}
+              onChange={(e) => setInchargeName(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="location">
+            <Form.Label>Location:</Form.Label>
+            <Form.Control
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="city">
+            <Form.Label>City:</Form.Label>
+            <Form.Control
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="state">
+            <Form.Label>State:</Form.Label>
+            <Form.Control
+              type="text"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="siteManager">
+            <Form.Label>Site Manager:</Form.Label>
+            <Form.Control
+              type="text"
+              value={siteManager}
+              onChange={(e) => setSiteManager(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="inchargeMobile">
+            <Form.Label>Incharge Mobile:</Form.Label>
+            <Form.Control
+              type="text"
+              value={inchargeMobile}
+              onChange={(e) => setInchargeMobile(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit" className="mt-3">
+            Add Site
+          </Button>
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 };
 
