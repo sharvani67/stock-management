@@ -107,23 +107,30 @@ const ModalPopup = ({ show, handleClose, title, details, onSave }) => {
                 </div>
               </div>
               <div className="row mb-3 align-items-center">
-                <div className="col-4 text-end">
-                  <label htmlFor="baseUnit" className="form-label">
-                    Base Unit:
-                  </label>
+                  <div className="col-4 text-end">
+                    <label htmlFor="baseUnit" className="form-label">
+                      Base Unit:
+                    </label>
+                  </div>
+                  <div className="col-8">
+                    <select
+                      className="form-select"
+                      id="baseUnit"
+                      name="baseUnit"
+                      value={formData.baseUnit}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select Base Unit</option>
+                      <option value="Kilogram">Kilogram</option>
+                      <option value="Gram">Gram</option>
+                      <option value="Liter">Liter</option>
+                      <option value="Meter">Meter</option>
+                      <option value="Piece">Piece</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="col-8">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="baseUnit"
-                    name="baseUnit"
-                    value={formData.baseUnit}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
+
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={handleClose}>
