@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 
 const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    mobile: '',
-    email: '',
-    role: ''
+    name: "",
+    mobile: "",
+    email: "",
+    role: "",
   });
 
   // If user is passed (for edit), pre-fill the form with the user data
@@ -15,15 +16,15 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
         name: user.name,
         mobile: user.mobile,
         email: user.email,
-        role: user.role
+        role: user.role,
       });
     } else {
       // Clear form data for adding a new user
       setFormData({
-        name: '',
-        mobile: '',
-        email: '',
-        role: ''
+        name: "",
+        mobile: "",
+        email: "",
+        role: "",
       });
     }
   }, [user]);
@@ -32,7 +33,7 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -42,44 +43,63 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
   };
 
   return (
-    <div className={`modal fade ${showModal ? 'show' : ''}`} tabIndex="-1" style={{ display: showModal ? 'block' : 'none' }} aria-hidden={!showModal}>
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{user ? 'Edit User' : 'Add New User'}</h5>
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <form>
-              <div className="form-group">
-                <label>Name</label>
-                <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Mobile</label>
-                <input type="text" className="form-control" name="mobile" value={formData.mobile} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>Role</label>
-                <input type="text" className="form-control" name="role" value={formData.role} onChange={handleChange} />
-              </div>
-            </form>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={handleClose}>Close</button>
-            <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-              {user ? 'Save changes' : 'Add User'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal show={showModal} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{user ? "Edit User" : "Add New User"}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="mobile" className="mt-3">
+            <Form.Label>Mobile</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter mobile number"
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="email" className="mt-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </Form.Group>
+          <Form.Group controlId="role" className="mt-3">
+            <Form.Label>Role</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          {user ? "Save changes" : "Add User"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

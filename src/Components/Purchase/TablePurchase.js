@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
+import { FaEye, FaEdit, FaTrashAlt } from 'react-icons/fa';
 
 const TablePurchase = () => {
   const data = [
@@ -12,44 +14,48 @@ const TablePurchase = () => {
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Purchase</h1>
-      <table className="table table-bordered table-striped">
-        <thead className="thead-dark">
-          <tr>
-            <th>S.No</th>
-            <th>Stock Name</th>
-            <th>Quantity</th>
-            <th>Units</th>
-            <th>Price</th>
-            <th>Supplier Name</th>
-            <th>Brand Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.sNo}>
-              <td>{item.sNo}</td>
-              <td>{item.stockName}</td>
-              <td>{item.quantity}</td>
-              <td>{item.units}</td>
-              <td>{item.price}</td>
-              <td>{item.supplierName}</td>
-              <td>{item.brandName}</td>
-              <td>
-                <button className="btn btn-info mr-2">
-                  <i className="fas fa-eye"></i> View
-                </button>
-                <button className="btn btn-warning mr-2">
-                  <i className="fas fa-edit"></i> Edit
-                </button>
-                <button className="btn btn-danger">
-                  <i className="fas fa-trash-alt"></i> Delete
-                </button>
-              </td>
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped">
+          <thead className="thead-dark">
+            <tr>
+              <th>S.No</th>
+              <th>Stock Name</th>
+              <th>Quantity</th>
+              <th>Units</th>
+              <th>Price</th>
+              <th>Supplier Name</th>
+              <th>Brand Name</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item) => (
+              <tr key={item.sNo}>
+                <td>{item.sNo}</td>
+                <td>{item.stockName}</td>
+                <td>{item.quantity}</td>
+                <td>{item.units}</td>
+                <td>{item.price}</td>
+                <td>{item.supplierName}</td>
+                <td>{item.brandName}</td>
+                <td>
+                  <div className="btn-group" role="group">
+                    <Button variant="info" size="sm" title="View">
+                      <FaEye />
+                    </Button>
+                    <Button variant="warning" size="sm" title="Edit">
+                      <FaEdit />
+                    </Button>
+                    <Button variant="danger" size="sm" title="Delete">
+                      <FaTrashAlt />
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -10,7 +10,7 @@ import SiteTable from './Components/Sites/TableSite';
 import Table from './Components/User/TableUser';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AddSiteForm from './Components/Sites/AddSite';
+
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import ProductTable from './Components/Products/Products';

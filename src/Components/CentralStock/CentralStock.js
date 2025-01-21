@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
+import DataTable from "../../layout/DataTable";
 
 const CentralStockTable = () => {
   const [data] = useState([
@@ -8,32 +9,21 @@ const CentralStockTable = () => {
     { stockSummary: "Category 3", brandName: "Brand C", qtyIn: 150, qtyOut: 50, remaining: 100 },
   ]);
 
+  const columns = [
+    { Header: "Stock Summary", accessor: "stockSummary" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Qty In", accessor: "qtyIn" },
+    { Header: "Qty Out", accessor: "qtyOut" },
+    { Header: "Remaining", accessor: "remaining" },
+  ];
+
   return (
-    <div className="container mt-4">
-      <h2>Stock Summary Table</h2>
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th>Stock Summary</th>
-              <th>Brand Name</th>
-              <th>Qty In</th>
-              <th>Qty Out</th>
-              <th>Remaining</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>{item.stockSummary}</td>
-                <td>{item.brandName}</td>
-                <td>{item.qtyIn}</td>
-                <td>{item.qtyOut}</td>
-                <td>{item.remaining}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="container mt-5">
+      <h1 className="mb-4">Central Stock Summary</h1>
+
+      {/* Table Wrapper */}
+      <div className="table-wrapper">
+        <DataTable columns={columns} data={data} />
       </div>
     </div>
   );

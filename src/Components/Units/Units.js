@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import ModalPopup from "./ModelPopup";
+import { Button } from "react-bootstrap";
+import DataTable from "../../layout/DataTable";
+import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
+import Units from "./Units";
 
 const UnitTable = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -39,71 +40,64 @@ const UnitTable = () => {
     }
   };
 
-  return (
-    <div className="container mt-4">
-      {/* Title and Add New Button */}
-      <div>
-        <h2>Unit Table</h2>
-        <div className="text-end mb-3">
-          <button
-            className="btn btn-success"
-            onClick={() => handleOpenModal("Add New")}
+  const columns = [
+    { Header: "Serial No", accessor: "serialNo" },
+    { Header: "Name", accessor: "name" },
+    { Header: "Short Name", accessor: "shortName" },
+    { Header: "Base Unit", accessor: "baseUnit" },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }) => (
+        <div className="d-flex align-items-center gap-2">
+          <Button
+            variant="outline-info"
+            size="sm"
+            title="View"
+            onClick={() => handleOpenModal("View", row.original)}
           >
-            <i className="fas fa-plus me-2"></i>Add New Unit
-          </button>
+            <FaEye />
+          </Button>
+          <Button
+            variant="outline-warning"
+            size="sm"
+            title="Edit"
+            onClick={() => handleOpenModal("Edit", row.original)}
+          >
+            <FaEdit />
+          </Button>
+          <Button
+            variant="outline-danger"
+            size="sm"
+            title="Delete"
+            onClick={() => handleOpenModal("Delete", row.original)}
+          >
+            <FaTrashAlt />
+          </Button>
         </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="container mt-5">
+      <h1 className="mb-4">Unit Management</h1>
+
+      {/* Add New Unit Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="success" onClick={() => handleOpenModal("Add New")}>
+          <FaPlus className="me-2" />
+          Add New Unit
+        </Button>
       </div>
 
-      {/* Table */}
-      <div className="table-responsive">
-        <table className="table table-bordered table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th>Serial No</th>
-              <th>Name</th>
-              <th>Short Name</th>
-              <th>Base Unit</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>{item.serialNo}</td>
-                <td>{item.name}</td>
-                <td>{item.shortName}</td>
-                <td>{item.baseUnit}</td>
-                <td>
-                  <button
-                    className="btn btn-link text-primary me-2"
-                    title="View"
-                    onClick={() => handleOpenModal("View", item)}
-                  >
-                    <i className="fas fa-eye"></i>
-                  </button>
-                  <button
-                    className="btn btn-link text-warning me-2"
-                    title="Edit"
-                    onClick={() => handleOpenModal("Edit", item)}
-                  >
-                    <i className="fas fa-edit"></i>
-                  </button>
-                  <button
-                    className="btn btn-link text-danger"
-                    title="Delete"
-                    onClick={() => handleOpenModal("Delete", item)}
-                  >
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Table Wrapper */}
+      <div className="table-wrapper">
+        <DataTable columns={columns} data={data} />
       </div>
 
       {/* Modal Popup */}
-      <ModalPopup
+      <Units
         show={modalShow}
         handleClose={handleCloseModal}
         title={modalTitle}

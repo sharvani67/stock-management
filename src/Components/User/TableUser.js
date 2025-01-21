@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
+import DataTable from "../../layout/DataTable";
+import { FaEye, FaEdit, FaTrashAlt, FaPlus } from 'react-icons/fa';
 import ModalPopup from './AddUser';
 
 const Table = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [data, setData] = useState([
     { name: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', role: 'Admin' },
@@ -13,77 +17,88 @@ const Table = () => {
     { name: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', role: 'Site Manager' },
   ]);
 
-  const handleEditClick = (user) => {
+  const handleOpenModal = (action, user = null) => {
+    setModalTitle(action === "Add New" ? "Add New User" : `${action} User`);
     setSelectedUser(user);
-    setShowModal(true);
-  };
-
-  const handleAddNewUserClick = () => {
-    setSelectedUser(null); // No user is selected when adding a new user
-    setShowModal(true);
+    setModalShow(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+    setModalShow(false);
     setSelectedUser(null);
+    setModalTitle("");
   };
 
   const handleSave = (userData) => {
     if (selectedUser) {
       // Update the existing user
-      const updatedData = data.map((user) =>
-        user.name === selectedUser.name ? { ...user, ...userData } : user
+      setData(prev =>
+        prev.map(user => (user.name === selectedUser.name ? { ...user, ...userData } : user))
       );
-      setData(updatedData);
     } else {
       // Add a new user
-      setData([...data, { ...userData, name: `${userData.name}` }]);
+      setData(prev => [...prev, { ...userData }]);
     }
   };
+
+  const columns = [
+    { Header: "Name", accessor: "name" },
+    { Header: "Mobile", accessor: "mobile" },
+    { Header: "Email", accessor: "email" },
+    { Header: "Role", accessor: "role" },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }) => (
+        <div className="d-flex align-items-center gap-2">
+          <Button
+            variant="outline-info"
+            size="sm"
+            title="View"
+          >
+            <FaEye />
+          </Button>
+          <Button
+            variant="outline-warning"
+            size="sm"
+            title="Edit"
+            onClick={() => handleOpenModal("Edit", row.original)}
+          >
+            <FaEdit />
+          </Button>
+          <Button
+            variant="outline-danger"
+            size="sm"
+            title="Delete"
+          >
+            <FaTrashAlt />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Users</h1>
-      <button className="btn btn-primary mb-4" onClick={handleAddNewUserClick}>
-        + Add New User
-      </button>
-      <table className="table table-bordered table-striped">
-        <thead className="thead-dark">
-          <tr>
-            <th>Name</th>
-            <th>Mobile</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>{item.mobile}</td>
-              <td>{item.email}</td>
-              <td>{item.role}</td>
-              <td>
-                <button className="btn btn-info mr-2">
-                  <i className="fas fa-eye"></i> 
-                </button>
-                <button className="btn btn-warning mr-2" onClick={() => handleEditClick(item)}>
-                  <i className="fas fa-edit"></i> 
-                </button>
-                <button className="btn btn-danger">
-                  <i className="fas fa-trash-alt"></i> 
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {/* Modal Popup for Add/Edit */}
+      {/* Add New User Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="success" onClick={() => handleOpenModal("Add New")}>
+          <FaPlus className="me-2" />
+          Add New User
+        </Button>
+      </div>
+
+      {/* Table Wrapper */}
+      <div className="table-wrapper">
+        <DataTable columns={columns} data={data} />
+      </div>
+
+      {/* Modal Popup */}
       <ModalPopup
         user={selectedUser}
-        showModal={showModal}
+        showModal={modalShow}
         handleClose={handleCloseModal}
         handleSave={handleSave}
       />
