@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
-import Units from "./Units";
+import Addunit from "./ModelPopup";
 
 const UnitTable = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -97,7 +97,7 @@ const UnitTable = () => {
       </div>
 
       {/* Modal Popup */}
-      <Units
+      <Addunit
         show={modalShow}
         handleClose={handleCloseModal}
         title={modalTitle}
