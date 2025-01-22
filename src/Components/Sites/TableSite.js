@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import AddSiteForm from './AddSite';
 import DataTable from '../../layout/DataTable';
-import { FaEdit, FaTrashAlt, FaEye } from 'react-icons/fa'; // Import icons
+import { FaEdit, FaTrashAlt, FaEye,FaPlus } from 'react-icons/fa'; // Import icons
 // import './SiteTable.css'; // Import custom CSS for additional styling
 
 const SiteTable = () => {
@@ -77,7 +77,7 @@ const SiteTable = () => {
           <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
             <FaEye />
           </Button>
-          <Button variant="outline-primary" size="sm" onClick={() => handleEdit(row.original)}>
+          <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
             <FaEdit />
           </Button>
           <Button
@@ -97,11 +97,12 @@ const SiteTable = () => {
       <h1 className="mb-4">Site Management</h1>
 
       {/* Add New Site Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" onClick={handleShow}>
-          Add New Site
-        </Button>
-      </div>
+       <div className="d-flex justify-content-end mb-3">
+              <Button variant="primary"  onClick={handleShow}>
+                <FaPlus className="me-2" />
+                Add New Site
+              </Button>
+            </div>
 
       {/* Table Wrapper with Scroll */}
       <div className="table-wrapper">

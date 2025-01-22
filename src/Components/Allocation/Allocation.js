@@ -67,7 +67,7 @@ const AllocationTable = () => {
             <FaEye />
           </Button>
           <Button
-            variant="outline-primary"
+            variant="outline-warning"
             size="sm"
             title="Edit"
             onClick={() => handleOpenModal("Edit", row.original)}
@@ -93,7 +93,7 @@ const AllocationTable = () => {
 
       {/* Add New Allocation Button */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" onClick={() => handleOpenModal("Add New")}>
+        <Button variant="primary" onClick={() => handleOpenModal("Add New")}>
           <FaPlus className="me-2" />
           Add New Allocation
         </Button>

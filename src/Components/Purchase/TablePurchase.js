@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
-import { FaEdit, FaTrashAlt, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const TablePurchase = () => {
@@ -42,7 +42,7 @@ const TablePurchase = () => {
           <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
             <FaEye />
           </Button>
-          <Button variant="outline-primary" size="sm" onClick={() => handleEdit(row.original)}>
+          <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
             <FaEdit />
           </Button>
           <Button
@@ -64,7 +64,7 @@ const TablePurchase = () => {
       {/* Add New Purchase Button */}
       <div className="d-flex justify-content-end mb-3">
         <Link to="/add-purchase">
-          <Button variant="success">Add New Purchase</Button>
+          <Button variant="primary"><FaPlus className="me-2" />Add New Purchase</Button>
         </Link>
       </div>
 

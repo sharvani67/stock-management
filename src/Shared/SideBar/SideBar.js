@@ -1,8 +1,7 @@
-// src/Components/Sidebar/Sidebar.js
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './SideBar.css'
+import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./SideBar.css";
 
 function Sidebar() {
   return (
@@ -29,52 +28,62 @@ function Sidebar() {
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link to="/users" className="nav-link">
-              <i className="fas fa-users"></i> Users
+              <i className="fas fa-users"></i>
+              <span className="d-none d-md-inline"> Users</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/purchase" className="nav-link">
-              <i className="fas fa-shopping-cart"></i> Purchases
+              <i className="fas fa-shopping-cart"></i>
+              <span className="d-none d-md-inline"> Purchases</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/add-purchase" className="nav-link">
-              <i className="fas fa-plus-circle"></i> Add Purchase
+              <i className="fas fa-plus-circle"></i>
+              <span className="d-none d-md-inline"> Add Purchase</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/site" className="nav-link">
-              <i className="fas fa-map-marker-alt"></i> Sites
+              <i className="fas fa-map-marker-alt"></i>
+              <span className="d-none d-md-inline"> Sites</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/products" className="nav-link">
-              <i className="fas fa-cogs"></i> Products
+              <i className="fas fa-cogs"></i>
+              <span className="d-none d-md-inline"> Products</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/brands" className="nav-link">
-              <i className="fas fa-tag"></i> Brands
+              <i className="fas fa-tag"></i>
+              <span className="d-none d-md-inline"> Brands</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/unit" className="nav-link">
-              <i className="fas fa-box"></i> Units
+              <i className="fas fa-box"></i>
+              <span className="d-none d-md-inline"> Units</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/allocations" className="nav-link">
-              <i className="fas fa-archive"></i> Allocations
+              <i className="fas fa-archive"></i>
+              <span className="d-none d-md-inline"> Allocations</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/centralstock" className="nav-link">
-              <i className="fas fa-database"></i> Central Stock
+              <i className="fas fa-database"></i>
+              <span className="d-none d-md-inline"> Central Stock</span>
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/suppliers" className="nav-link">
-              <i className="fas fa-truck"></i> Suppliers
+              <i className="fas fa-truck"></i>
+              <span className="d-none d-md-inline"> Suppliers</span>
             </Link>
           </li>
         </ul>
@@ -82,6 +91,5 @@ function Sidebar() {
     </div>
   );
 }
-
 
 export default Sidebar;

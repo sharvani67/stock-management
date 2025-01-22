@@ -57,7 +57,7 @@ const Brand = () => {
             <FaEye />
           </Button>
           <Button
-            variant="outline-primary"
+            variant="outline-warning"
             size="sm"
             title="Edit"
             onClick={() => handleEdit(row.original)}
@@ -83,7 +83,7 @@ const Brand = () => {
 
       {/* Button to Add New Brand */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" onClick={handleShowModal}>
+        <Button variant="primary" onClick={handleShowModal}>
           <FaPlus /> Add New Brand
         </Button>
       </div>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
-import AddProductModal from "./AddProduct"; // Assuming you renamed the AddProduct component to AddProductModal
+import AddProductModal from "./AddProduct";
+import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa"; // Assuming you renamed the AddProduct component to AddProductModal
 
 const ProductTable = () => {
   // Product data
@@ -39,13 +40,13 @@ const ProductTable = () => {
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
           <Button variant="outline-primary" size="sm">
-            <i className="fas fa-eye"></i>
+            <FaEye/>
           </Button>
           <Button variant="outline-warning" size="sm">
-            <i className="fas fa-edit"></i>
+            <FaEdit/>
           </Button>
           <Button variant="outline-danger" size="sm">
-            <i className="fas fa-trash-alt"></i>
+            <FaTrashAlt/>
           </Button>
         </div>
       ),
@@ -57,11 +58,12 @@ const ProductTable = () => {
       <h1 className="mb-4">Product Management</h1>
 
       {/* Add New Product Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" onClick={handleShowModal}>
-          Add New Product
-        </Button>
-      </div>
+       <div className="d-flex justify-content-end mb-3">
+              <Button variant="primary" onClick={() => handleShowModal("Add New")}>
+                <FaPlus className="me-2" />
+                Add New Product
+              </Button>
+            </div>
 
       {/* Table Wrapper */}
       <div className="table-wrapper">
