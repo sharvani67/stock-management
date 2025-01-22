@@ -4,7 +4,7 @@ import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import ViewAllocation from "./ViewAllocation";
 import EditAllocation from "./EditAllocation";
-import StockModalPopup from "./AllocationModalPopup";
+import StockModalPopup from "./AddAllocation";
 
 const AllocationTable = () => {
   const [viewModalShow, setViewModalShow] = useState(false);

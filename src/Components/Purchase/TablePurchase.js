@@ -3,6 +3,8 @@ import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
 import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import ViewPurchase from './ViewPurchase';
+import EditPurchase from './EditPurchase';
 
 const TablePurchase = () => {
   const [purchaseData, setPurchaseData] = useState([
@@ -13,13 +15,35 @@ const TablePurchase = () => {
     { sNo: 5, stockName: 'Product E', quantity: 300, units: 'pcs', price: 50, supplierName: 'Supplier V', brandName: 'Brand Z' },
   ]);
 
-  const handleView = (item) => {
-    console.log('Viewing item:', item);
-  };
+  const [viewModal, setViewModal] = useState(false);
+const [editModal, setEditModal] = useState(false);
+const [selectedPurchase, setSelectedPurchase] = useState(null);
 
-  const handleEdit = (item) => {
-    console.log('Editing item:', item);
-  };
+const handleView = (item) => {
+  setSelectedPurchase(item);
+  setViewModal(true);
+};
+
+const handleEdit = (item) => {
+  setSelectedPurchase(item);
+  setEditModal(true);
+};
+
+const handleSave = (updatedData) => {
+  const updatedList = purchaseData.map((item) =>
+    item.sNo === updatedData.sNo ? updatedData : item
+  );
+  setPurchaseData(updatedList);
+};
+
+  // const handleView = (item) => {
+  //   console.log('Viewing item:', item);
+  // };
+  
+
+  // const handleEdit = (item) => {
+  //   console.log('Editing item:', item);
+  // };
 
   const handleDelete = (sNo) => {
     const updatedData = purchaseData.filter((item) => item.sNo !== sNo);
@@ -72,6 +96,22 @@ const TablePurchase = () => {
       {/* <div className="table-wrapper"> */}
         <DataTable columns={columns} data={purchaseData} />
       {/* </div> */}
+      {viewModal && (
+          <ViewPurchase
+            show={viewModal}
+            handleClose={() => setViewModal(false)}
+            details={selectedPurchase}
+          />
+        )}
+        {editModal && (
+          <EditPurchase
+            show={editModal}
+            handleClose={() => setEditModal(false)}
+            details={selectedPurchase}
+            onSave={handleSave}
+          />
+        )}
+
     </div>
   );
 };

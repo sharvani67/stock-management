@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col, Card, InputGroup, FormControl } from
 import { FiPlus } from "react-icons/fi"; // Import React Icons
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddProduct from '../Products/AddProduct'; // Import your AddProduct modal component
-import Addunit from '../Units/ModelPopup'; // Import your Addunit modal component
+import Addunit from '../Units/AddUnit'; // Import your Addunit modal component
 import AddSupplierModal from '../Suppliers/AddSupplier'; // Import your AddSupplierModal component
 import AddBrandModal from '../Brands/AddBrand'; // Import your AddBrandModal component
 
