@@ -69,9 +69,9 @@ const TablePurchase = () => {
       </div>
 
       {/* DataTable Wrapper */}
-      <div className="table-wrapper">
+      {/* <div className="table-wrapper"> */}
         <DataTable columns={columns} data={purchaseData} />
-      </div>
+      {/* </div> */}
     </div>
   );
 };

@@ -4,11 +4,12 @@ import { Modal, Button, Form } from "react-bootstrap";
 const AddSupplierModal = ({ show, handleClose, handleSave }) => {
   const [supplierName, setSupplierName] = useState("");
   const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
 
   const handleSubmit = () => {
-    if (supplierName && contact && address) {
-      handleSave({ supplierName, contact, address });
+    if (supplierName && contact && address && email) {
+      handleSave({ supplierName, contact, address, email });
       handleClose(); // Close the modal after saving
     } else {
       alert("Please fill all fields.");
@@ -38,6 +39,15 @@ const AddSupplierModal = ({ show, handleClose, handleSave }) => {
               placeholder="Enter contact number"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="email" className="mt-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email Id"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Group>
           <Form.Group controlId="address" className="mt-3">

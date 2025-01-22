@@ -59,7 +59,7 @@ const SupplierTable = () => {
             variant="outline-info"
             size="sm"
             title="View"
-            onClick={() => handleOpenModal("View", row.original)}
+            // onClick={() => handleOpenModal("View", row.original)}
           >
             <FaEye />
           </Button>
@@ -67,7 +67,7 @@ const SupplierTable = () => {
             variant="outline-warning"
             size="sm"
             title="Edit"
-            onClick={() => handleOpenModal("Edit", row.original)}
+            // onClick={() => handleOpenModal("Edit", row.original)}
           >
             <FaEdit />
           </Button>
@@ -97,9 +97,9 @@ const SupplierTable = () => {
       </div>
 
       {/* Table Wrapper */}
-      <div className="table-wrapper">
+      {/* <div className="table-wrapper"> */}
         <DataTable columns={columns} data={data} />
-      </div>
+      {/* </div> */}
 
       {/* Modal Popup */}
       <AddSupplierModal

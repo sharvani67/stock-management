@@ -91,9 +91,9 @@ const Table = () => {
       </div>
 
       {/* Table Wrapper */}
-      <div className="table-wrapper">
+      {/* <div className="table-wrapper"> */}
         <DataTable columns={columns} data={data} />
-      </div>
+      {/* </div> */}
 
       {/* Modal Popup */}
       <ModalPopup
