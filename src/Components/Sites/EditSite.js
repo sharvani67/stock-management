@@ -47,7 +47,7 @@ const EditSite = ({ site, updateSite, showModal, handleClose }) => {
                   value={siteDetails.siteCode}
                   onChange={handleChange}
                   placeholder="Enter Site Code"
-                  disabled
+                  
                 />
               </Form.Group>
             </Col>

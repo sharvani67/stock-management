@@ -3,9 +3,13 @@ import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import AddSupplierModal from "./AddSupplier";
+import ViewSupplier from "./ViewSupplier";
+import EditSupplier from "./EditSupplier";
 
 const SupplierTable = () => {
   const [modalShow, setModalShow] = useState(false);
+  const [viewShow, setViewShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [data, setData] = useState([
@@ -14,27 +18,33 @@ const SupplierTable = () => {
   ]);
 
   const handleOpenModal = (action, item = null) => {
-    setModalTitle(action === "Add New" ? "Add New Supplier" : `${action} Supplier`);
-    setSelectedRow(item);
-    setModalShow(true);
+    if (action === "View") {
+      setSelectedRow(item);
+      setViewShow(true);
+    } else if (action === "Edit") {
+      setSelectedRow(item);
+      setEditShow(true);
+    } else {
+      setModalTitle("Add New Supplier");
+      setModalShow(true);
+    }
   };
 
   const handleCloseModal = () => {
     setModalShow(false);
+    setViewShow(false);
+    setEditShow(false);
     setSelectedRow(null);
-    setModalTitle("");
   };
 
   const handleSave = (newData) => {
     if (selectedRow) {
-      // Update existing row
       setData((prev) =>
         prev.map((item) =>
           item.supplierName === newData.supplierName ? { ...newData } : item
         )
       );
     } else {
-      // Add new row
       setData((prev) => [...prev, newData]);
     }
   };
@@ -59,7 +69,7 @@ const SupplierTable = () => {
             variant="outline-info"
             size="sm"
             title="View"
-            // onClick={() => handleOpenModal("View", row.original)}
+            onClick={() => handleOpenModal("View", row.original)}
           >
             <FaEye />
           </Button>
@@ -67,7 +77,7 @@ const SupplierTable = () => {
             variant="outline-warning"
             size="sm"
             title="Edit"
-            // onClick={() => handleOpenModal("Edit", row.original)}
+            onClick={() => handleOpenModal("Edit", row.original)}
           >
             <FaEdit />
           </Button>
@@ -87,25 +97,28 @@ const SupplierTable = () => {
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Suppliers Management</h1>
-
-      {/* Add New Supplier Button */}
       <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" onClick={() => handleOpenModal("Add New")}>
           <FaPlus className="me-2" />
           Add New Supplier
         </Button>
       </div>
-
-      {/* Table Wrapper */}
-      {/* <div className="table-wrapper"> */}
-        <DataTable columns={columns} data={data} />
-      {/* </div> */}
-
-      {/* Modal Popup */}
+      <DataTable columns={columns} data={data} />
       <AddSupplierModal
         show={modalShow}
         handleClose={handleCloseModal}
         title={modalTitle}
+        details={selectedRow}
+        onSave={handleSave}
+      />
+      <ViewSupplier
+        show={viewShow}
+        handleClose={handleCloseModal}
+        details={selectedRow}
+      />
+      <EditSupplier
+        show={editShow}
+        handleClose={handleCloseModal}
         details={selectedRow}
         onSave={handleSave}
       />

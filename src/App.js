@@ -6,7 +6,7 @@ import UnitTable from './Components/Units/Units';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import Router components
 import AddPurchaseForm from './Components/Purchase/AddPurchase';
 import TablePurchase from './Components/Purchase/TablePurchase';
-import SiteTable from './Components/Sites/TableSite';
+import SiteTable from './Components/Sites/Site';
 import Table from './Components/User/TableUser';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
