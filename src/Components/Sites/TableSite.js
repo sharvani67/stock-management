@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import AddSiteForm from './AddSite';
 import DataTable from '../../layout/DataTable';
-import { FaEdit, FaTrashAlt, FaEye,FaPlus } from 'react-icons/fa'; // Import icons
-// import './SiteTable.css'; // Import custom CSS for additional styling
+import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa'; // Import icons
+import EditSite from './EditSite';
+import ViewSite from './ViewSite';
 
 const SiteTable = () => {
   const [siteData, setSiteData] = useState([
@@ -38,21 +39,43 @@ const SiteTable = () => {
       inchargeMobile: '456-789-0123',
     },
   ]);
-  const [showModal, setShowModal] = useState(false);
 
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedSite, setSelectedSite] = useState(null);
+
+  const handleClose = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setShowViewModal(false);
+  };
+
+  const handleShowAdd = () => setShowAddModal(true);
+  const handleShowEdit = () => setShowEditModal(true);
+  const handleShowView = () => setShowViewModal(true);
 
   const addSite = (newSite) => {
     setSiteData([...siteData, newSite]);
+    handleClose(); // Close modal after adding site
+  };
+
+  const updateSite = (updatedSite) => {
+    setSiteData((prevData) =>
+      prevData.map((site) => (site.siteCode === updatedSite.siteCode ? updatedSite : site))
+    );
+    handleClose(); // Close modal after updating site
   };
 
   const handleView = (site) => {
-    console.log('Viewing site:', site);
+    setSelectedSite(site); // Set the selected site
+    setShowViewModal(true); // Show the ViewSite modal
   };
+  
 
   const handleEdit = (site) => {
-    console.log('Editing site:', site);
+    setSelectedSite(site);
+    setShowEditModal(true); // Open EditSite modal
   };
 
   const handleDelete = (siteCode) => {
@@ -97,12 +120,12 @@ const SiteTable = () => {
       <h1 className="mb-4">Site Management</h1>
 
       {/* Add New Site Button */}
-       <div className="d-flex justify-content-end mb-3">
-              <Button variant="primary"  onClick={handleShow}>
-                <FaPlus className="me-2" />
-                Add New Site
-              </Button>
-            </div>
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="primary" onClick={handleShowAdd}>
+          <FaPlus className="me-2" />
+          Add New Site
+        </Button>
+      </div>
 
       {/* Table Wrapper with Scroll */}
       <div className="table-wrapper">
@@ -110,7 +133,26 @@ const SiteTable = () => {
       </div>
 
       {/* Add Site Modal */}
-      <AddSiteForm addSite={addSite} showModal={showModal} handleClose={handleClose} />
+      <AddSiteForm
+        addSite={addSite}
+        showModal={showAddModal}
+        handleClose={handleClose}
+      />
+
+      {/* View Site Modal */}
+      <ViewSite
+        site={selectedSite}
+        showModal={showViewModal}
+        handleClose={handleClose}
+      />
+
+      {/* Edit Site Modal */}
+      <EditSite
+        site={selectedSite}
+        updateSite={updateSite}
+        showModal={showEditModal}
+        handleClose={handleClose}
+      />
     </div>
   );
 };

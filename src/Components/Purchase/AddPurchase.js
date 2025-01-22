@@ -66,7 +66,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
-        <Col md={8} lg={6}>
+        <Col md={12} lg={10}>
           <Card className="shadow-sm">
             <Card.Header>
               <h2 className="mb-0">Add New Purchase</h2>

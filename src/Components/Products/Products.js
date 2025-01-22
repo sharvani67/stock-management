@@ -2,34 +2,51 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import AddProductModal from "./AddProduct";
-import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa"; // Assuming you renamed the AddProduct component to AddProductModal
+import EditProduct from "./EditProduct";
+import ViewProduct from "./ViewProduct"; // Import ViewProduct
+import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 const ProductTable = () => {
-  // Product data
   const [products, setProducts] = useState([
     { id: 1, name: "Product 1", description: "This is product 1" },
     { id: 2, name: "Product 2", description: "This is product 2" },
   ]);
 
-  // State to manage the modal visibility
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Function to show the modal
-  const handleShowModal = () => setShowModal(true);
+  const handleShowAddModal = () => setShowAddModal(true);
+  const handleCloseAddModal = () => setShowAddModal(false);
 
-  // Function to close the modal
-  const handleCloseModal = () => setShowModal(false);
+  const handleShowEditModal = (product) => {
+    setSelectedProduct(product);
+    setShowEditModal(true);
+  };
+  const handleCloseEditModal = () => setShowEditModal(false);
 
-  // Add new product
+  const handleShowViewModal = (product) => {
+    setSelectedProduct(product);
+    setShowViewModal(true);
+  };
+  const handleCloseViewModal = () => setShowViewModal(false);
+
   const handleAddProduct = (newProduct) => {
     setProducts([
       ...products,
       { id: products.length + 1, ...newProduct },
     ]);
-    handleCloseModal(); // Close the modal after adding the product
+    handleCloseAddModal();
   };
 
-  // Columns for the DataTable
+  const handleEditProduct = (updatedProduct) => {
+    setProducts(products.map((product) =>
+      product.id === updatedProduct.id ? updatedProduct : product
+    ));
+    handleCloseEditModal();
+  };
+
   const columns = [
     { Header: "S.No", accessor: "id" },
     { Header: "Product Name", accessor: "name" },
@@ -39,14 +56,14 @@ const ProductTable = () => {
       accessor: "actions",
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-primary" size="sm">
-            <FaEye/>
+          <Button variant="outline-primary" size="sm" onClick={() => handleShowViewModal(row.original)}>
+            <FaEye />
           </Button>
-          <Button variant="outline-warning" size="sm">
-            <FaEdit/>
+          <Button variant="outline-warning" size="sm" onClick={() => handleShowEditModal(row.original)}>
+            <FaEdit />
           </Button>
           <Button variant="outline-danger" size="sm">
-            <FaTrashAlt/>
+            <FaTrashAlt />
           </Button>
         </div>
       ),
@@ -58,12 +75,12 @@ const ProductTable = () => {
       <h1 className="mb-4">Product Management</h1>
 
       {/* Add New Product Button */}
-       <div className="d-flex justify-content-end mb-3">
-              <Button variant="primary" onClick={() => handleShowModal("Add New")}>
-                <FaPlus className="me-2" />
-                Add New Product
-              </Button>
-            </div>
+      <div className="d-flex justify-content-end mb-3">
+        <Button variant="primary" onClick={handleShowAddModal}>
+          <FaPlus className="me-2" />
+          Add New Product
+        </Button>
+      </div>
 
       {/* Table Wrapper */}
       <div className="table-wrapper">
@@ -72,9 +89,24 @@ const ProductTable = () => {
 
       {/* Add Product Modal */}
       <AddProductModal
-        show={showModal}
-        handleClose={handleCloseModal}
+        show={showAddModal}
+        handleClose={handleCloseAddModal}
         handleSave={handleAddProduct}
+      />
+
+      {/* Edit Product Modal */}
+      <EditProduct
+        show={showEditModal}
+        handleClose={handleCloseEditModal}
+        product={selectedProduct}
+        handleSave={handleEditProduct}
+      />
+
+      {/* View Product Modal */}
+      <ViewProduct
+        product={selectedProduct}
+        showModal={showViewModal}
+        handleClose={handleCloseViewModal}
       />
     </div>
   );

@@ -3,6 +3,8 @@ import { Button } from "react-bootstrap";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import DataTable from "../../layout/DataTable";
 import AddBrandModal from "./AddBrand"; // Assuming AddBrandModal is the modal component
+import ViewBrand from "./ViewBrand"; // Import ViewBrand
+import EditBrand from "./EditBrand"; // Import EditBrand
 
 const Brand = () => {
   // Sample brand data
@@ -11,28 +13,43 @@ const Brand = () => {
     { id: 2, brandName: "Brand 2", description: "This is brand 2" },
   ]);
 
-  // State to manage showing/hiding the modal
-  const [showModal, setShowModal] = useState(false);
+  // State to manage showing/hiding modals
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState(null);
 
   // Functions to handle modal visibility
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
+  const handleCloseAddModal = () => setShowAddModal(false);
+  const handleShowAddModal = () => setShowAddModal(true);
+
+  const handleCloseViewModal = () => setShowViewModal(false);
+  const handleShowViewModal = (brand) => {
+    setSelectedBrand(brand);
+    setShowViewModal(true);
+  };
+
+  const handleCloseEditModal = () => setShowEditModal(false);
+  const handleShowEditModal = (brand) => {
+    setSelectedBrand(brand);
+    setShowEditModal(true);
+  };
 
   // Add new brand
   const handleAddBrand = (newBrand) => {
     setBrands([...brands, { id: brands.length + 1, ...newBrand }]);
-    handleCloseModal(); // Close the modal after adding a brand
+    handleCloseAddModal(); // Close the modal after adding a brand
   };
 
-  // Handle view/edit/delete actions for each brand
-  const handleView = (brand) => {
-    console.log("Viewing brand:", brand);
+  // Edit brand
+  const handleEditBrand = (updatedBrand) => {
+    setBrands(brands.map((brand) =>
+      brand.id === updatedBrand.id ? updatedBrand : brand
+    ));
+    handleCloseEditModal(); // Close the modal after saving changes
   };
 
-  const handleEdit = (brand) => {
-    console.log("Editing brand:", brand);
-  };
-
+  // Handle delete action for a brand
   const handleDelete = (id) => {
     const updatedBrands = brands.filter((brand) => brand.id !== id);
     setBrands(updatedBrands);
@@ -52,7 +69,7 @@ const Brand = () => {
             variant="outline-info"
             size="sm"
             title="View"
-            onClick={() => handleView(row.original)}
+            onClick={() => handleShowViewModal(row.original)}
           >
             <FaEye />
           </Button>
@@ -60,7 +77,7 @@ const Brand = () => {
             variant="outline-warning"
             size="sm"
             title="Edit"
-            onClick={() => handleEdit(row.original)}
+            onClick={() => handleShowEditModal(row.original)}
           >
             <FaEdit />
           </Button>
@@ -83,7 +100,7 @@ const Brand = () => {
 
       {/* Button to Add New Brand */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={handleShowModal}>
+        <Button variant="primary" onClick={handleShowAddModal}>
           <FaPlus /> Add New Brand
         </Button>
       </div>
@@ -95,9 +112,24 @@ const Brand = () => {
 
       {/* Add Brand Modal */}
       <AddBrandModal
-        show={showModal}
-        handleClose={handleCloseModal}
+        show={showAddModal}
+        handleClose={handleCloseAddModal}
         handleSave={handleAddBrand}
+      />
+
+      {/* View Brand Modal */}
+      <ViewBrand
+        brand={selectedBrand}
+        showModal={showViewModal}
+        handleClose={handleCloseViewModal}
+      />
+
+      {/* Edit Brand Modal */}
+      <EditBrand
+        brand={selectedBrand}
+        showModal={showEditModal}
+        handleClose={handleCloseEditModal}
+        handleSave={handleEditBrand}
       />
     </div>
   );
