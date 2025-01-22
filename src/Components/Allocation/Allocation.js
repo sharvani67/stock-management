@@ -2,44 +2,63 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
+import ViewAllocation from "./ViewAllocation";
+import EditAllocation from "./EditAllocation";
 import StockModalPopup from "./AllocationModalPopup";
 
 const AllocationTable = () => {
-  const [modalShow, setModalShow] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
+  const [viewModalShow, setViewModalShow] = useState(false);
+  const [editModalShow, setEditModalShow] = useState(false);
+  const [modalShow, setModalShow] = useState(false); // For StockModalPopup
   const [selectedRow, setSelectedRow] = useState(null);
+  const [modalTitle, setModalTitle] = useState(""); // Title for StockModalPopup
   const [data, setData] = useState([
     { siteName: "Site 1", manager: "Manager 1", productName: "Product 1", stockOutward: 50, remainingStock: 100 },
     { siteName: "Site 2", manager: "Manager 2", productName: "Product 2", stockOutward: 30, remainingStock: 120 },
     { siteName: "Site 3", manager: "Manager 3", productName: "Product 3", stockOutward: 20, remainingStock: 80 },
   ]);
 
-  const handleOpenModal = (action, item = null) => {
-    setModalTitle(action === "Add New" ? "Add New Allocation" : `${action} Allocation`);
-    setSelectedRow(item);
+  // Handlers for View Modal
+  const handleOpenViewModal = (row) => {
+    setSelectedRow(row);
+    setViewModalShow(true);
+  };
+  const handleCloseViewModal = () => setViewModalShow(false);
+
+  // Handlers for Edit Modal
+  const handleOpenEditModal = (row) => {
+    setSelectedRow(row);
+    setEditModalShow(true);
+  };
+  const handleCloseEditModal = () => {
+    setEditModalShow(false);
+    setSelectedRow(null);
+  };
+
+  // Handlers for Stock Modal Popup
+  const handleOpenStockModal = () => {
+    setSelectedRow(null);
+    setModalTitle("Add New Allocation");
     setModalShow(true);
   };
+  const handleCloseStockModal = () => setModalShow(false);
 
-  const handleCloseModal = () => {
-    setModalShow(false);
-    setSelectedRow(null);
-    setModalTitle("");
+  const handleSaveStock = (newData) => {
+    setData((prev) => [...prev, newData]);
+    handleCloseStockModal();
   };
 
-  const handleSave = (newData) => {
-    if (selectedRow) {
-      // Update existing row
-      setData((prev) =>
-        prev.map((item) =>
-          item.siteName === newData.siteName && item.productName === newData.productName ? { ...newData } : item
-        )
-      );
-    } else {
-      // Add new row
-      setData((prev) => [...prev, newData]);
-    }
+  // Save Edited Data
+  const handleSaveEdit = (updatedData) => {
+    setData((prev) =>
+      prev.map((item) =>
+        item.siteName === updatedData.siteName && item.productName === updatedData.productName ? updatedData : item
+      )
+    );
+    handleCloseEditModal();
   };
 
+  // Delete Data
   const handleDelete = (row) => {
     const updatedData = data.filter(
       (item) => !(item.siteName === row.siteName && item.productName === row.productName)
@@ -62,7 +81,7 @@ const AllocationTable = () => {
             variant="outline-info"
             size="sm"
             title="View"
-            onClick={() => handleOpenModal("View", row.original)}
+            onClick={() => handleOpenViewModal(row.original)}
           >
             <FaEye />
           </Button>
@@ -70,7 +89,7 @@ const AllocationTable = () => {
             variant="outline-warning"
             size="sm"
             title="Edit"
-            onClick={() => handleOpenModal("Edit", row.original)}
+            onClick={() => handleOpenEditModal(row.original)}
           >
             <FaEdit />
           </Button>
@@ -91,26 +110,39 @@ const AllocationTable = () => {
     <div className="container mt-5">
       <h1 className="mb-4">Allocations Management</h1>
 
-      {/* Add New Allocation Button */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={() => handleOpenModal("Add New")}>
+        <Button variant="primary" onClick={handleOpenStockModal}>
           <FaPlus className="me-2" />
           Add New Allocation
         </Button>
       </div>
 
-      {/* Table Wrapper */}
       <div className="table-wrapper">
         <DataTable columns={columns} data={data} />
       </div>
 
-      {/* Modal Popup */}
+      {/* View Modal */}
+      <ViewAllocation
+        show={viewModalShow}
+        handleClose={handleCloseViewModal}
+        details={selectedRow}
+      />
+
+      {/* Edit Modal */}
+      <EditAllocation
+        show={editModalShow}
+        handleClose={handleCloseEditModal}
+        details={selectedRow}
+        onSave={handleSaveEdit}
+      />
+
+      {/* Stock Modal Popup */}
       <StockModalPopup
         show={modalShow}
-        handleClose={handleCloseModal}
+        handleClose={handleCloseStockModal}
         title={modalTitle}
         details={selectedRow}
-        onSave={handleSave}
+        onSave={handleSaveStock}
       />
     </div>
   );

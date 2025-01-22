@@ -52,9 +52,14 @@ const EditProduct = ({ show, handleClose, product, handleSave }) => {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-3">
-            Save Changes
-          </Button>
+          <Modal.Footer>
+                      <Button variant="secondary" onClick={handleClose}>
+                        Close
+                      </Button>
+                      <Button variant="primary" type="submit">
+                        Save Changes
+                      </Button>
+        </Modal.Footer>
         </Form>
       </Modal.Body>
     </Modal>
