@@ -1,41 +1,81 @@
-/* Sidebar styles */
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    z-index: 1050; /* Make sure sidebar is on top */
-    transition: all 0.3s ease;
+/* Sidebar Container */
+.sidebar {
+    background: linear-gradient(to bottom, #6a82fb, #fc5c7d); /* Construction-themed gradient */
+    color: white;
+    min-height: 100vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif; /* Clean, modern font */
   }
   
-  #sidebar .nav-item {
-    margin-bottom: 15px;
+  /* Sidebar Header */
+  .sidebar-header {
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #edf2f4; 
   }
   
-  #sidebar .nav-link {
+  /* Sidebar Toggle Button */
+  .sidebar-toggle-btn {
+    background-color: #fcbf49;
+    color: #003049;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .sidebar-toggle-btn:hover {
+    background-color: #f77f00;
+    color: white;
+  }
+  
+  /* Sidebar Menu */
+  .sidebar-menu {
+    flex-grow: 1;
+    padding: 10px;
+  }
+  
+  .sidebar-menu .nav-link {
+    color: #edf2f4; /* Light text */
     font-size: 16px;
-    padding-left: 20px;
-    padding-right: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.2s;
   }
   
-  /* Hide sidebar on smaller screens */
+  .sidebar-menu .nav-link i {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  .sidebar-menu .nav-link:hover {
+    background-color: #003049;
+    transform: translateX(5px);
+  }
+  
+  /* Responsive Design */
   @media (max-width: 768px) {
-    #sidebar {
-      display: none;
+    .sidebar {
+      position: absolute;
+      width: 75%; /* Adjust width for small screens */
+      z-index: 1000;
     }
-  }
   
-  /* Show the sidebar when it's toggled on smaller screens */
-  #sidebar.collapse.show {
-    display: block;
-  }
+    .sidebar-toggle-btn {
+      display: block;
+    }
   
-  /* For the button that appears when the sidebar is collapsed */
-  .d-md-none {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    z-index: 1060; /* Button should appear above the sidebar */
+    .sidebar-header {
+      font-size: 20px;
+    }
   }
   

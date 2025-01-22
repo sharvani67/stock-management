@@ -9,12 +9,12 @@ const Table = () => {
   const [modalTitle, setModalTitle] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [data, setData] = useState([
-    { name: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', role: 'Admin' },
-    { name: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', role: 'Site Manager' },
-    { name: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', role: 'Admin' },
-    { name: 'Hemanth', mobile: '123-456-7890', email: 'hemanth@example.com', role: 'Admin' },
-    { name: 'Ganesh', mobile: '987-654-3210', email: 'ganesh@example.com', role: 'Site Manager' },
-    { name: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', role: 'Site Manager' },
+    { id: 1, name: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', role: 'Admin' },
+    { id: 2, name: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', role: 'Site Manager' },
+    { id: 3, name: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', role: 'Admin' },
+    { id: 4, name: 'Hemanth', mobile: '123-456-7890', email: 'hemanth@example.com', role: 'Admin' },
+    { id: 5, name: 'Ganesh', mobile: '987-654-3210', email: 'ganesh@example.com', role: 'Site Manager' },
+    { id: 6, name: 'Karthik', mobile: '456-789-0123', email: 'karthik@example.com', role: 'Site Manager' },
   ]);
 
   const handleOpenModal = (action, user = null) => {
@@ -33,28 +33,37 @@ const Table = () => {
     if (selectedUser) {
       // Update the existing user
       setData(prev =>
-        prev.map(user => (user.name === selectedUser.name ? { ...user, ...userData } : user))
+        prev.map(user => (user.id === selectedUser.id ? { ...user, ...userData } : user))
       );
     } else {
       // Add a new user
-      setData(prev => [...prev, { ...userData }]);
+      const newId = Math.max(...data.map(user => user.id)) + 1;
+      setData(prev => [...prev, { id: newId, ...userData }]);
     }
   };
 
+  const handleDelete = (userToDelete) => {
+    setData(prev => prev.filter(user => user.id !== userToDelete.id));
+  };
+
   const columns = [
+    {
+      Header: "S.No",
+      Cell: ({ row }) => row.index + 1, // Display serial number based on row index
+    },
     { Header: "Name", accessor: "name" },
     { Header: "Mobile", accessor: "mobile" },
     { Header: "Email", accessor: "email" },
     { Header: "Role", accessor: "role" },
     {
       Header: "Actions",
-      accessor: "actions",
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
           <Button
             variant="outline-info"
             size="sm"
             title="View"
+            onClick={() => console.log("View user:", row.original)}
           >
             <FaEye />
           </Button>
@@ -70,6 +79,7 @@ const Table = () => {
             variant="outline-danger"
             size="sm"
             title="Delete"
+            onClick={() => handleDelete(row.original)}
           >
             <FaTrashAlt />
           </Button>
@@ -90,10 +100,8 @@ const Table = () => {
         </Button>
       </div>
 
-      {/* Table Wrapper */}
-      {/* <div className="table-wrapper"> */}
-        <DataTable columns={columns} data={data} />
-      {/* </div> */}
+      {/* Table */}
+      <DataTable columns={columns} data={data} />
 
       {/* Modal Popup */}
       <ModalPopup
