@@ -6,6 +6,8 @@ import AddProduct from '../Products/AddProduct'; // Import your AddProduct modal
 import Addunit from '../Units/AddUnit'; // Import your Addunit modal component
 import AddSupplierModal from '../Suppliers/AddSupplier'; // Import your AddSupplierModal component
 import AddBrandModal from '../Brands/AddBrand'; // Import your AddBrandModal component
+import '../Purchase/AddPurchase.css';
+
 
 const AddPurchaseForm = ({ onAddPurchase }) => {
   const [formData, setFormData] = useState({
@@ -64,7 +66,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
   };
 
   return (
-    <Container className="mt-5">
+    <Container  className="mt-5 addpurchase" >
       <Row className="justify-content-center">
         <Col md={12} lg={10}>
           <Card className="shadow-sm">
@@ -200,10 +202,11 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
                     </Form.Group>
                   </Col>
                 </Row>
-
-                <Button type="submit" variant="primary" className="w-100 mt-3">
+                <div className="d-flex justify-content-center align-items-center">
+                <Button type="submit" variant="primary" className="w-50 mt-3">
                   Add Purchase
                 </Button>
+                </div>
               </Form>
             </Card.Body>
           </Card>

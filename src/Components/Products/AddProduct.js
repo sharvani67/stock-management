@@ -15,7 +15,7 @@ const AddProductModal = ({ show, handleClose, handleSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered className="add-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Add New Product</Modal.Title>
       </Modal.Header>

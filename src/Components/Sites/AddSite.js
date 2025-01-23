@@ -40,7 +40,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={handleClose} centered className="add-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Add New Site</Modal.Title>
       </Modal.Header>

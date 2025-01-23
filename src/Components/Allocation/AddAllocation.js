@@ -42,7 +42,7 @@ const StockModalPopup = ({ show, handleClose, title, details, onSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} centered className="add-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>

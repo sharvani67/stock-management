@@ -43,7 +43,7 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} centered>
+    <Modal show={showModal} onHide={handleClose} centered className="add-form-modal" >
       <Modal.Header closeButton>
         <Modal.Title>{user ? "Edit User" : "Add New User"}</Modal.Title>
       </Modal.Header>

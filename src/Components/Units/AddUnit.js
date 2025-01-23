@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import '../../CSS/AddForm.css';
 
 const Addunit = ({ show, handleClose, title, details, onSave }) => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered className="add-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Add New Unit</Modal.Title>
       </Modal.Header>
