@@ -3,7 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 
 const ViewUnit = ({ show, handleClose, details }) => {
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered  className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Unit Details</Modal.Title>
       </Modal.Header>

@@ -30,12 +30,12 @@ const EditSupplier = ({ show, handleClose, details, onSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose}  centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Supplier</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form  className="edit-form">
           <Form.Group className="mb-3">
             <Form.Label>Supplier Name</Form.Label>
             <Form.Control

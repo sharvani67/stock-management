@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
+import '../../CSS/ViewForm.css'
 
 const ViewProduct = ({ product, showModal, handleClose }) => {
   if (!product) {
@@ -7,7 +8,7 @@ const ViewProduct = ({ product, showModal, handleClose }) => {
   }
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={handleClose}centered className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Product Details</Modal.Title>
       </Modal.Header>

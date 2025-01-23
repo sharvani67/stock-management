@@ -7,7 +7,7 @@ const ViewSite = ({ site, showModal, handleClose }) => {
   }
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={handleClose} centered  className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Site Details</Modal.Title>
       </Modal.Header>

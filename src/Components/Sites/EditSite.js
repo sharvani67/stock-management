@@ -31,12 +31,12 @@ const EditSite = ({ site, updateSite, showModal, handleClose }) => {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} backdrop="static" keyboard={false}>
+    <Modal show={showModal} onHide={handleClose} backdrop="static" keyboard={false}centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Site</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form  className="edit-form">
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formSiteCode">

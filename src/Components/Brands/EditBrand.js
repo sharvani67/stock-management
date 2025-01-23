@@ -31,12 +31,12 @@ const EditBrand = ({ brand, showModal, handleClose, handleSave }) => {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={handleClose} centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Brand</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="edit-form"> 
           {/* Brand Name Input */}
           <Form.Group controlId="brandName">
             <Form.Label>Brand Name</Form.Label>

@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 const ViewUser = ({ user, showModal, handleClose }) => {
   return (
-    <Modal show={showModal} onHide={handleClose} centered>
+    <Modal show={showModal} onHide={handleClose} centered  className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View User Details</Modal.Title>
       </Modal.Header>

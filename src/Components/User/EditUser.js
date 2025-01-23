@@ -26,12 +26,12 @@ const EditUser = ({ user, showModal, handleClose, handleSave }) => {
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} centered>
+    <Modal show={showModal} onHide={handleClose}  centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form  className="edit-form">
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control

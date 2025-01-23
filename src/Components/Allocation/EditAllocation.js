@@ -31,12 +31,12 @@ const EditAllocation = ({ show, handleClose, details, onSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Allocation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="edit-form">
           <Form.Group className="mb-3" controlId="siteName">
             <Form.Label>Site Name</Form.Label>
             <Form.Control

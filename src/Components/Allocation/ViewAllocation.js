@@ -5,7 +5,7 @@ const ViewAllocation = ({ show, handleClose, details }) => {
   if (!details) return null; // Avoid rendering if no details are passed
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} centered  className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Allocation Details</Modal.Title>
       </Modal.Header>

@@ -5,7 +5,7 @@ const ViewPurchase = ({ show, handleClose, details }) => {
   if (!details) return null;
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered  className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Purchase</Modal.Title>
       </Modal.Header>

@@ -27,12 +27,12 @@ const EditUnit = ({ show, handleClose, details, onSave }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered  className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Unit</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+        <Form  className="edit-form">
           <Form.Group className="mb-3">
             <Form.Label>Serial No</Form.Label>
             <Form.Control

@@ -1,0 +1,38 @@
+/* EditForm.css */
+
+/* Modal styles */
+.edit-form-modal .modal-header {
+    background-color: #343a40; /* Dark gray background suitable for stock management theme */
+    color: #ffffff; /* White text for contrast */
+    border-bottom: none;
+  }
+  
+  .edit-form-modal .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff; /* White text color for the title */
+  }
+  
+  /* Button styles */
+  .edit-form-modal .btn-secondary {
+    background-color: #6c757d; /* Gray button background */
+    border: none;
+    color: #fff; /* White text color */
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-form-modal .btn-secondary:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+  }
+  
+  .edit-form-modal .btn-primary {
+    background-color: #007bff; /* Blue button background */
+    border: none;
+    color: #fff; /* White text color */
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-form-modal .btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  

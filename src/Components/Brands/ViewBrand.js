@@ -7,7 +7,7 @@ const ViewBrand = ({ brand, showModal, handleClose }) => {
   }
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={handleClose} centered className="view-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>View Brand Details</Modal.Title>
       </Modal.Header>
