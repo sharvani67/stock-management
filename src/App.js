@@ -17,6 +17,7 @@ import ProductTable from './Components/Products/Products';
 import Brand from './Components/Brands/Brands';
 import SupplierTable from './Components/Suppliers/Supplier';
 import Sidebar from './Shared/SideBar/SideBar';
+import Dashboard from './Components/Dashboard/Dashboard';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               <Route path="/allocations" element={<AllocationTable />} />
               <Route path="/centralstock" element={<CentralStockTable />} />
               <Route path="/suppliers" element={<SupplierTable />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </div>
         </div>

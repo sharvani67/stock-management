@@ -9,7 +9,9 @@ function Sidebar() {
     <div className="sidebar">
       {/* Sidebar Header */}
       <div className="sidebar-header">
+      <Link to="/dashboard" className="nav-link">
         <h2>Dashboard</h2>
+        </Link>
       </div>
 
       {/* Toggle Button for Small Screens */}
