@@ -1,81 +1,105 @@
 /* Sidebar Container */
 .sidebar {
-    background: linear-gradient(to bottom, #6a82fb, #fc5c7d); /* Construction-themed gradient */
-    color: white;
-    min-height: 100vh;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Roboto', sans-serif; /* Clean, modern font */
-  }
-  
-  /* Sidebar Header */
-  .sidebar-header {
-    padding: 15px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    color: #edf2f4; 
-  }
-  
-  /* Sidebar Toggle Button */
-  .sidebar-toggle-btn {
-    background-color: #fcbf49;
-    color: #003049;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  
-  .sidebar-toggle-btn:hover {
-    background-color: #f77f00;
-    color: white;
-  }
-  
-  /* Sidebar Menu */
-  .sidebar-menu {
-    flex-grow: 1;
-    padding: 10px;
-  }
-  
-  .sidebar-menu .nav-link {
-    color: #edf2f4; /* Light text */
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 8px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  .sidebar-menu .nav-link i {
-    margin-right: 10px;
-    font-size: 18px;
-  }
-  
-  .sidebar-menu .nav-link:hover {
-    background-color: #003049;
-    transform: translateX(5px);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .sidebar {
+  background: linear-gradient(to bottom, #0aa6e3, #df1c8a, #8f1ae9); /* Light pastel gradient from blue to pink to lavender */
+  color: white;
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 20px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #f7f7f7; /* Light pastel white */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+  background-color: #f5bb99; /* Soft pastel orange */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: #f34f35; /* Slightly darker pastel orange */
+  color: rgb(97, 244, 210);
+  transform: scale(1.05);
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  flex-grow: 1;
+  padding: 15px;
+}
+
+.sidebar-menu .nav-link {
+  color: #f7f7f7; /* Light pastel white text */
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1); /* Slightly transparent white background */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-menu .nav-link i {
+  margin-right: 12px;
+  font-size: 20px;
+  color: #ffb3b3; /* Soft pastel pink */
+}
+
+.sidebar-menu .nav-link:hover {
+  background: linear-gradient(to right, #9b61f3, #638af4, #f13e8e); /* Light pastel gradient for hover */
+  color: white;
+  transform: translateX(8px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Active Nav Link */
+.sidebar-menu .nav-link.active {
+  background: linear-gradient(to right, #f5c6cb, #a3c4f7, #d1b3ff); /* Pastel pink, blue, and purple for active state */
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Icon Styling */
+.sidebar-menu .nav-link i:hover {
+  color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
       position: absolute;
-      width: 75%; /* Adjust width for small screens */
+      width: 80%;
       z-index: 1000;
-    }
-  
-    .sidebar-toggle-btn {
-      display: block;
-    }
-  
-    .sidebar-header {
-      font-size: 20px;
-    }
   }
-  
+
+  .sidebar-toggle-btn {
+      display: block;
+  }
+
+  .sidebar-header {
+      font-size: 22px;
+  }
+}
