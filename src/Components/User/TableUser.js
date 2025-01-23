@@ -77,7 +77,7 @@ const Table = () => {
       <h1 className="mb-4">Users</h1>
 
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={handleAddUser}>
+        <Button variant="primary" className='add-button' onClick={handleAddUser}>
           <FaPlus className="me-2" />
           Add New User
         </Button>

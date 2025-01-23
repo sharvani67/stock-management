@@ -100,7 +100,7 @@ const Brand = () => {
 
       {/* Button to Add New Brand */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={handleShowAddModal}>
+        <Button variant="primary" className='add-button' onClick={handleShowAddModal}>
           <FaPlus /> Add New Brand
         </Button>
       </div>

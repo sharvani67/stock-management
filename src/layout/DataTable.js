@@ -85,7 +85,7 @@ export default function DataTable({ columns, data, initialSearchValue }) {
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="dataTable_headerCell"
                     style={{
-                      backgroundColor: '#574964', // Updated background color
+                      backgroundColor: 'rgba(16, 103, 244, 0.7)', // Updated background color
                       color: 'white',
                       border: '2px  solid',
                       borderTop: '2px solid #574964',

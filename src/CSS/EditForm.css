@@ -1,38 +1,59 @@
-/* EditForm.css */
-
 /* Modal styles */
 .edit-form-modal .modal-header {
-    background-color: #343a40; /* Dark gray background suitable for stock management theme */
-    color: #ffffff; /* White text for contrast */
-    border-bottom: none;
-  }
-  
-  .edit-form-modal .modal-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff; /* White text color for the title */
-  }
-  
-  /* Button styles */
-  .edit-form-modal .btn-secondary {
-    background-color: #6c757d; /* Gray button background */
-    border: none;
-    color: #fff; /* White text color */
-    transition: background-color 0.3s ease;
-  }
-  
-  .edit-form-modal .btn-secondary:hover {
-    background-color: #5a6268; /* Darker gray on hover */
-  }
-  
-  .edit-form-modal .btn-primary {
-    background-color: #007bff; /* Blue button background */
-    border: none;
-    color: #fff; /* White text color */
-    transition: background-color 0.3s ease;
-  }
-  
-  .edit-form-modal .btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-  }
-  
+  background: #358aec; /* Soft pastel orange background */
+  color: #ffffff; /* White text for contrast */
+  border-bottom: none;
+}
+
+.edit-form-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f8f8f8; /* Light pastel white text */
+}
+
+/* Button styles */
+.edit-form-modal .btn-secondary {
+  background-color: #10a8ef; /* Soft pastel purple */
+  border: none;
+  color: #fff; /* White text */
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.edit-form-modal .btn-secondary:hover {
+  background-color: #e8075d; /* Slightly darker pastel purple on hover */
+  transform: scale(1.05); /* Add a subtle scale effect */
+}
+
+.edit-form-modal .btn-primary {
+  background-color: #0952f0f5; /* Soft pastel blue */
+  border: none;
+  color: #fff; /* White text */
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.edit-form-modal .btn-primary:hover {
+  background-color: #007bbf; /* Darker pastel blue on hover */
+  transform: scale(1.05); /* Add a subtle scale effect */
+}
+
+/* Form styles */
+.edit-form-modal .form-label {
+  font-weight: bold; /* Make form labels bold */
+  color: #343a40; /* Dark gray text for labels */
+}
+
+.edit-form-modal .form-control {
+  border: 1px solid #ced4da; /* Standard border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 0.5rem; /* Add padding for better readability */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-form-modal .form-control:focus {
+  border-color: #0aa6e3; /* Pastel blue border on focus */
+  box-shadow: 0 0 5px rgba(10, 166, 227, 0.5); /* Subtle blue glow on focus */
+}
+
+.edit-form-modal .form-group {
+  margin-bottom: 1.5rem; /* Add spacing between form groups */
+}

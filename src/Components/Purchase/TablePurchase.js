@@ -88,7 +88,7 @@ const handleSave = (updatedData) => {
       {/* Add New Purchase Button */}
       <div className="d-flex justify-content-end mb-3">
         <Link to="/add-purchase">
-          <Button variant="primary"><FaPlus className="me-2" />Add New Purchase</Button>
+          <Button variant="primary" className='add-button'><FaPlus className="me-2" />Add New Purchase</Button>
         </Link>
       </div>
 

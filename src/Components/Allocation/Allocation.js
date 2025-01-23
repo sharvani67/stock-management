@@ -111,7 +111,7 @@ const AllocationTable = () => {
       <h1 className="mb-4">Allocations Management</h1>
 
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={handleOpenStockModal}>
+        <Button variant="primary" className='add-button' onClick={handleOpenStockModal}>
           <FaPlus className="me-2" />
           Add New Allocation
         </Button>

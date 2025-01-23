@@ -98,7 +98,7 @@ const SupplierTable = () => {
     <div className="container mt-5">
       <h1 className="mb-4">Suppliers Management</h1>
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={() => handleOpenModal("Add New")}>
+        <Button variant="primary" className='add-button' onClick={() => handleOpenModal("Add New")}>
           <FaPlus className="me-2" />
           Add New Supplier
         </Button>

@@ -121,7 +121,7 @@ const SiteTable = () => {
 
       {/* Add New Site Button */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" onClick={handleShowAdd}>
+        <Button variant="primary" className='add-button' onClick={handleShowAdd}>
           <FaPlus className="me-2" />
           Add New Site
         </Button>

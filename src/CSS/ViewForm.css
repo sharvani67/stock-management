@@ -1,36 +1,42 @@
 /* Modal styles */
 .view-form-modal .modal-header {
-    background-color: #495057; /* Dark gray background */
-    color: #ffffff; /* White text for contrast */
-    border-bottom: none;
-  }
-  
-  .view-form-modal .modal-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff; /* White text color for the title */
-  }
-  
-  /* Body text styles */
-  .view-form-modal .modal-body p {
-    font-size: 1rem;
-    color: #212529; /* Dark text for readability */
-    margin-bottom: 10px;
-  }
-  
-  .view-form-modal .modal-body p strong {
-    color: #495057; /* Slightly darker gray for labels */
-  }
-  
-  /* Button styles */
-  .view-form-modal .btn-secondary {
-    background-color: #6c757d; /* Gray button background */
-    border: none;
-    color: #fff; /* White text color */
-    transition: background-color 0.3s ease;
-  }
-  
-  .view-form-modal .btn-secondary:hover {
-    background-color: #5a6268; /* Darker gray on hover */
-  }
-  
+  background-color: #358aec; /* Soft pastel purple background */
+  color: #f7f7f7; /* Light pastel white text for contrast */
+  border-bottom: none;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow for depth */
+}
+
+.view-form-modal .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f7f7f7; /* Light pastel white text */
+}
+
+/* Body text styles */
+.view-form-modal .modal-body p {
+  font-size: 1rem;
+  color: #212529; /* Dark text for readability */
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.1); /* Subtle light background for body text */
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow for emphasis */
+}
+
+.view-form-modal .modal-body p strong {
+  color: #363636; /* Soft pastel blue for strong emphasis text */
+}
+
+/* Button styles */
+.view-form-modal .btn-secondary {
+  background-color: #11a4ed; /* Soft pastel blue button background */
+  border: none;
+  color: #fff; /* White text */
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.view-form-modal .btn-secondary:hover {
+  background-color: #e60558; /* Darker pastel blue on hover */
+  transform: scale(1.05); /* Subtle scale effect for hover */
+}

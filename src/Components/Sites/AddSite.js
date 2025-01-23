@@ -150,7 +150,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="primary" type="submit" className="mt-3">
+          <Button variant="primary" type="submit"  className="mt-3 w-50">
             Add Site
           </Button>
         </Form>

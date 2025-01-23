@@ -203,7 +203,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
                   </Col>
                 </Row>
                 <div className="d-flex justify-content-center align-items-center">
-                <Button type="submit" variant="primary" className="w-50 mt-3">
+                <Button type="submit" variant="primary"  className="w-50 mt-3">
                   Add Purchase
                 </Button>
                 </div>

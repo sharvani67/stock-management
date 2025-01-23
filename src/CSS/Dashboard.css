@@ -1,29 +1,5 @@
 /* Dashboard.css */
 
-/* .card {
-    border: none;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  
-  .card-body {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem;
-  }
-  
-  .card h5 {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card h3 {
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-   */
-
 /* General card styles */
 .dashboard-card {
     border: none;

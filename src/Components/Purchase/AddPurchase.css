@@ -1,30 +1,29 @@
-/* AddPurchaseForm.css */
-
 /* Card styles */
 .addpurchase .card {
-    border: none; /* Remove border */
+    border: 2px solid black; /* Remove border */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     overflow: hidden;
 }
 
 .addpurchase .card-header {
-    background-color: #343a40; /* Dark gray background */
-    color: #ffffff; /* White text */
+    background-color: rgba(16, 103, 244, 0.7); /* Soft pastel purple background */
+    color: #f7f7f7; /* Light pastel white text */
     font-size: 1.5rem; /* Larger header font */
     font-weight: bold; /* Bold header text */
     text-align: center;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
 }
 
 .addpurchase .card-body {
     padding: 2rem; /* Add padding for spaciousness */
-    background-color: #f8f9fa; /* Light background for contrast */
+    background-color: #fefefe; /* Light pastel white background */
 }
 
 /* Form styles */
 .addpurchase .form-label {
     font-weight: bold; /* Bold form labels */
-    color: #343a40; /* Dark gray text */
+    color: #0e0f0fc1; /* Soft pastel blue text */
 }
 
 .addpurchase .form-control {
@@ -35,8 +34,8 @@
 }
 
 .addpurchase .form-control:focus {
-    border-color: #007bff; /* Blue border on focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow on focus */
+    border-color: #61a9f0; /* Soft pastel blue border on focus */
+    box-shadow: 0 0 5px rgba(203, 204, 205, 0.5); /* Subtle blue glow on focus */
 }
 
 /* Input group styles */
@@ -48,39 +47,41 @@
 .addpurchase .input-group .btn {
     border-radius: 0 4px 4px 0; /* Rounded corners only on the right */
     border: none;
-    background-color: #007bff; /* Blue background */
-    color: #fff; /* White text */
-    transition: background-color 0.3s ease;
+    background-color: #31b4e8; /* Soft pastel orange background */
+    color: #ffffff; /* White text */
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .addpurchase .input-group .btn:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #378ee0; /* Darker pastel pink on hover */
+    transform: scale(1.05); /* Subtle scale effect for hover */
 }
 
 /* Button styles */
 .addpurchase .btn-primary {
-    background-color: #007bff; /* Blue button */
+    background-color: #194ce7; /* Soft pastel lavender button */
     border: none; /* Remove border */
     font-weight: bold; /* Bold text */
     padding: 0.75rem 1.25rem; /* Add padding for size */
     border-radius: 4px; /* Rounded corners */
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .addpurchase .btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0865f0; /* Darker pastel lavender on hover */
+    transform: scale(1.05); /* Subtle hover effect */
 }
 
 .addpurchase .btn-outline-secondary {
-    border: 1px solid #ced4da; /* Light gray border */
-    color: #343a40; /* Dark gray text */
+    border: 1px solid #3f98f0; /* Light gray border */
+    color: #aeadb0; /* Soft pastel purple text */
     background-color: #ffffff; /* White background */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .addpurchase .btn-outline-secondary:hover {
-    background-color: #f8f9fa; /* Light gray background on hover */
-    color: #007bff; /* Blue text on hover */
+    background-color: #f8f9fa; /* Light pastel gray background on hover */
+    color: #b2b1b3; /* Lavender text on hover */
 }
 
 /* Responsive styles */
