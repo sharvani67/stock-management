@@ -6,12 +6,12 @@ import '../../CSS/Dashboard.css'; // Optional CSS for additional styles
 
 const Dashboard = () => {
   const stats = [
-    { title: "Total Users", count: 22, icon: <FaUsers />, bgColor: "#007bff" },
-    { title: "Total Products", count: 8, icon: <FaBox />, bgColor: "#28a745" },
-    { title: "Total Sites", count: 13, icon: <FaBuilding />, bgColor: "#ffc107" },
-    { title: "Total Suppliers", count: 5, icon: <FaTruck />, bgColor: "#17a2b8" },
-    { title: "Analytics", count: "-", icon: <FaChartBar />, bgColor: "#6f42c1" },
-    { title: "Total Expenditure", count: "₹ 15,000", icon: <FaMoneyBillWave />, bgColor: "#dc3545" },
+    { title: "Total Users", count: 22, icon: <FaUsers />, bgColor: " #81BFDA" },
+    { title: "Total Products", count: 8, icon: <FaBox />, bgColor: " #A7D477" },
+    { title: "Total Sites", count: 13, icon: <FaBuilding />, bgColor: " #E7CCCC" },
+    { title: "Total Suppliers", count: 5, icon: <FaTruck />, bgColor: " #17a2b8" },
+    { title: "Analytics", count: "-", icon: <FaChartBar />, bgColor: " #6f42c1" },
+    { title: "Total Expenditure", count: "₹ 15,000", icon: <FaMoneyBillWave />, bgColor: " #dc3545" },
   ];
 
   return (
