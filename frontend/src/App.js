@@ -23,6 +23,9 @@ import Register from './Authentication/Register';
 import StockInForm from './SiteUsers/StockIn/StockInForm';
 import StockInTable from './SiteUsers/StockIn/StockInTable';
 import UserNavbar from './SiteUsers/Navbar/UserNavbar';
+import StockOutTable from './SiteUsers/StockOut/StockOutTable';
+import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
+import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
 
 function App() {
   return (
@@ -56,6 +59,9 @@ function App() {
               <Route path="/stockin" element={<StockInForm />} />
               <Route path="/stockintable" element={<StockInTable />} />
 
+              <Route path="/stockout" element={<StockOutTable />} />
+              <Route path="/stockconsumed" element={<StockConsumedTable />} />
+              <Route path="/summary" element={<StockSummaryTable />}/>
             </Routes>
           </div>
         </div>
