@@ -18,6 +18,9 @@ import Brand from './Components/Brands/Brands';
 import SupplierTable from './Components/Suppliers/Supplier';
 import Sidebar from './Shared/SideBar/SideBar';
 import Dashboard from './Components/Dashboard/Dashboard';
+import StockOutTable from './SiteUsers/StockOut/StockOutTable';
+import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
+import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
 
 function App() {
   return (
@@ -42,6 +45,10 @@ function App() {
               <Route path="/centralstock" element={<CentralStockTable />} />
               <Route path="/suppliers" element={<SupplierTable />} />
               <Route path="/dashboard" element={<Dashboard />} />
+
+              <Route path="/stockout" element={<StockOutTable />} />
+              <Route path="/stockconsumed" element={<StockConsumedTable />} />
+              <Route path="/summary" element={<StockSummaryTable />}/>
             </Routes>
           </div>
         </div>
