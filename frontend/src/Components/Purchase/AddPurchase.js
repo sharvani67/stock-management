@@ -11,7 +11,7 @@ import '../Purchase/AddPurchase.css';
 
 const AddPurchaseForm = ({ onAddPurchase }) => {
   const [formData, setFormData] = useState({
-    stockName: "",
+    productName: "",
     quantity: "",
     units: "",
     price: "",
@@ -38,7 +38,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     e.preventDefault();
     onAddPurchase(formData);
     setFormData({
-      stockName: "",
+      productName: "",
       quantity: "",
       units: "",
       price: "",
@@ -78,12 +78,12 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
-                      <Form.Label><strong>Stock Name:</strong></Form.Label>
+                      <Form.Label><strong>Product Name:</strong></Form.Label>
                       <InputGroup>
                         <FormControl
                           type="text"
-                          name="stockName"
-                          value={formData.stockName}
+                          name="productName"
+                          value={formData.productName}
                           onChange={handleInputChange}
                           required
                         />

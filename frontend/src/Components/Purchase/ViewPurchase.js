@@ -12,7 +12,7 @@ const ViewPurchase = ({ show, handleClose, details }) => {
       <Modal.Body>
         <div>
           <p><strong>S.No:</strong> {details.sNo}</p>
-          <p><strong>Stock Name:</strong> {details.stockName}</p>
+          <p><strong>Stock Name:</strong> {details.productName}</p>
           <p><strong>Quantity:</strong> {details.quantity} {details.units}</p>
           <p><strong>Price:</strong> ${details.price}</p>
           <p><strong>Supplier Name:</strong> {details.supplierName}</p>

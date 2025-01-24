@@ -8,11 +8,11 @@ import EditPurchase from './EditPurchase';
 
 const TablePurchase = () => {
   const [purchaseData, setPurchaseData] = useState([
-    { sNo: 1, stockName: 'Product A', quantity: 100, units: 'pcs', price: 10, supplierName: 'Supplier X', brandName: 'Brand Y' },
-    { sNo: 2, stockName: 'Product B', quantity: 150, units: 'pcs', price: 20, supplierName: 'Supplier Y', brandName: 'Brand Z' },
-    { sNo: 3, stockName: 'Product C', quantity: 200, units: 'pcs', price: 30, supplierName: 'Supplier Z', brandName: 'Brand X' },
-    { sNo: 4, stockName: 'Product D', quantity: 50, units: 'pcs', price: 40, supplierName: 'Supplier W', brandName: 'Brand Y' },
-    { sNo: 5, stockName: 'Product E', quantity: 300, units: 'pcs', price: 50, supplierName: 'Supplier V', brandName: 'Brand Z' },
+    { sNo: 1, productName: 'Product A', quantity: 100, units: 'pcs', price: 10, supplierName: 'Supplier X', brandName: 'Brand Y' },
+    { sNo: 2, productName: 'Product B', quantity: 150, units: 'pcs', price: 20, supplierName: 'Supplier Y', brandName: 'Brand Z' },
+    { sNo: 3, productName: 'Product C', quantity: 200, units: 'pcs', price: 30, supplierName: 'Supplier Z', brandName: 'Brand X' },
+    { sNo: 4, productName: 'Product D', quantity: 50, units: 'pcs', price: 40, supplierName: 'Supplier W', brandName: 'Brand Y' },
+    { sNo: 5, productName: 'Product E', quantity: 300, units: 'pcs', price: 50, supplierName: 'Supplier V', brandName: 'Brand Z' },
   ]);
 
   const [viewModal, setViewModal] = useState(false);
@@ -52,7 +52,7 @@ const handleSave = (updatedData) => {
 
   const columns = [
     { Header: 'S.No', accessor: 'sNo' },
-    { Header: 'Stock Name', accessor: 'stockName' },
+    { Header: 'Stock Name', accessor: 'productName' },
     { Header: 'Quantity', accessor: 'quantity' },
     { Header: 'Units', accessor: 'units' },
     { Header: 'Price', accessor: 'price' },

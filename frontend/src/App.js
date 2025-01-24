@@ -18,6 +18,8 @@ import Brand from './Components/Brands/Brands';
 import SupplierTable from './Components/Suppliers/Supplier';
 import Sidebar from './Shared/SideBar/SideBar';
 import Dashboard from './Components/Dashboard/Dashboard';
+import Login from './Authentication/Login';
+import Register from './Authentication/Register';
 
 function App() {
   return (
@@ -25,7 +27,7 @@ function App() {
       <div className="App">
         <div className="d-flex" id="wrapper">
           {/* Sidebar Component */}
-          <Sidebar />
+          {/* <Sidebar /> */}
 
           {/* Main content */}
           <div id="page-content-wrapper" className="w-100">
@@ -42,6 +44,10 @@ function App() {
               <Route path="/centralstock" element={<CentralStockTable />} />
               <Route path="/suppliers" element={<SupplierTable />} />
               <Route path="/dashboard" element={<Dashboard />} />
+
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+
             </Routes>
           </div>
         </div>

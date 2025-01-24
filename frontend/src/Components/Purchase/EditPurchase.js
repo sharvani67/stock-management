@@ -4,7 +4,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 const EditPurchase = ({ show, handleClose, details, onSave }) => {
   const [formData, setFormData] = useState({
     sNo: details?.sNo || "",
-    stockName: details?.stockName || "",
+    productName: details?.productName || "",
     quantity: details?.quantity || "",
     units: details?.units || "",
     price: details?.price || "",
@@ -30,11 +30,11 @@ const EditPurchase = ({ show, handleClose, details, onSave }) => {
   <Modal.Body>
     <Form className="edit-form">
       <Form.Group className="mb-3">
-        <Form.Label>Stock Name</Form.Label>
+        <Form.Label>Product Name</Form.Label>
         <Form.Control
           type="text"
-          name="stockName"
-          value={formData.stockName}
+          name="productName"
+          value={formData.productName}
           onChange={handleChange}
         />
       </Form.Group>
