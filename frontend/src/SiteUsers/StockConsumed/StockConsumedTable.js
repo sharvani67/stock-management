@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import DataTable from "../../layout/DataTable";
 import StockConsumedForm from "./StockConsumedForm";
 import { Button } from "react-bootstrap";
+import UserNavbar from "../Navbar/UserNavbar";
 
 const StockConsumedTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -70,6 +71,9 @@ const StockConsumedTable = () => {
   );
 
   return (
+    <div>
+      <UserNavbar />
+
     <div className="container mt-4">
       <h2 className="mb-4">Stock Consumed Records</h2>
       <div className="d-flex justify-content-end mb-3">
@@ -84,6 +88,7 @@ const StockConsumedTable = () => {
         handleSubmit={handleSubmit}
       />
       <DataTable columns={columns} data={data} />
+    </div>
     </div>
   );
 };

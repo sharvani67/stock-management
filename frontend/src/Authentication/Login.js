@@ -13,7 +13,7 @@ const Login = () => {
   // Static credentials
   const staticCredentials = {
     email: "user@gmail.com",
-    password: "user123",
+    password: "123",
   };
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const Login = () => {
     // Check credentials
     if (email === staticCredentials.email && password === staticCredentials.password) {
       console.log("Login Successful");
-      navigate("/users"); // Redirect to the home page
+      navigate("/userdashboard"); // Redirect to the home page
     } else {
       alert("Invalid email or password");
     }

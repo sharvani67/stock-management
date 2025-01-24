@@ -2,6 +2,7 @@ import React, { useState } from "react"; // Import useState
 import DataTable from "../../layout/DataTable"; // Assuming DataTable is in the layout directory
 import StockOutModal from "./StockOutForm"; // Import the modal
 import { Button } from "react-bootstrap";
+import UserNavbar from "../Navbar/UserNavbar";
 
 const StockOutTable = () => {
   // State for controlling the modal visibility
@@ -88,6 +89,9 @@ const StockOutTable = () => {
   const initialSearchValue = "";
 
   return (
+    <div>
+      <UserNavbar />
+    
     <div className="container mt-4">
       <h2 className="mb-4">Stock Out Records</h2>
       {/* Button to open the modal */}
@@ -96,6 +100,7 @@ const StockOutTable = () => {
              Stock Out Form
         </Button>
       </div>
+      
 
       {/* StockOutModal component */}
       <StockOutModal
@@ -110,6 +115,7 @@ const StockOutTable = () => {
         data={data}
         initialSearchValue={initialSearchValue}
       />
+    </div>
     </div>
   );
 };

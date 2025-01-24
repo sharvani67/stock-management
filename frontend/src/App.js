@@ -26,11 +26,12 @@ import UserNavbar from './SiteUsers/Navbar/UserNavbar';
 import StockOutTable from './SiteUsers/StockOut/StockOutTable';
 import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
 import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
+import UserDashboard from './SiteUsers/UserDashboard';
 
 function App() {
   return (
     <Router>
-      <UserNavbar />
+    
       <div className="App">
         <div className="d-flex" id="wrapper">
           {/* Sidebar Component */}
@@ -52,6 +53,7 @@ function App() {
               <Route path="/centralstock" element={<CentralStockTable />} />
               <Route path="/suppliers" element={<SupplierTable />} />
               <Route path="/dashboard" element={<Dashboard />} />
+  
 
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -62,6 +64,9 @@ function App() {
               <Route path="/stockout" element={<StockOutTable />} />
               <Route path="/stockconsumed" element={<StockConsumedTable />} />
               <Route path="/summary" element={<StockSummaryTable />}/>
+
+              <Route path="/userdashboard" element={<UserDashboard />}/>
+              
             </Routes>
           </div>
         </div>

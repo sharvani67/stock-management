@@ -1,19 +1,10 @@
 import React, { useState } from "react";
-import {
-  FaTachometerAlt,
-  FaBoxOpen,
-  FaTruck,
-  FaChartPie,
-  FaFileAlt,
-  FaBars,
-  FaUserCircle,
-  FaCode,
-  FaUserAlt,
-  FaSignOutAlt,
-} from "react-icons/fa";
-import "./UserNavbar.css";
 
-const Navbar = () => {
+import { FaHome, FaBoxOpen, FaTruck, FaChartPie, FaFileAlt, FaBars,FaUserCircle,FaCode,FaUserAlt,FaSignOutAlt} from "react-icons/fa";
+import "./UserNavbar.css";
+import { Link } from "react-router-dom";
+
+const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -28,9 +19,10 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       {/* Logo */}
-      <div className="navbar-logo">
-        <FaTachometerAlt />
-        Dashboard
+      <div className={`navbar-links ${isOpen ? "active" : ""}`}>
+      <Link to="/userdashboard">
+            <FaHome />
+          </Link>
       </div>
 
       {/* Toggler Button */}
@@ -41,28 +33,28 @@ const Navbar = () => {
       {/* Navigation Links */}
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
         <li>
-          <a href="#">
+          <Link to="/stockintable">
             <FaBoxOpen />
             Stock In
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#">
+          <Link to="/stockout">
             <FaTruck />
             Stock Out
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#">
+          <Link to="/stockconsumed">
             <FaChartPie />
             Stock Consumed
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#">
+          <Link to="/summary">
             <FaFileAlt />
             Reports
-          </a>
+          </Link>
         </li>
       </ul>
 
@@ -101,4 +93,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default UserNavbar;
