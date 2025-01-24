@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import DataTable from "../../layout/DataTable";
+import UserNavbar from "../Navbar/UserNavbar";
 
 const StockSummaryTable = () => {
   // Define columns for the table
@@ -58,9 +59,13 @@ const StockSummaryTable = () => {
   );
 
   return (
+    <div>
+      <UserNavbar />
+    
     <div className="container mt-4">
       <h2 className="mb-4">Stock Summary</h2>
       <DataTable columns={columns} data={data} />
+    </div>
     </div>
   );
 };

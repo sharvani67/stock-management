@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
 import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import UserNavbar from '../Navbar/UserNavbar';
 // import ViewPurchase from './ViewPurchase';
 // import EditPurchase from './EditPurchase';
 
@@ -82,6 +83,8 @@ const handleSave = (updatedData) => {
   ];
 
   return (
+    <div>
+      <UserNavbar />
     <div className="container mt-5">
       <h1 className="mb-4">StockIn Management</h1>
 
@@ -112,6 +115,7 @@ const handleSave = (updatedData) => {
           />
         )} */}
 
+    </div>
     </div>
   );
 };
