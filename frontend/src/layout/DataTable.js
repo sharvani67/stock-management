@@ -87,9 +87,11 @@ export default function DataTable({ columns, data, initialSearchValue }) {
                     style={{
                       backgroundColor: 'rgba(16, 103, 244, 0.7)', // Updated background color
                       color: 'white',
-                      border: '2px  solid',
-                      borderTop: '2px solid #574964',
-                      borderImage: 'linear-gradient(to right, #ff9966, #ff5e62) 1',
+                      border: '2px  solid #574964',
+                      // borderTop: '2px solid #574964',
+                      // borderLeft: '2px solid #574964',
+                      // borderRight: '2px solid #574964',
+                      // borderImage: 'linear-gradient(to right, #ff9966, #ff5e62) 1',
                       textAlign: 'center',
                     }}
                   >
