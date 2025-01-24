@@ -71,7 +71,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
         <Col md={12} lg={10}>
           <Card className="shadow-sm">
             <Card.Header>
-              <h2 className="mb-0">Add New Purchase</h2>
+              <h2 className="mb-0 text-white">Add New Purchase</h2>
             </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>

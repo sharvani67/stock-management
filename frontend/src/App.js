@@ -20,14 +20,19 @@ import Sidebar from './Shared/SideBar/SideBar';
 import Dashboard from './Components/Dashboard/Dashboard';
 import Login from './Authentication/Login';
 import Register from './Authentication/Register';
+import StockInForm from './SiteUsers/StockIn/StockInForm';
+import StockInTable from './SiteUsers/StockIn/StockInTable';
+import UserNavbar from './SiteUsers/Navbar/UserNavbar';
 
 function App() {
   return (
     <Router>
+      <UserNavbar />
       <div className="App">
         <div className="d-flex" id="wrapper">
           {/* Sidebar Component */}
           {/* <Sidebar /> */}
+          
 
           {/* Main content */}
           <div id="page-content-wrapper" className="w-100">
@@ -47,6 +52,9 @@ function App() {
 
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              <Route path="/stockin" element={<StockInForm />} />
+              <Route path="/stockintable" element={<StockInTable />} />
 
             </Routes>
           </div>
