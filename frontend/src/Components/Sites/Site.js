@@ -1,45 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import AddSiteForm from './AddSite';
 import DataTable from '../../layout/DataTable';
 import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa'; // Import icons
 import EditSite from './EditSite';
 import ViewSite from './ViewSite';
+import axios from 'axios'; // Import axios for API calls
 
 const SiteTable = () => {
-  const [siteData, setSiteData] = useState([
-    {
-      siteCode: 'S001',
-      siteName: 'Site A',
-      inchargeName: 'John Doe',
-      location: 'Location A',
-      city: 'City A',
-      state: 'State A',
-      siteManager: 'Manager A',
-      inchargeMobile: '123-456-7890',
-    },
-    {
-      siteCode: 'S002',
-      siteName: 'Site B',
-      inchargeName: 'Jane Doe',
-      location: 'Location B',
-      city: 'City B',
-      state: 'State B',
-      siteManager: 'Manager B',
-      inchargeMobile: '987-654-3210',
-    },
-    {
-      siteCode: 'S003',
-      siteName: 'Site C',
-      inchargeName: 'Sam Smith',
-      location: 'Location C',
-      city: 'City C',
-      state: 'State C',
-      siteManager: 'Manager C',
-      inchargeMobile: '456-789-0123',
-    },
-  ]);
-
+  const [siteData, setSiteData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -54,6 +23,19 @@ const SiteTable = () => {
   const handleShowAdd = () => setShowAddModal(true);
   const handleShowEdit = () => setShowEditModal(true);
   const handleShowView = () => setShowViewModal(true);
+
+  // Fetch site data from the API when the component mounts
+  useEffect(() => {
+    const fetchSiteData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/sites');
+        setSiteData(response.data); // Set the fetched data into state
+      } catch (error) {
+        console.error('Error fetching site data:', error);
+      }
+    };
+    fetchSiteData();
+  }, []); // Empty dependency array means this effect runs once when the component mounts
 
   const addSite = (newSite) => {
     setSiteData([...siteData, newSite]);
@@ -71,7 +53,6 @@ const SiteTable = () => {
     setSelectedSite(site); // Set the selected site
     setShowViewModal(true); // Show the ViewSite modal
   };
-  
 
   const handleEdit = (site) => {
     setSelectedSite(site);
@@ -84,14 +65,14 @@ const SiteTable = () => {
   };
 
   const columns = [
-    { Header: 'Site Code', accessor: 'siteCode' },
-    { Header: 'Site Name', accessor: 'siteName' },
-    { Header: 'Incharge Name', accessor: 'inchargeName' },
+    { Header: 'Site Code', accessor: 'site_code' }, // Updated to match API key
+    { Header: 'Site Name', accessor: 'site_name' }, // Updated to match API key
+    { Header: 'Incharge Name', accessor: 'incharge_name' }, // Updated to match API key
     { Header: 'Location', accessor: 'location' },
     { Header: 'City', accessor: 'city' },
     { Header: 'State', accessor: 'state' },
-    { Header: 'Site Manager', accessor: 'siteManager' },
-    { Header: 'Incharge Mobile', accessor: 'inchargeMobile' },
+    { Header: 'Site Manager', accessor: 'site_manager' }, // Updated to match API key
+    { Header: 'Incharge Mobile', accessor: 'incharge_mobile' }, // Updated to match API key
     {
       Header: 'Actions',
       accessor: 'actions',

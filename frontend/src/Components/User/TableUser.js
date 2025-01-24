@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable';
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from 'react-icons/fa';
 import ModalPopup from './AddUser';
 import ViewUser from './ViewUser';
 import EditUser from './EditUser';
+import axios from 'axios';
 
 const Table = () => {
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -12,11 +13,21 @@ const Table = () => {
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [data, setData] = useState([
-    { id: 1, name: 'Sharvani', mobile: '123-456-7890', email: 'sharvani@example.com', role: 'Admin' },
-    { id: 2, name: 'Maniteja', mobile: '987-654-3210', email: 'mani@example.com', role: 'Site Manager' },
-    { id: 3, name: 'Rajesh', mobile: '456-789-0123', email: 'rajesh@example.com', role: 'Admin' },
-  ]);
+  const [data, setData] = useState([]);
+
+  // Fetch users from the database
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/users'); // Update the URL if needed
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleViewUser = (user) => {
     setSelectedUser(user);
@@ -32,20 +43,33 @@ const Table = () => {
     setAddModalShow(true);
   };
 
-  const handleSaveUser = (userData) => {
-    if (selectedUser) {
-      setData((prev) =>
-        prev.map((user) => (user.id === selectedUser.id ? { ...user, ...userData } : user))
-      );
-    } else {
-      const newId = Math.max(...data.map((user) => user.id)) + 1;
-      setData((prev) => [...prev, { id: newId, ...userData }]);
+  const handleSaveUser = async (userData) => {
+    try {
+      if (selectedUser) {
+        // Update user
+        const updatedUser = { ...selectedUser, ...userData };
+        setData((prev) =>
+          prev.map((user) => (user.id === selectedUser.id ? updatedUser : user))
+        );
+        // Add update API call if necessary
+      } else {
+        // Add new user
+        const response = await axios.post('http://localhost:5000/users', userData);
+        setData((prev) => [...prev, response.data]);
+      }
+    } catch (error) {
+      console.error('Error saving user:', error);
     }
     setSelectedUser(null);
   };
 
-  const handleDeleteUser = (userToDelete) => {
-    setData((prev) => prev.filter((user) => user.id !== userToDelete.id));
+  const handleDeleteUser = async (userToDelete) => {
+    try {
+      await axios.delete(`http://localhost:5000/users/${userToDelete.id}`); // Ensure your server supports DELETE
+      setData((prev) => prev.filter((user) => user.id !== userToDelete.id));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
   };
 
   const columns = [
@@ -77,7 +101,7 @@ const Table = () => {
       <h1 className="mb-4">Users</h1>
 
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" className='add-button' onClick={handleAddUser}>
+        <Button variant="primary" className="add-button" onClick={handleAddUser}>
           <FaPlus className="me-2" />
           Add New User
         </Button>

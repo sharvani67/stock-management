@@ -11,6 +11,29 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   const [siteManager, setSiteManager] = useState('');
   const [inchargeMobile, setInchargeMobile] = useState('');
 
+  // Renaming this function to avoid conflict
+  const handleAddSite = async (newSite) => {
+    try {
+      const response = await fetch('http://localhost:5000/sites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newSite),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('New site added:', data);
+      } else {
+        console.error('Failed to add site');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -25,7 +48,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       inchargeMobile,
     };
 
-    addSite(newSite); // Function to add the site
+    handleAddSite(newSite); // Use the renamed function
     handleClose(); // Close the modal after submission
 
     // Clear form after submission
@@ -150,7 +173,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="primary" type="submit"  className="mt-3 w-50">
+          <Button variant="primary" type="submit" className="mt-3 w-50">
             Add Site
           </Button>
         </Form>

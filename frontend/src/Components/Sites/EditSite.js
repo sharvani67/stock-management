@@ -16,7 +16,16 @@ const EditSite = ({ site, updateSite, showModal, handleClose }) => {
   // Populate the form with the selected site's data when the modal is opened
   useEffect(() => {
     if (site) {
-      setSiteDetails(site);
+      setSiteDetails({
+        siteCode: site.site_code, // Make sure you're using the correct key based on your data
+        siteName: site.site_name,
+        inchargeName: site.incharge_name,
+        location: site.location,
+        city: site.city,
+        state: site.state,
+        siteManager: site.site_manager,
+        inchargeMobile: site.incharge_mobile,
+      });
     }
   }, [site]);
 
@@ -26,17 +35,17 @@ const EditSite = ({ site, updateSite, showModal, handleClose }) => {
   };
 
   const handleSubmit = () => {
-    updateSite(siteDetails);
-    handleClose();
+    updateSite(siteDetails); // Update the site with new details
+    handleClose(); // Close the modal
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} backdrop="static" keyboard={false}centered className="edit-form-modal">
+    <Modal show={showModal} onHide={handleClose} backdrop="static" keyboard={false} centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit Site</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form  className="edit-form">
+        <Form className="edit-form">
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formSiteCode">
@@ -47,7 +56,6 @@ const EditSite = ({ site, updateSite, showModal, handleClose }) => {
                   value={siteDetails.siteCode}
                   onChange={handleChange}
                   placeholder="Enter Site Code"
-                  
                 />
               </Form.Group>
             </Col>

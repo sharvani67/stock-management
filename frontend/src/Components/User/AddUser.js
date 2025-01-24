@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 
-const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
+const ModalPopup = ({ user, showModal, handleClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -37,13 +38,23 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
     });
   };
 
-  const handleSubmit = () => {
-    handleSave(formData);
-    handleClose(); // Close the modal after saving
+  const handleSubmit = async () => {
+    try {
+      if (user) {
+        // Update logic (if you implement an update endpoint in the future)
+      } else {
+        // Add a new user
+        await axios.post("http://localhost:5000/users", formData);
+      }
+       // Refresh the user list after adding
+      handleClose(); // Close the modal
+    } catch (error) {
+      console.error("Error saving user:", error);
+    }
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose} centered className="add-form-modal" >
+    <Modal show={showModal} onHide={handleClose} centered className="add-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>{user ? "Edit User" : "Add New User"}</Modal.Title>
       </Modal.Header>
@@ -96,7 +107,7 @@ const ModalPopup = ({ user, showModal, handleClose, handleSave }) => {
           Close
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          {user ? "Save changes" : "Add User"}
+          {user ? "Save Changes" : "Add User"}
         </Button>
       </Modal.Footer>
     </Modal>
