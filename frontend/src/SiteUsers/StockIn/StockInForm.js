@@ -66,11 +66,11 @@ const StockInForm = ({ onAddPurchase }) => {
   };
 
   return (
-    <Container  className="mt-5 addpurchase" >
+    <Container className="mt-5 addpurchase">
       <Row className="justify-content-center">
         <Col md={12} lg={10}>
           <Card className="shadow-sm">
-            <Card.Header >
+            <Card.Header>
               <h2 className="mb-0 text-white">StockIn Form</h2>
             </Card.Header>
             <Card.Body>
@@ -80,21 +80,26 @@ const StockInForm = ({ onAddPurchase }) => {
                     <Form.Group className="mb-3">
                       <Form.Label><strong>Product Name:</strong></Form.Label>
                       <InputGroup>
-                        <FormControl
-                          type="text"
+                        <Form.Select
                           name="productName"
                           value={formData.productName}
                           onChange={handleInputChange}
                           required
-                        />
+                        >
+                          <option value="">Select Product</option>
+                          <option value="Cement">Cement</option>
+                          <option value="Steel">Steel</option>
+                          <option value="Tiles">Tiles</option>
+                          <option value="Paint">Paint</option>
+                        </Form.Select>
                         <Button variant="outline-secondary" onClick={() => setShowProductModal(true)}>
-                          <FiPlus /> {/* Trigger the product modal */}
+                          <FiPlus />
                         </Button>
                       </InputGroup>
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                  <Form.Group className="mb-3">
+                    <Form.Group className="mb-3">
                       <Form.Label><strong>Bill Number:</strong></Form.Label>
                       <Form.Control
                         type="text"
@@ -112,15 +117,19 @@ const StockInForm = ({ onAddPurchase }) => {
                     <Form.Group className="mb-3">
                       <Form.Label><strong>Supplier Name:</strong></Form.Label>
                       <InputGroup>
-                        <FormControl
-                          type="text"
+                        <Form.Select
                           name="supplierName"
                           value={formData.supplierName}
                           onChange={handleInputChange}
                           required
-                        />
+                        >
+                          <option value="">Select Supplier</option>
+                          <option value="ABC Supplies">ABC Supplies</option>
+                          <option value="XYZ Traders">XYZ Traders</option>
+                          <option value="Global Materials">Global Materials</option>
+                        </Form.Select>
                         <Button variant="outline-secondary" onClick={() => setShowSupplierModal(true)}>
-                          <FiPlus /> {/* Trigger the supplier modal */}
+                          <FiPlus />
                         </Button>
                       </InputGroup>
                     </Form.Group>
@@ -129,15 +138,19 @@ const StockInForm = ({ onAddPurchase }) => {
                     <Form.Group className="mb-3">
                       <Form.Label><strong>Brand Name:</strong></Form.Label>
                       <InputGroup>
-                        <FormControl
-                          type="text"
+                        <Form.Select
                           name="brandName"
                           value={formData.brandName}
                           onChange={handleInputChange}
                           required
-                        />
+                        >
+                          <option value="">Select Brand</option>
+                          <option value="UltraTech">UltraTech</option>
+                          <option value="Tata Steel">Tata Steel</option>
+                          <option value="Asian Paints">Asian Paints</option>
+                        </Form.Select>
                         <Button variant="outline-secondary" onClick={() => setShowBrandModal(true)}>
-                          <FiPlus /> {/* Trigger the brand modal */}
+                          <FiPlus />
                         </Button>
                       </InputGroup>
                     </Form.Group>
@@ -149,15 +162,20 @@ const StockInForm = ({ onAddPurchase }) => {
                     <Form.Group className="mb-3">
                       <Form.Label><strong>Units:</strong></Form.Label>
                       <InputGroup>
-                        <FormControl
-                          type="text"
+                        <Form.Select
                           name="units"
                           value={formData.units}
                           onChange={handleInputChange}
                           required
-                        />
+                        >
+                          <option value="">Select Unit</option>
+                          <option value="kg">Kilograms</option>
+                          <option value="MT">Metric Tons</option>
+                          <option value="sqm">Square Meters</option>
+                          <option value="liters">Liters</option>
+                        </Form.Select>
                         <Button variant="outline-secondary" onClick={() => setShowUnitModal(true)}>
-                          <FiPlus /> {/* Trigger the unit modal */}
+                          <FiPlus />
                         </Button>
                       </InputGroup>
                     </Form.Group>
@@ -174,11 +192,11 @@ const StockInForm = ({ onAddPurchase }) => {
                       />
                     </Form.Group>
                   </Col>
-                </Row>
+                </Row>
 
                 <Row>
                   <Col md={6}>
-                  <Form.Group className="mb-3">
+                    <Form.Group className="mb-3">
                       <Form.Label><strong>Quantity:</strong></Form.Label>
                       <Form.Control
                         type="number"
@@ -187,7 +205,7 @@ const StockInForm = ({ onAddPurchase }) => {
                         onChange={handleInputChange}
                         required
                       />
-                    </Form.Group>
+                    </Form.Group>
                   </Col>
                   <Col md={6}>
                     <Form.Group className="mb-3">
@@ -202,10 +220,11 @@ const StockInForm = ({ onAddPurchase }) => {
                     </Form.Group>
                   </Col>
                 </Row>
+
                 <div className="d-flex justify-content-center align-items-center">
-                <Button type="submit" variant="primary"  className="w-50 mt-3">
-                  Submit
-                </Button>
+                  <Button type="submit" variant="primary" className="w-50 mt-3">
+                    Submit
+                  </Button>
                 </div>
               </Form>
             </Card.Body>

@@ -9,11 +9,11 @@ import UserNavbar from '../Navbar/UserNavbar';
 
 const StockInTable = () => {
   const [purchaseData, setPurchaseData] = useState([
-    { sNo: 1, productName: 'Product A', quantity: 100, units: 'pcs', price: 10, supplierName: 'Supplier X', brandName: 'Brand Y' },
-    { sNo: 2, productName: 'Product B', quantity: 150, units: 'pcs', price: 20, supplierName: 'Supplier Y', brandName: 'Brand Z' },
-    { sNo: 3, productName: 'Product C', quantity: 200, units: 'pcs', price: 30, supplierName: 'Supplier Z', brandName: 'Brand X' },
-    { sNo: 4, productName: 'Product D', quantity: 50, units: 'pcs', price: 40, supplierName: 'Supplier W', brandName: 'Brand Y' },
-    { sNo: 5, productName: 'Product E', quantity: 300, units: 'pcs', price: 50, supplierName: 'Supplier V', brandName: 'Brand Z' },
+    { sNo: 1, productName: 'Cement', quantity: 100, units: 'Bags', price: 10, supplierName: 'Global Materials', brandName: 'Ultratech' },
+    { sNo: 2, productName: 'Steel', quantity: 150, units: 'Sheets', price: 20, supplierName: 'ABC Supplies', brandName: 'TATA Steel' },
+    { sNo: 3, productName: 'Tiles', quantity: 200, units: 'Boxes', price: 30, supplierName: 'XYZ Traders', brandName: 'Tiles Brand' },
+    { sNo: 4, productName: 'Paints', quantity: 50, units: 'Litre', price: 40, supplierName: 'Global Materials', brandName: 'Asian' },
+    { sNo: 5, productName: 'Bricks', quantity: 300, units: 'Piece ', price: 50, supplierName: 'Global Materials', brandName: 'BrickSphere' },
   ]);
 
   const [viewModal, setViewModal] = useState(false);
