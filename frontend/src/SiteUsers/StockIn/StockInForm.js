@@ -6,6 +6,7 @@ import AddProduct from '../../Components/Products/AddProduct'; // Import your Ad
 import Addunit from '../../Components/Units/AddUnit'; // Import your Addunit modal component
 import AddSupplierModal from '../../Components/Suppliers/AddSupplier'; // Import your AddSupplierModal component
 import AddBrandModal from '../../Components/Brands/AddBrand'; // Import your AddBrandModal component
+import UserNavbar from "../Navbar/UserNavbar";
 // import '../Purchase/AddPurchase.css';
 
 
@@ -66,6 +67,8 @@ const StockInForm = ({ onAddPurchase }) => {
   };
 
   return (
+    <div>
+      <UserNavbar/>
     <Container className="mt-5 addpurchase">
       <Row className="justify-content-center">
         <Col md={12} lg={10}>
@@ -244,6 +247,7 @@ const StockInForm = ({ onAddPurchase }) => {
       {/* Modal for adding brand */}
       <AddBrandModal show={showBrandModal} handleClose={() => setShowBrandModal(false)} handleSave={handleSaveBrand} />
     </Container>
+    </div>
   );
 };
 

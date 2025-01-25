@@ -9,6 +9,8 @@
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  z-index: 1050;
+  
 }
 
 /* Logo */
@@ -39,8 +41,8 @@
 
 .navbar-links li {
   margin: 0 10px;
-  margin-left: 40px;
-  padding-left: 40px;
+  margin-left: 20px;
+  padding-left: 10px;
 }
 
 .navbar-links a {

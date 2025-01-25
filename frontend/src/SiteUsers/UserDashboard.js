@@ -77,63 +77,84 @@ const UserDashboard = () => {
   };
 
   return (
-    <div>
-      <UserNavbar/>
-    
-    <div style={{ padding: "20px", display: "flex", flexWrap: "wrap", gap: "20px" }}>
-      <h1 style={{ width: "100%" }}>Dashboard</h1>
+    <div style={{ fontFamily: "Arial, sans-serif", backgroundColor: "#f4f4f9", minHeight: "100vh" }}>
+      <UserNavbar />
 
-      {/* Card for Bar Chart */}
-      <div style={cardStyle}>
-        <h2>Monthly Stock Overview</h2>
-        <Bar
-          data={barData}
-          options={{
-            responsive: true,
-            plugins: { legend: { position: "top" } },
-          }}
-        />
-      </div>
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          justifyContent: "center",
+        }}
+      >
+        <h1 style={{ width: "100%", textAlign: "center", color: "#333", marginBottom: "20px" }}>Dashboard</h1>
 
-      {/* Card for Pie Chart */}
-      <div style={cardStyle}>
-        <h2>Stock Distribution</h2>
-        <Pie
-          data={pieData}
-          options={{
-            responsive: true,
-            plugins: { legend: { position: "bottom" } },
-          }}
-        />
-      </div>
+        {/* Card for Bar Chart */}
+        <div style={responsiveCardStyle}>
+          <h4 style={cardTitleStyle}>Monthly Stock Overview</h4>
+          <Bar
+            data={barData}
+            options={{
+              responsive: true,
+              plugins: { legend: { position: "top" } },
+            }}
+          />
+        </div>
 
-      {/* Card for Line Chart */}
-      <div style={cardStyle}>
-        <h2>Revenue Trends</h2>
-        <Line
-          data={lineData}
-          options={{
-            responsive: true,
-            plugins: { legend: { position: "top" } },
-          }}
-        />
+        {/* Card for Pie Chart */}
+        <div style={responsiveCardStyle}>
+          <h4 style={cardTitleStyle}>Stock Distribution</h4>
+          <Pie
+            data={pieData}
+            options={{
+              responsive: true,
+              plugins: { legend: { position: "bottom" } },
+            }}
+          />
+        </div>
+
+        {/* Card for Line Chart */}
+        <div style={responsiveCardStyle}>
+          <h4 style={cardTitleStyle}>Revenue Trends</h4>
+          <Line
+            data={lineData}
+            options={{
+              responsive: true,
+              plugins: { legend: { position: "top" } },
+            }}
+          />
+        </div>
       </div>
-    </div>
     </div>
   );
 };
 
 // Card style for each chart
-const cardStyle = {
-  width: "300px", // Fixed width for each card
+const responsiveCardStyle = {
+  width: "100%", // Full width for mobile
+  maxWidth: "350px", // Limit width for larger screens
   padding: "20px",
-  borderRadius: "8px",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  borderRadius: "12px",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
   backgroundColor: "#fff",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
+  border: "1px solid #e0e0e0",
+  flex: "1 1 calc(33.333% - 20px)", // Allows cards to wrap and adjust dynamically
+  boxSizing: "border-box",
+};
+
+// Card title style
+const cardTitleStyle = {
+  fontSize: "18px",
+  fontWeight: "bold",
+  color: "#555",
+  marginBottom: "15px",
+  textAlign: "center",
 };
 
 export default UserDashboard;

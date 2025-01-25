@@ -75,7 +75,7 @@ const StockConsumedTable = () => {
       <UserNavbar />
 
     <div className="container mt-4">
-      <h2 className="mb-4">Stock Consumed Records</h2>
+      <h1 className="mb-4">Stock Consumed Records</h1>
       <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" onClick={handleOpen}>
             Add Stock Consumed
