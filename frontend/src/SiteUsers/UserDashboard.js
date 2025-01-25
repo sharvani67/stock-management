@@ -47,7 +47,7 @@ const UserDashboard = () => {
 
   // Data for Pie Chart
   const pieData = {
-    labels: ["Eggs", "Milk", "Butter", "Cheese", "Bread"],
+    labels: ["Sand", "Steel", "Cement", "Aggregates", "Bricks"],
     datasets: [
       {
         label: "Stock Distribution",

@@ -10,9 +10,7 @@ import SiteTable from './Components/Sites/Site';
 import Table from './Components/User/TableUser';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
 import ProductTable from './Components/Products/Products';
 import Brand from './Components/Brands/Brands';
 import SupplierTable from './Components/Suppliers/Supplier';
@@ -34,7 +32,6 @@ function App() {
     
       <div className="App">
         <div className="d-flex" id="wrapper">
-          {/* Sidebar Component */}
           {/* <Sidebar /> */}
           
 
