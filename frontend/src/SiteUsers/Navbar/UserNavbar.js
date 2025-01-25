@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { FaHome, FaBoxOpen, FaTruck, FaChartPie, FaFileAlt, FaBars } from "react-icons/fa";
+
+import { FaHome, FaBoxOpen, FaTruck, FaChartPie, FaFileAlt, FaBars,FaUserCircle,FaCode,FaUserAlt,FaSignOutAlt} from "react-icons/fa";
 import "./UserNavbar.css";
 import { Link } from "react-router-dom";
 
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleProfileMenu = () => {
+    setIsProfileOpen(!isProfileOpen);
   };
 
   return (
@@ -51,6 +57,38 @@ const UserNavbar = () => {
           </Link>
         </li>
       </ul>
+
+      {/* Profile Section */}
+      <div className="navbar-profile">
+        <div className="profile-icon" onClick={toggleProfileMenu}>
+          <FaUserCircle />
+          <span>Profile</span>
+        </div>
+        {isProfileOpen && (
+          <div className="profile-dropdown">
+            <ul>
+              <li>
+                <a href="#">
+                  <FaCode />
+                  Site Code
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <FaUserAlt />
+                  My Profile
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <FaSignOutAlt />
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

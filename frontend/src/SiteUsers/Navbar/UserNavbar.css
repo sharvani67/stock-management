@@ -39,6 +39,8 @@
 
 .navbar-links li {
   margin: 0 10px;
+  margin-left: 40px;
+  padding-left: 40px;
 }
 
 .navbar-links a {
@@ -56,6 +58,82 @@
 .navbar-links a svg {
   margin-right: 8px;
 }
+
+/* Profile Section */
+.navbar-profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+}
+
+.navbar-profile .profile-icon {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.navbar-profile .profile-icon svg {
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.navbar-profile .profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  z-index: 10;
+}
+
+.navbar-profile .profile-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-profile .profile-dropdown ul li {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+.navbar-profile .profile-dropdown ul li :hover{
+  color: #ffcc00;
+}
+.navbar-profile .profile-dropdown ul li a {
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+
+
+/* Profile Dropdown Icons */
+.navbar-profile .profile-dropdown ul li a {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.navbar-profile .profile-dropdown ul li a svg {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.navbar-profile .profile-dropdown ul li:hover {
+  background-color: #076ff7;
+}
+
+@media (max-width: 768px) {
+  .navbar-profile {
+    margin-left: 10px;
+  }
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
