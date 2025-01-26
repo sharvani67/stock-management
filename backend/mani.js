@@ -114,6 +114,70 @@ app.get("/units", (req, res) => {
     }
   });
 });
+
+// API Endpoint to handle stock-in form submission
+app.post("/add-stock", (req, res) => {
+  const {
+      site_name,
+      site_code,
+      date,
+      time,
+      transaction_type,
+      supplierName,
+      supplier_id,
+      receiver,
+      productName,
+      product_id,
+      brandName,
+      brand_id,
+      units,
+      quantity,
+      quantity_out,
+      available_quantity,
+      billNumber,
+      tran_id,
+  } = req.body;
+
+  const query = `
+      INSERT INTO stockledger (
+          site_name, site_code, date, time, transaction_type, supplier,
+          supplier_id, receiver, product, product_id, brand, brand_id,
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+      query,
+      [
+          site_name,
+          site_code,
+          date,
+          time,
+          transaction_type,
+          supplierName,
+          supplier_id,
+          receiver,
+          productName,
+          product_id,
+          brandName,
+          brand_id,
+          units,
+          quantity,
+          quantity_out,
+          available_quantity,
+          billNumber,
+          tran_id,
+      ],
+      (err, result) => {
+          if (err) {
+              console.error("Error inserting data:", err);
+              res.status(500).json({ message: "Failed to add stock" });
+          } else {
+              res.status(200).json({ message: "Stock added successfully" });
+          }
+      }
+  );
+});
   
 
 // Start the server

@@ -8,6 +8,7 @@ import AddSupplierModal from '../../Components/Suppliers/AddSupplier'; // Import
 import AddBrandModal from '../../Components/Brands/AddBrand'; // Import your AddBrandModal component
 import UserNavbar from "../Navbar/UserNavbar";
 // import '../Purchase/AddPurchase.css';
+import axios from "axios";
 
 
 const StockInForm = ({ onAddPurchase }) => {
@@ -37,46 +38,17 @@ const StockInForm = ({ onAddPurchase }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     try {
-      const response = await fetch('/api/stockin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      // Check if the response is OK (status code 2xx)
-      if (response.ok) {
-        const result = await response.json(); // Parse JSON only if response is successful
-        alert('Stock-in record added successfully!');
-        // Reset the form
-        setFormData({
-          productName: "",
-          quantity: "",
-          units: "",
-         
-          supplierName: "",
-          brandName: "",
-          billNumber: "",
-          
-        });
-      } else {
-        // If response is not OK, check if there's an error message
-        const result = await response.json();
-        alert(result.message || 'An error occurred');
-      }
+        const response = await axios.post(
+            "http://localhost:5000/add-stock",
+            formData
+        );
+        alert(response.data.message);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      // Handle the case where the response is not valid JSON (e.g., HTML error page)
-      if (error.name === 'SyntaxError') {
-        alert('Invalid response from the server. Please try again.');
-      } else {
-        alert('An unexpected error occurred. Please try again.');
-      }
+        console.error("Error adding stock:", error);
+        alert("Failed to add stock.");
     }
-  };
+};
   
 
   // Handle saving the brand data
