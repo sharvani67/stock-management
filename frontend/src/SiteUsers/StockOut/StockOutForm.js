@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import axios from "axios";
 
-const StockOutModal = ({ show, handleClose, handleSubmit }) => {
+const StockOutModal = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
     date: "",
     destinationSite: "",
     productName: "",
     brandName:"",
-    quantity: "",
+    quantity_out: "",
     units: "",
     attachment: null,
     status: "",
@@ -21,11 +22,19 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
     });
   };
 
-  const submitForm = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleSubmit(formData);
-    handleClose();
-  };
+    try {
+        const response = await axios.post(
+            "http://localhost:5000/stock-out",
+            formData
+        );
+        alert(response.data.message);
+    } catch (error) {
+        console.error("Error adding stock:", error);
+        alert("Failed to add stock.");
+    }
+};
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -33,7 +42,7 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
         <Modal.Title>Stock Out Form</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={submitForm}>
+        <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             {/* Date */}
             <Col md={6}>
@@ -113,8 +122,8 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
                 <Form.Control
                   type="number"
                   placeholder="Enter quantity"
-                  name="quantity"
-                  value={formData.quantity}
+                  name="quantity_out"
+                  value={formData.quantity_out}
                   onChange={handleChange}
                   required
                 />
