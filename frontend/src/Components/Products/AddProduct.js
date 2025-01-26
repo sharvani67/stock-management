@@ -5,10 +5,29 @@ const AddProductModal = ({ show, handleClose, handleSave }) => {
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (productName && description) {
-      handleSave({ productName, description });
-      handleClose(); // Close the modal after saving
+      // Make POST request to the backend
+      try {
+        const response = await fetch("http://localhost:5000/api/products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productName, description }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          handleSave({ productName, description });
+          handleClose(); // Close the modal after saving
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error("Error adding product:", error);
+        alert("Failed to add product.");
+      }
     } else {
       alert("Please fill all fields.");
     }

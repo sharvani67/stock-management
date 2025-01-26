@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import DataTable from "../../layout/DataTable";
@@ -7,17 +7,27 @@ import ViewBrand from "./ViewBrand"; // Import ViewBrand
 import EditBrand from "./EditBrand"; // Import EditBrand
 
 const Brand = () => {
-  // Sample brand data
-  const [brands, setBrands] = useState([
-    { id: 1, brandName: "Brand 1", description: "This is brand 1" },
-    { id: 2, brandName: "Brand 2", description: "This is brand 2" },
-  ]);
-
-  // State to manage showing/hiding modals
+  // State to manage brands data
+  const [brands, setBrands] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
+
+  // Fetch brands from backend when the component mounts
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/brands");
+        const data = await response.json();
+        setBrands(data); // Set brands data from the API response
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands(); // Fetch brands when the component mounts
+  }, []); // Empty dependency array ensures this runs once when the component mounts
 
   // Functions to handle modal visibility
   const handleCloseAddModal = () => setShowAddModal(false);

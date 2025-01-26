@@ -7,9 +7,30 @@ const AddSupplierModal = ({ show, handleClose, handleSave }) => {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
 
+  const saveSupplier = (supplierData) => {
+    fetch("http://localhost:5000/api/suppliers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(supplierData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          alert(data.message); // Notify success
+        } else {
+          alert("Error adding supplier");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const handleSubmit = () => {
     if (supplierName && contact && address && email) {
-      handleSave({ supplierName, contact, address, email });
+      saveSupplier({ supplierName, contact, address, email });
       handleClose(); // Close the modal after saving
     } else {
       alert("Please fill all fields.");

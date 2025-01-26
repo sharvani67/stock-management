@@ -34,20 +34,41 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAddPurchase(formData);
-    setFormData({
-      productName: "",
-      quantity: "",
-      units: "",
-      price: "",
-      supplierName: "",
-      brandName: "",
-      billNumber: "",
-      billDate: "",
-    });
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/purchases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.message); // Success alert
+        setFormData({
+          productName: "",
+          quantity: "",
+          units: "",
+          price: "",
+          supplierName: "",
+          brandName: "",
+          billNumber: "",
+          billDate: "",
+        });
+      } else {
+        const errorResult = await response.json();
+        alert(errorResult.message || "Failed to add purchase.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
   };
+  
+  
+  
 
   // Handle saving the brand data
   const handleSaveBrand = (brandData) => {

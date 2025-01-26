@@ -1,21 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import AddProductModal from "./AddProduct";
 import EditProduct from "./EditProduct";
-import ViewProduct from "./ViewProduct"; // Import ViewProduct
+import ViewProduct from "./ViewProduct";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
+import axios from "axios"; // Import Axios for API calls
 
 const ProductTable = () => {
-  const [products, setProducts] = useState([
-    { id: 1, name: "Product 1", description: "This is product 1" },
-    { id: 2, name: "Product 2", description: "This is product 2" },
-  ]);
-
+  const [products, setProducts] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // Fetch products from the API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        alert("Failed to fetch products.");
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleShowAddModal = () => setShowAddModal(true);
   const handleCloseAddModal = () => setShowAddModal(false);
@@ -48,8 +60,8 @@ const ProductTable = () => {
   };
 
   const columns = [
-    { Header: "S.No", accessor: "id" },
-    { Header: "Product Name", accessor: "name" },
+    { Header: "S.No", accessor: "productId" },
+    { Header: "Product Name", accessor: "productName" },
     { Header: "Description", accessor: "description" },
     {
       Header: "Actions",
@@ -76,7 +88,7 @@ const ProductTable = () => {
 
       {/* Add New Product Button */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary"className='add-button'  onClick={handleShowAddModal}>
+        <Button variant="primary" className="add-button" onClick={handleShowAddModal}>
           <FaPlus className="me-2" />
           Add New Product
         </Button>
