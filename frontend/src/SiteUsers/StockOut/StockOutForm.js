@@ -25,29 +25,6 @@ const StockOutModal = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
-      const formPayload = new FormData();
-
-      // Append all form data fields
-      Object.keys(formData).forEach((key) => {
-        formPayload.append(key, formData[key]);
-      });
-
-      // Send the POST request
-      const response = await axios.post("http://localhost:5000/stockout", formPayload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      alert(response.data.message); // Success message
-      handleClose();
-    } catch (error) {
-      console.error("Error adding stock:", error);
-      alert("Failed to add stock. Please try again.");
-    }
-  };
-=======
         const response = await axios.post(
             "http://localhost:5000/stock-out",
             formData
@@ -58,7 +35,6 @@ const StockOutModal = ({ show, handleClose }) => {
         alert("Failed to add stock.");
     }
 };
->>>>>>> 29bf919977b9c2c57691586ead594636dcebb04f
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
