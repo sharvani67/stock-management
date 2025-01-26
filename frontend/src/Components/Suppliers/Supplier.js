@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
@@ -12,10 +12,19 @@ const SupplierTable = () => {
   const [editShow, setEditShow] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
-  const [data, setData] = useState([
-    { supplierName: "ABC Traders", contact: "123-456-7890", address: "New York" },
-    { supplierName: "XYZ Supplies", contact: "987-654-3210", address: "San Francisco" },
-  ]);
+  const [data, setData] = useState([]);
+
+  // Fetch suppliers from the backend
+  useEffect(() => {
+    fetch("http://localhost:5000/api/suppliers")
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data); // Update the table data
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      });
+  }, []);
 
   const handleOpenModal = (action, item = null) => {
     if (action === "View") {
@@ -57,6 +66,7 @@ const SupplierTable = () => {
   };
 
   const columns = [
+    { Header: "Supplier ID", accessor: "suppid" },
     { Header: "Supplier Name", accessor: "supplierName" },
     { Header: "Contact", accessor: "contact" },
     { Header: "Address", accessor: "address" },
@@ -93,12 +103,13 @@ const SupplierTable = () => {
       ),
     },
   ];
+  
 
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Suppliers Management</h1>
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" className='add-button' onClick={() => handleOpenModal("Add New")}>
+        <Button variant="primary" className="add-button" onClick={() => handleOpenModal("Add New")}>
           <FaPlus className="me-2" />
           Add New Supplier
         </Button>

@@ -6,6 +6,7 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
     date: "",
     destinationSite: "",
     productName: "",
+    brandName:"",
     quantity: "",
     units: "",
     attachment: null,
@@ -70,16 +71,41 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter product name"
+                  as="select"
                   name="productName"
                   value={formData.productName}
                   onChange={handleChange}
                   required
-                />
+                >
+                  <option value="">Select Product</option>
+                  <option value="Cement">Cement</option>
+                  <option value="Bricks">Bricks</option>
+                  <option value="Paints">Paints</option>
+                </Form.Control>
               </Form.Group>
             </Col>
 
+            {/* Brand Name */}
+            <Col md={6}>
+              <Form.Group controlId="formBrandName">
+                <Form.Label>Brand Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="brandName"
+                  value={formData.brandName}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Brand</option>
+                  <option value="Brand A">Brand A</option>
+                  <option value="Brand B">Brand B</option>
+                  <option value="Brand C">Brand C</option>
+                </Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
             {/* Quantity */}
             <Col md={6}>
               <Form.Group controlId="formQuantity">
@@ -94,24 +120,28 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
                 />
               </Form.Group>
             </Col>
-          </Row>
 
-          <Row className="mb-3">
             {/* Units */}
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter units (e.g., kg, pcs)"
+                  as="select"
                   name="units"
                   value={formData.units}
                   onChange={handleChange}
                   required
-                />
+                >
+                  <option value="">Select Unit</option>
+                  <option value="Kgs">Kgs</option>
+                  <option value="Pieces">Pieces</option>
+                  <option value="Bags">Bags</option>
+                </Form.Control>
               </Form.Group>
             </Col>
+          </Row>
 
+          <Row className="mb-3">
             {/* Status */}
             <Col md={6}>
               <Form.Group controlId="formStatus">
@@ -130,11 +160,9 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
                 </Form.Control>
               </Form.Group>
             </Col>
-          </Row>
 
-          {/* Attachment */}
-          <Row className="mb-3">
-            <Col md={12}>
+            {/* Attachment */}
+            <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
                 <Form.Control

@@ -1,4 +1,8 @@
 /* Card styles */
+.addpurchase {
+    position: relative;
+    z-index: 1; /* Lower z-index for the form container */
+  }
 .addpurchase .card {
     border: 2px solid black; /* Remove border */
     border-radius: 8px; /* Rounded corners */

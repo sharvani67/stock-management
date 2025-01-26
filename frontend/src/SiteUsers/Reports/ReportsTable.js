@@ -63,7 +63,7 @@ const StockSummaryTable = () => {
       <UserNavbar />
     
     <div className="container mt-4">
-      <h2 className="mb-4">Stock Summary</h2>
+      <h1 className="mb-4">Stock Summary</h1>
       <DataTable columns={columns} data={data} />
     </div>
     </div>

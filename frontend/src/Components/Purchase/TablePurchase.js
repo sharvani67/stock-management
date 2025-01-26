@@ -1,49 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
+import DataTable from '../../layout/DataTable';
 import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import ViewPurchase from './ViewPurchase';
 import EditPurchase from './EditPurchase';
 
 const TablePurchase = () => {
-  const [purchaseData, setPurchaseData] = useState([
-    { sNo: 1, productName: 'Product A', quantity: 100, units: 'pcs', price: 10, supplierName: 'Supplier X', brandName: 'Brand Y' },
-    { sNo: 2, productName: 'Product B', quantity: 150, units: 'pcs', price: 20, supplierName: 'Supplier Y', brandName: 'Brand Z' },
-    { sNo: 3, productName: 'Product C', quantity: 200, units: 'pcs', price: 30, supplierName: 'Supplier Z', brandName: 'Brand X' },
-    { sNo: 4, productName: 'Product D', quantity: 50, units: 'pcs', price: 40, supplierName: 'Supplier W', brandName: 'Brand Y' },
-    { sNo: 5, productName: 'Product E', quantity: 300, units: 'pcs', price: 50, supplierName: 'Supplier V', brandName: 'Brand Z' },
-  ]);
-
+  const [purchaseData, setPurchaseData] = useState([]);
   const [viewModal, setViewModal] = useState(false);
-const [editModal, setEditModal] = useState(false);
-const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedPurchase, setSelectedPurchase] = useState(null);
 
-const handleView = (item) => {
-  setSelectedPurchase(item);
-  setViewModal(true);
-};
+  useEffect(() => {
+    // Fetch purchase data
+    fetch('http://localhost:5000/api/purchases')
+      .then((response) => response.json())
+      .then((data) => setPurchaseData(data))
+      .catch((error) => console.error('Error fetching purchases:', error));
+  }, []);
 
-const handleEdit = (item) => {
-  setSelectedPurchase(item);
-  setEditModal(true);
-};
+  const handleView = (item) => {
+    setSelectedPurchase(item);
+    setViewModal(true);
+  };
 
-const handleSave = (updatedData) => {
-  const updatedList = purchaseData.map((item) =>
-    item.sNo === updatedData.sNo ? updatedData : item
-  );
-  setPurchaseData(updatedList);
-};
+  const handleEdit = (item) => {
+    setSelectedPurchase(item);
+    setEditModal(true);
+  };
 
-  // const handleView = (item) => {
-  //   console.log('Viewing item:', item);
-  // };
-  
-
-  // const handleEdit = (item) => {
-  //   console.log('Editing item:', item);
-  // };
+  const handleSave = (updatedData) => {
+    const updatedList = purchaseData.map((item) =>
+      item.sNo === updatedData.sNo ? updatedData : item
+    );
+    setPurchaseData(updatedList);
+  };
 
   const handleDelete = (sNo) => {
     const updatedData = purchaseData.filter((item) => item.sNo !== sNo);
@@ -84,34 +76,29 @@ const handleSave = (updatedData) => {
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Purchase Management</h1>
-
-      {/* Add New Purchase Button */}
       <div className="d-flex justify-content-end mb-3">
         <Link to="/add-purchase">
-          <Button variant="primary" className='add-button'><FaPlus className="me-2" />Add New Purchase</Button>
+          <Button variant="primary" className="add-button">
+            <FaPlus className="me-2" />Add New Purchase
+          </Button>
         </Link>
       </div>
-
-      {/* DataTable Wrapper */}
-      {/* <div className="table-wrapper"> */}
-        <DataTable columns={columns} data={purchaseData} />
-      {/* </div> */}
+      <DataTable columns={columns} data={purchaseData} />
       {viewModal && (
-          <ViewPurchase
-            show={viewModal}
-            handleClose={() => setViewModal(false)}
-            details={selectedPurchase}
-          />
-        )}
-        {editModal && (
-          <EditPurchase
-            show={editModal}
-            handleClose={() => setEditModal(false)}
-            details={selectedPurchase}
-            onSave={handleSave}
-          />
-        )}
-
+        <ViewPurchase
+          show={viewModal}
+          handleClose={() => setViewModal(false)}
+          details={selectedPurchase}
+        />
+      )}
+      {editModal && (
+        <EditPurchase
+          show={editModal}
+          handleClose={() => setEditModal(false)}
+          details={selectedPurchase}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };

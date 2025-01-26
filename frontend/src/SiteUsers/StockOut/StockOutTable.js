@@ -36,6 +36,10 @@ const StockOutTable = () => {
         accessor: "productName",
       },
       {
+        Header: "Brand Name",
+        accessor: "brandName",
+      },
+      {
         Header: "Quantity",
         accessor: "quantity",
       },
@@ -59,6 +63,7 @@ const StockOutTable = () => {
         siteName: "Site A",
         destinationSite: "Site B",
         productName: "Product X",
+        brandName:"brand 1",
         quantity: 100,
         units: "pcs",
         status: "Completed",
@@ -68,6 +73,7 @@ const StockOutTable = () => {
         siteName: "Site C",
         destinationSite: "Site D",
         productName: "Product Y",
+        brandName:"brand 2 ",
         quantity: 200,
         units: "kg",
         status: "Pending",
@@ -77,6 +83,7 @@ const StockOutTable = () => {
         siteName: "Site E",
         destinationSite: "Site F",
         productName: "Product Z",
+        brandName:"brand 3",
         quantity: 150,
         units: "pcs",
         status: "Cancelled",
@@ -93,7 +100,7 @@ const StockOutTable = () => {
       <UserNavbar />
     
     <div className="container mt-4">
-      <h2 className="mb-4">Stock Out Records</h2>
+      <h1 className="mb-4">Stock Out Records</h1>
       {/* Button to open the modal */}
       <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" onClick={handleOpen}>

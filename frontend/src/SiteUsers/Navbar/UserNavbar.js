@@ -19,11 +19,11 @@ const UserNavbar = () => {
   return (
     <nav className="navbar">
       {/* Logo */}
-      <div className={`navbar-links ${isOpen ? "active" : ""}`}>
+      {/* <div className={`navbar-links ${isOpen ? "active" : ""}`}>
       <Link to="/userdashboard">
             <FaHome />
           </Link>
-      </div>
+      </div> */}
 
       {/* Toggler Button */}
       <button className="navbar-toggler" onClick={toggleNavbar}>
@@ -32,6 +32,12 @@ const UserNavbar = () => {
 
       {/* Navigation Links */}
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
+        <li>
+        <Link to="/userdashboard">
+            <FaHome />
+            Dashboard
+          </Link>
+        </li>
         <li>
           <Link to="/stockintable">
             <FaBoxOpen />

@@ -5,10 +5,29 @@ const AddBrandModal = ({ show, handleClose, handleSave }) => {
   const [brandName, setBrandName] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (brandName && description) {
-      handleSave({ brandName, description });
-      handleClose(); // Close the modal after saving
+      // Make POST request to the backend
+      try {
+        const response = await fetch("http://localhost:5000/api/brands", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ brandName, description }),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          handleSave({ brandName, description });
+          handleClose(); // Close the modal after saving
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error("Error adding brand:", error);
+        alert("Failed to add brand.");
+      }
     } else {
       alert("Please fill all fields.");
     }
