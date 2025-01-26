@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
@@ -12,11 +13,21 @@ const AllocationTable = () => {
   const [modalShow, setModalShow] = useState(false); // For StockModalPopup
   const [selectedRow, setSelectedRow] = useState(null);
   const [modalTitle, setModalTitle] = useState(""); // Title for StockModalPopup
-  const [data, setData] = useState([
-    { siteName: "Site 1", manager: "Manager 1", productName: "Product 1", stockOutward: 50, remainingStock: 100 },
-    { siteName: "Site 2", manager: "Manager 2", productName: "Product 2", stockOutward: 30, remainingStock: 120 },
-    { siteName: "Site 3", manager: "Manager 3", productName: "Product 3", stockOutward: 20, remainingStock: 80 },
-  ]);
+  const [data, setData] = useState([]);
+
+  // Fetch Data from Backend
+  const fetchAllocations = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/allocations");
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching allocations:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllocations();
+  }, []);
 
   // Handlers for View Modal
   const handleOpenViewModal = (row) => {
@@ -43,27 +54,26 @@ const AllocationTable = () => {
   };
   const handleCloseStockModal = () => setModalShow(false);
 
-  const handleSaveStock = (newData) => {
-    setData((prev) => [...prev, newData]);
-    handleCloseStockModal();
+  const handleSaveStock = async (newData) => {
+    try {
+      await axios.post("http://localhost:5000/allocations", newData);
+      fetchAllocations(); // Refresh table after adding
+      handleCloseStockModal();
+    } catch (error) {
+      console.error("Error adding allocation:", error);
+    }
   };
 
   // Save Edited Data
   const handleSaveEdit = (updatedData) => {
-    setData((prev) =>
-      prev.map((item) =>
-        item.siteName === updatedData.siteName && item.productName === updatedData.productName ? updatedData : item
-      )
-    );
-    handleCloseEditModal();
+    // Logic for saving edited data goes here
+    // Backend should be updated with a PUT/POST endpoint for this
   };
 
   // Delete Data
   const handleDelete = (row) => {
-    const updatedData = data.filter(
-      (item) => !(item.siteName === row.siteName && item.productName === row.productName)
-    );
-    setData(updatedData);
+    // Logic for deleting data goes here
+    // Backend should be updated with a DELETE endpoint for this
   };
 
   const columns = [
@@ -111,7 +121,7 @@ const AllocationTable = () => {
       <h1 className="mb-4">Allocations Management</h1>
 
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" className='add-button' onClick={handleOpenStockModal}>
+        <Button variant="primary" className="add-button" onClick={handleOpenStockModal}>
           <FaPlus className="me-2" />
           Add New Allocation
         </Button>
