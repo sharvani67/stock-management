@@ -24,7 +24,7 @@ import UserNavbar from './SiteUsers/Navbar/UserNavbar';
 import StockOutTable from './SiteUsers/StockOut/StockOutTable';
 import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
 import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
-import UserDashboard from './SiteUsers/UserDashboard';
+import UserDashboard from './SiteUsers/Userdashboard/UserDashboard';
 
 function App() {
   return (

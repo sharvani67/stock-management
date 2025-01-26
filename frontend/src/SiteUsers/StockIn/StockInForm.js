@@ -51,6 +51,7 @@ const StockInForm = ({ onAddPurchase }) => {
 };
   
 
+
   // Handle saving the brand data
   const handleSaveBrand = (brandData) => {
     setFormData((prevState) => ({

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import axios from "axios";
 
-const StockOutModal = ({ show, handleClose, handleSubmit }) => {
+const StockOutModal = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
     date: "",
     destinationSite: "",
@@ -10,8 +11,8 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
     quantity: "",
     units: "",
     attachment: null,
-    status: "",
-  });
+    status: "",
+  });
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -21,10 +22,29 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
     });
   };
 
-  const submitForm = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleSubmit(formData);
-    handleClose();
+    try {
+      const formPayload = new FormData();
+
+      // Append all form data fields
+      Object.keys(formData).forEach((key) => {
+        formPayload.append(key, formData[key]);
+      });
+
+      // Send the POST request
+      const response = await axios.post("http://localhost:5000/stockout", formPayload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert(response.data.message); // Success message
+      handleClose();
+    } catch (error) {
+      console.error("Error adding stock:", error);
+      alert("Failed to add stock. Please try again.");
+    }
   };
 
   return (
@@ -33,7 +53,7 @@ const StockOutModal = ({ show, handleClose, handleSubmit }) => {
         <Modal.Title>Stock Out Form</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={submitForm}>
+        <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             {/* Date */}
             <Col md={6}>
