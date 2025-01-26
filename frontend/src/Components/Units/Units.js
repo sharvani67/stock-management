@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable';
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from 'react-icons/fa';
 import AddUnit from './AddUnit';
 import ViewUnit from './ViewUnit';
 import EditUnit from './EditUnit';
+import axios from 'axios';
 
 const UnitTable = () => {
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -12,11 +13,26 @@ const UnitTable = () => {
   const [addModalShow, setAddModalShow] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(null);
 
-  const [data, setData] = useState([
-    { serialNo: 1, name: 'Item 1', shortName: 'I1', baseUnit: 'kg' },
-    { serialNo: 2, name: 'Item 2', shortName: 'I2', baseUnit: 'litre' },
-    { serialNo: 3, name: 'Item 3', shortName: 'I3', baseUnit: 'meter' },
-  ]);
+  const [data, setData] = useState([]); // Initialize with an empty array
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data from the API on component mount
+  useEffect(() => {
+    fetchUnits();
+  }, []);
+
+  const fetchUnits = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:5000/units'); // Replace with your API endpoint
+      setData(response.data); // Populate table with data from the API
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('An error occurred while fetching units.');
+      setLoading(false);
+    }
+  };
 
   const handleViewUnit = (unit) => {
     setSelectedUnit(unit); // Set the selected unit for viewing
@@ -73,13 +89,17 @@ const UnitTable = () => {
     },
   ];
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Unit Management</h1>
 
       {/* Add New Unit Button */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="primary" className='add-button' onClick={handleAddUnit}>
+        <Button variant="primary" className="add-button" onClick={handleAddUnit}>
           <FaPlus className="me-2" />
           Add New Unit
         </Button>
@@ -101,7 +121,7 @@ const UnitTable = () => {
       <ViewUnit
         show={viewModalShow}
         handleClose={() => setViewModalShow(false)}
-        details={selectedUnit} 
+        details={selectedUnit}
       />
 
       <EditUnit

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import '../../CSS/AddForm.css';
+import axios from "axios";
 
 const Addunit = ({ show, handleClose, title, details, onSave }) => {
   const [formData, setFormData] = useState({
@@ -32,11 +33,23 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-    handleClose();
+  const handleSubmit = async () => {
+    try {
+      if (details) {
+        // Update logic (if you implement an update endpoint in the future)
+      } else {
+        // Add a new unit
+        await axios.post("http://localhost:5000/units", formData);
+      }
+       // Refresh the unit list after adding
+      handleClose(); // Close the modal
+    } catch (error) {
+      console.error("Error saving unit:", error);
+    }
   };
+  
+  
+  
 
   return (
     <Modal show={show} onHide={handleClose} centered className="add-form-modal">
@@ -98,8 +111,8 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="primary" type="submit">
-          Save
+        <Button variant="primary" onClick={handleSubmit}>
+          {details ? "Save Changes" : "Add Unit"}
         </Button>
       </Modal.Footer>
     </Modal>

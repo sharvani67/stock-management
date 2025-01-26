@@ -83,6 +83,37 @@ app.post('/sites', (req, res) => {
       });
     });
   });
+
+  // API route to save data
+app.post("/units", (req, res) => {
+  const { serialNo, name, shortName, baseUnit } = req.body;
+
+  if (!serialNo || !name || !shortName || !baseUnit) {
+    return res.status(400).send({ message: "All fields are required." });
+  }
+
+  const sql = "INSERT INTO units (serialNo, name, shortName, baseUnit) VALUES (?, ?, ?, ?)";
+  db.query(sql, [serialNo, name, shortName, baseUnit], (err, result) => {
+    if (err) {
+      console.error("Error saving data:", err);
+      return res.status(500).send({ message: "Error saving data." });
+    }
+    res.status(200).send({ message: "Unit added successfully!" });
+  });
+});
+
+// GET API to fetch units
+app.get("/units", (req, res) => {
+  const sqlQuery = "SELECT * FROM units";
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ message: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
   
 
 // Start the server
