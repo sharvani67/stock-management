@@ -8,7 +8,7 @@ const StockOutModal = ({ show, handleClose }) => {
     destinationSite: "",
     productName: "",
     brandName:"",
-    quantity: "",
+    quantity_out: "",
     units: "",
     attachment: null,
     status: "",
@@ -25,6 +25,7 @@ const StockOutModal = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+<<<<<<< HEAD
       const formPayload = new FormData();
 
       // Append all form data fields
@@ -46,6 +47,18 @@ const StockOutModal = ({ show, handleClose }) => {
       alert("Failed to add stock. Please try again.");
     }
   };
+=======
+        const response = await axios.post(
+            "http://localhost:5000/stock-out",
+            formData
+        );
+        alert(response.data.message);
+    } catch (error) {
+        console.error("Error adding stock:", error);
+        alert("Failed to add stock.");
+    }
+};
+>>>>>>> 29bf919977b9c2c57691586ead594636dcebb04f
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -133,8 +146,8 @@ const StockOutModal = ({ show, handleClose }) => {
                 <Form.Control
                   type="number"
                   placeholder="Enter quantity"
-                  name="quantity"
-                  value={formData.quantity}
+                  name="quantity_out"
+                  value={formData.quantity_out}
                   onChange={handleChange}
                   required
                 />
