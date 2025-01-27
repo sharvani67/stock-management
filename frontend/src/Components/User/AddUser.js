@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import { BASE_URL } from '../../ApiService/Api';
 
 const ModalPopup = ({ user, showModal, handleClose }) => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
       if (user) {
         // Update logic can be added here
       } else {
-        await axios.post("http://localhost:5000/users", formData);
+        await axios.post(`${BASE_URL}/users`, formData);
       }
       handleClose(); // Close the modal
     } catch (error) {

@@ -517,6 +517,31 @@ app.post("/api/login", (req, res) => {
   });
 });
 
+// GET Allocations
+app.get("/allocations", (req, res) => {
+  const sql = "SELECT * FROM allocations";
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data from database" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+// POST New Allocation
+app.post("/allocations", (req, res) => {
+  const { siteName, manager, productName, stockOutward, remainingStock } = req.body;
+  const sql = "INSERT INTO allocations (siteName, manager, productName, stockOutward, remainingStock) VALUES (?, ?, ?, ?, ?)";
+  db.query(sql, [siteName, manager, productName, stockOutward, remainingStock], (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error inserting data into database" });
+    } else {
+      res.status(201).json({ message: "Allocation added successfully", id: result.insertId });
+    }
+  });
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

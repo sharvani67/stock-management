@@ -32,7 +32,7 @@ function App() {
     
       <div className="App">
         <div className="d-flex" id="wrapper">
-          <Sidebar />
+          {/* <Sidebar /> */}
           
 
           {/* Main content */}

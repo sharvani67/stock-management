@@ -7,8 +7,11 @@ import ViewUser from './ViewUser';
 import EditUser from './EditUser';
 import axios from 'axios';
 import Sidebar from '../../Shared/SideBar/SideBar';
+import './TableUser.css';
+import { BASE_URL } from '../../ApiService/Api';
 
 const Table = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
@@ -20,7 +23,7 @@ const Table = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/users'); // Update the URL if needed
+        const response = await axios.get(`${BASE_URL}/users`); // Update the URL if needed
         setData(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -98,21 +101,20 @@ const Table = () => {
   ];
 
   return (
-    <div>
-    {/* <div>
-      <Sidebar />
-    </div> */}
-    <div className="container mt-5">
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
       <h1 className="mb-4">Users</h1>
-
-      <div className="d-flex justify-content-end mb-3">
+      <div className="">
         <Button variant="primary" className="add-button" onClick={handleAddUser}>
           <FaPlus className="me-2" />
           Add New User
         </Button>
       </div>
 
+
       <DataTable columns={columns} data={data} />
+      </div>
 
       <ModalPopup
         user={selectedUser}
@@ -133,7 +135,6 @@ const Table = () => {
         handleClose={() => setEditModalShow(false)}
         handleSave={handleSaveUser}
       />
-    </div>
     </div>
   );
 };
