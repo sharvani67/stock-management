@@ -25,6 +25,7 @@ import StockOutTable from './SiteUsers/StockOut/StockOutTable';
 import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
 import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
 import UserDashboard from './SiteUsers/Userdashboard/UserDashboard';
+import AllocatedStock from './SiteUsers/AllocatedTable';
 
 function App() {
   return (
@@ -63,6 +64,8 @@ function App() {
               <Route path="/summary" element={<StockSummaryTable />}/>
 
               <Route path="/userdashboard" element={<UserDashboard />}/>
+
+              <Route path="/allocatedtable" element={<AllocatedStock />}/>
               
             </Routes>
           </div>

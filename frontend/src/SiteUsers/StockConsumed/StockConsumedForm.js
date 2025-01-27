@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import axios from "axios";
 
-const StockConsumedForm = ({ show, handleClose, handleSubmit }) => {
+const StockConsumedForm = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
     productName: "",
     quantity: "",
@@ -18,11 +19,19 @@ const StockConsumedForm = ({ show, handleClose, handleSubmit }) => {
     });
   };
 
-  const submitForm = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleSubmit(formData);
-    handleClose();
-  };
+    try {
+        const response = await axios.post(
+            "http://localhost:5000/stock-consumed",
+            formData
+        );
+        alert(response.data.message);
+    } catch (error) {
+        console.error("Error adding stock:", error);
+        alert("Failed to add stock.");
+    }
+};
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -30,7 +39,7 @@ const StockConsumedForm = ({ show, handleClose, handleSubmit }) => {
         <Modal.Title>Stock Consumed Form</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={submitForm}>
+        <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             {/* Product Name */}
             <Col md={6}>

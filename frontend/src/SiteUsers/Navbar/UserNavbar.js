@@ -62,6 +62,12 @@ const UserNavbar = () => {
             Reports
           </Link>
         </li>
+        <li>
+          <Link to="/allocatedtable">
+            <FaBoxOpen />
+            Allocated Table
+          </Link>
+        </li>
       </ul>
 
       {/* Profile Section */}
