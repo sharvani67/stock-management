@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
 
 const StockOutModal = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
-    date: "",
+    dateTime: "",
     destinationSite: "",
     productName: "",
-    brandName:"",
+    brandName: "",
     quantity_out: "",
     units: "",
     attachment: null,
-    status: "",
-  });
+    status: "",
+  });
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDateTime = formatDateTime(currentDate);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      dateTime: formattedDateTime,
+    }));
+  }, []);
+
+  const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`; // Format for datetime-local
+  };
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -25,16 +43,18 @@ const StockOutModal = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post(
-            "http://localhost:5000/stock-out",
-            formData
-        );
-        alert(response.data.message);
+      const response = await axios.post(
+        "http://localhost:5000/stock-out",
+        formData
+      );
+      alert(response.data.message);
     } catch (error) {
-        console.error("Error adding stock:", error);
-        alert("Failed to add stock.");
+      console.error("Error adding stock:", error);
+      alert("Failed to add stock.");
     }
-};
+  };
+
+
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -44,15 +64,16 @@ const StockOutModal = ({ show, handleClose }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
-            {/* Date */}
             <Col md={6}>
-              <Form.Group controlId="formDate">
-                <Form.Label>Date</Form.Label>
+              <Form.Group controlId="formDateTime">
+                <Form.Label>Date & Time</Form.Label>
                 <Form.Control
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
+                  type="datetime-local"
+                  name="dateTime"
+                  value={formData.dateTime}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dateTime: e.target.value })
+                  }
                   required
                 />
               </Form.Group>

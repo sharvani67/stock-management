@@ -59,7 +59,7 @@ const StockOutTable = () => {
   const data = React.useMemo(
     () => [
       {
-        date: "2025-01-23",
+        date: "23-01-2025",
         siteName: "Site A",
         destinationSite: "Site B",
         productName: "Product X",
@@ -69,7 +69,7 @@ const StockOutTable = () => {
         status: "Completed",
       },
       {
-        date: "2025-01-22",
+        date: "22-01-2025",
         siteName: "Site C",
         destinationSite: "Site D",
         productName: "Product Y",
@@ -79,7 +79,7 @@ const StockOutTable = () => {
         status: "Pending",
       },
       {
-        date: "2025-01-21",
+        date: "21-01-2025",
         siteName: "Site E",
         destinationSite: "Site F",
         productName: "Product Z",

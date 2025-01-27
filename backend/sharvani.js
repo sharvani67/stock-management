@@ -228,11 +228,11 @@ app.get("/units", (req, res) => {
 });
 
 // API Endpoint to handle stock-in form submission
-app.post("/add-stock", (req, res) => {
+app.post("/stock-in", (req, res) => {
   const {
       site_name,
       site_code,
-      date,
+      dateTime,
       time,
       transaction_type,
       supplierName,
@@ -263,7 +263,7 @@ app.post("/add-stock", (req, res) => {
       [
           site_name,
           site_code,
-          date,
+          dateTime,
           time,
           transaction_type,
           supplierName,
@@ -416,7 +416,7 @@ app.post("/stock-consumed", (req, res) => {
   );
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

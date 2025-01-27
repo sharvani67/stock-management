@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Container, Row, Col, Card, InputGroup, FormControl } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Card, InputGroup } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi"; // Import React Icons
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddProduct from '../../Components/Products/AddProduct'; // Import your AddProduct modal component
@@ -13,6 +13,7 @@ import axios from "axios";
 
 const StockInForm = ({ onAddPurchase }) => {
   const [formData, setFormData] = useState({
+    dateTime: "",
     productName: "",
     quantity: "",
     units: "",
@@ -31,6 +32,23 @@ const StockInForm = ({ onAddPurchase }) => {
   const [showSupplierModal, setShowSupplierModal] = useState(false); // State for supplier modal
   const [showBrandModal, setShowBrandModal] = useState(false); // State for brand modal
 
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDateTime = formatDateTime(currentDate);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      dateTime: formattedDateTime,
+    }));
+  }, []);
+
+  const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`; // Format for datetime-local
+  };
 
   useEffect(() => {
     // Fetch brands from the API
@@ -122,7 +140,7 @@ const StockInForm = ({ onAddPurchase }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/add-stock",
+        "http://localhost:5000/stock-in",
         formData
       );
       alert(response.data.message);
@@ -164,7 +182,23 @@ const StockInForm = ({ onAddPurchase }) => {
                 <Form onSubmit={handleSubmit}>
                   <Row>
                     <Col md={6}>
-                    <Form.Group className="mb-3">
+                      <Form.Group controlId="formDateTime">
+                        <Form.Label>Date & Time:</Form.Label>
+                        <Form.Control
+                          type="datetime-local"
+                          name="dateTime"
+                          value={formData.dateTime}
+                          onChange={(e) =>
+                            setFormData({ ...formData, dateTime: e.target.value })
+                          }
+                          required readOnly
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
                         <Form.Label><strong>Product Name:</strong></Form.Label>
                         <InputGroup>
                           <Form.Select
@@ -204,7 +238,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
                   <Row>
                     <Col md={6}>
-                    <Form.Group className="mb-3">
+                      <Form.Group className="mb-3">
                         <Form.Label><strong>Supplier Name:</strong></Form.Label>
                         <InputGroup>
                           <Form.Select
@@ -257,7 +291,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
                   <Row>
                     <Col md={6}>
-                    <Form.Group className="mb-3">
+                      <Form.Group className="mb-3">
                         <Form.Label><strong>Unit Name:</strong></Form.Label>
                         <InputGroup>
                           <Form.Select

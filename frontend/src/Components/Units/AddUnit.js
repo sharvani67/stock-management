@@ -91,18 +91,12 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
           <Form.Group controlId="baseUnit" className="mt-3">
             <Form.Label>Base Unit:</Form.Label>
             <Form.Control
-              as="select"
+              type="text"
               name="baseUnit"
               value={formData.baseUnit}
               onChange={handleChange}
               required
             >
-              <option value="">Select Base Unit</option>
-              <option value="Kilogram">Kilogram</option>
-              <option value="Gram">Gram</option>
-              <option value="Liter">Liter</option>
-              <option value="Meter">Meter</option>
-              <option value="Piece">Piece</option>
             </Form.Control>
           </Form.Group>
         </Form>

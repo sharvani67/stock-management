@@ -7,6 +7,10 @@ const StockSummaryTable = () => {
   const columns = useMemo(
     () => [
       {
+        Header: "Date",
+        accessor: "date",
+      },
+      {
         Header: "Product Name",
         accessor: "productName",
       },
@@ -38,6 +42,7 @@ const StockSummaryTable = () => {
   const data = useMemo(
     () => [
       {
+        date:"26-01-2025",
         productName: "Product A",
         brandName:"Brand A",
         stockIn: 1000,
@@ -46,6 +51,7 @@ const StockSummaryTable = () => {
         remainingStock: 700,
       },
       {
+        date:"27-01-2025",
         productName: "Product B",
         brandName:"Brand B",
         stockIn: 500,
@@ -54,6 +60,7 @@ const StockSummaryTable = () => {
         remainingStock: 300,
       },
       {
+        date:"28-01-2025",
         productName: "Product C",
         brandName:"Brand C",
         stockIn: 1200,

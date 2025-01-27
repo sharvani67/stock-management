@@ -8,6 +8,10 @@ const AllocatedStock = () => {
   const columns = useMemo(
     () => [
       {
+        Header: "Date",
+        accessor: "date",
+      },
+      {
         Header: "Product Name",
         accessor: "productName",
       },
@@ -49,6 +53,7 @@ const AllocatedStock = () => {
   const data = useMemo(
     () => [
       {
+        date:"27-01-2025",
         productName: "Product A",
         brandName: "Brand X",
         quantity: 1000,
@@ -57,6 +62,7 @@ const AllocatedStock = () => {
         actions: "Approved",
       },
       {
+        date:"28-01-2025",
         productName: "Product B",
         brandName: "Brand Y",
         quantity: 500,
@@ -65,6 +71,7 @@ const AllocatedStock = () => {
         actions: "Rejected",
       },
       {
+        date:"29-01-2025",
         productName: "Product C",
         brandName: "Brand Z",
         quantity: 1200,

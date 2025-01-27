@@ -19,6 +19,10 @@ const StockConsumedTable = () => {
   const columns = useMemo(
     () => [
       {
+        Header: "Date",
+        accessor: "date",
+      },
+      {
         Header: "Product Name",
         accessor: "productName",
       },
@@ -38,10 +42,6 @@ const StockConsumedTable = () => {
         Header: "Description",
         accessor: "description",
       },
-      {
-        Header: "Date",
-        accessor: "date",
-      },
     ],
     []
   );
@@ -50,28 +50,28 @@ const StockConsumedTable = () => {
   const data = useMemo(
     () => [
       {
+        date: "23-01-2025",
         productName: "Product A",
         brandName:"Brand A",
         quantity: 50,
         units: "pcs",
         description: "Used for maintenance",
-        date: "2025-01-23",
       },
       {
+        date: "22-01-2025",
         productName: "Product B",
         brandName:"Brand B",
         quantity: 100,
         units: "kg",
-        description: "Consumed for manufacturing",
-        date: "2025-01-22",
+        description: "Consumed for manufacturing", 
       },
       {
+        date: "21-01-2025",
         productName: "Product C",
         brandName:"Brand C",
         quantity: 30,
         units: "liters",
         description: "Used for cleaning",
-        date: "2025-01-21",
       },
     ],
     []
