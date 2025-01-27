@@ -11,6 +11,10 @@ const StockSummaryTable = () => {
         accessor: "productName",
       },
       {
+        Header: "Brand Name",
+        accessor: "brandName",
+      },
+      {
         Header: "Stock In",
         accessor: "stockIn",
       },
@@ -35,6 +39,7 @@ const StockSummaryTable = () => {
     () => [
       {
         productName: "Product A",
+        brandName:"Brand A",
         stockIn: 1000,
         stockOut: 200,
         consumed: 100,
@@ -42,6 +47,7 @@ const StockSummaryTable = () => {
       },
       {
         productName: "Product B",
+        brandName:"Brand B",
         stockIn: 500,
         stockOut: 150,
         consumed: 50,
@@ -49,6 +55,7 @@ const StockSummaryTable = () => {
       },
       {
         productName: "Product C",
+        brandName:"Brand C",
         stockIn: 1200,
         stockOut: 500,
         consumed: 300,

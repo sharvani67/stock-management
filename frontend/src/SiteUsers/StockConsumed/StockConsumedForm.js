@@ -55,7 +55,22 @@ const StockConsumedForm = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-
+            {/* Product Name */}
+            <Col md={6}>
+              <Form.Group controlId="formBrandName">
+                <Form.Label>Brand Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter brand name"
+                  name="brandName"
+                  value={formData.brandName}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            </Row>
+            <Row className="mb-3">
             {/* Quantity */}
             <Col md={6}>
               <Form.Group controlId="formQuantity">
@@ -70,9 +85,9 @@ const StockConsumedForm = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-          </Row>
+          
 
-          <Row className="mb-3">
+          
             {/* Units */}
             <Col md={6}>
               <Form.Group controlId="formUnits">
@@ -87,7 +102,8 @@ const StockConsumedForm = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-
+            </Row>
+            <Row className="mb-3">
             {/* Date */}
             <Col md={6}>
               <Form.Group controlId="formDate">
@@ -101,9 +117,19 @@ const StockConsumedForm = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-          </Row>
+            <Col md={6}>
+          <   Form.Group controlId="formAttachment">
+              <Form.Label>Attachment</Form.Label>
+                            <Form.Control
+                              type="file"
+                              name="attachment"
+                              onChange={handleChange}
+                            />
+                          </Form.Group>
+                  </Col>                
+                  </Row>
 
-          <Row className="mb-3">
+            <Row>
             {/* Description */}
             <Col md={12}>
               <Form.Group controlId="formDescription">

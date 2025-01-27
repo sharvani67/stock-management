@@ -14,20 +14,22 @@ const Brand = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
 
-  // Fetch brands from backend when the component mounts
   useEffect(() => {
     const fetchBrands = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/brands");
         const data = await response.json();
-        setBrands(data); // Set brands data from the API response
+        console.log("API Response:", data); // Check if API data is fetched
+        setBrands(data); // Ensure this sets the state
+        console.log("Brands State:", brands); // Verify the state update
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
     };
-
-    fetchBrands(); // Fetch brands when the component mounts
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  
+    fetchBrands();
+  }, []);
+   // Empty dependency array ensures this runs once when the component mounts
 
   // Functions to handle modal visibility
   const handleCloseAddModal = () => setShowAddModal(false);

@@ -17,7 +17,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const UserDashboard = () => {
   // Data for Product A
   const productAData = {
-    labels: ["Stock In", "Stock Out", "Consumed", "Balanced"],
+    labels: ["Stock In", "Stock Out", "Consumed", "Balance"],
     datasets: [
       {
         label: "Product A",
@@ -34,7 +34,7 @@ const UserDashboard = () => {
 
   // Data for Product B
   const productBData = {
-    labels: ["Stock In", "Stock Out", "Consumed", "Balanced"],
+    labels: ["Stock In", "Stock Out", "Consumed", "Balance"],
     datasets: [
       {
         label: "Product B",
@@ -51,7 +51,7 @@ const UserDashboard = () => {
 
   // Data for Product C
   const productCData = {
-    labels: ["Stock In", "Stock Out", "Consumed", "Balanced"],
+    labels: ["Stock In", "Stock Out", "Consumed", "Balance"],
     datasets: [
       {
         label: "Product C",

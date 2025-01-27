@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { Form, Button, Container, Row, Col, Card, InputGroup, FormControl } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi"; // Import React Icons
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,11 +20,30 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     billNumber: "",
     billDate: "",
   });
-
+  const [brands, setBrands] = useState([]); // State for brands
   const [showProductModal, setShowProductModal] = useState(false);
   const [showUnitModal, setShowUnitModal] = useState(false); // State for unit modal
   const [showSupplierModal, setShowSupplierModal] = useState(false); // State for supplier modal
   const [showBrandModal, setShowBrandModal] = useState(false); // State for brand modal
+
+  useEffect(() => {
+    // Fetch brands from the API
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/brands");
+        if (response.ok) {
+          const data = await response.json();
+          setBrands(data); // Update the brands state
+        } else {
+          console.error("Failed to fetch brands");
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -179,20 +198,28 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
                     </Form.Group>
                   </Col>
                   <Col md={6}>
-                    <Form.Group className="mb-3">
+                  <Form.Group className="mb-3">
                       <Form.Label><strong>Brand Name:</strong></Form.Label>
                       <InputGroup>
-                        <FormControl
-                          type="text"
+                        <Form.Select
                           name="brandName"
                           value={formData.brandName}
                           onChange={handleInputChange}
                           required
-                        />
+                        >
+                          <option value="">Select a brand</option>
+                          {brands.map((brand) => (
+                            <option key={brand.id} value={brand.brandName}>
+                              {brand.brandName}
+                            </option>
+                          ))}
+                        
+                        </Form.Select>
                         <Button variant="outline-secondary" onClick={() => setShowBrandModal(true)}>
-                          <FiPlus /> {/* Trigger the brand modal */}
+                          <FiPlus /> {/* Trigger the supplier modal */}
                         </Button>
                       </InputGroup>
+                      
                     </Form.Group>
                   </Col>
                 </Row>

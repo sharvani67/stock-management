@@ -23,6 +23,10 @@ const StockConsumedTable = () => {
         accessor: "productName",
       },
       {
+        Header: "Brand Name",
+        accessor: "brandName",
+      },
+      {
         Header: "Quantity",
         accessor: "quantity",
       },
@@ -47,6 +51,7 @@ const StockConsumedTable = () => {
     () => [
       {
         productName: "Product A",
+        brandName:"Brand A",
         quantity: 50,
         units: "pcs",
         description: "Used for maintenance",
@@ -54,6 +59,7 @@ const StockConsumedTable = () => {
       },
       {
         productName: "Product B",
+        brandName:"Brand B",
         quantity: 100,
         units: "kg",
         description: "Consumed for manufacturing",
@@ -61,6 +67,7 @@ const StockConsumedTable = () => {
       },
       {
         productName: "Product C",
+        brandName:"Brand C",
         quantity: 30,
         units: "liters",
         description: "Used for cleaning",
