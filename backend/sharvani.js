@@ -416,6 +416,107 @@ app.post("/stock-consumed", (req, res) => {
   );
 });
 
+app.get('/users', (req, res) => {
+  const query = 'SELECT * FROM users';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.send(results);
+  });
+});
+
+  // Get all sites (GET)
+  app.get('/sites', (req, res) => {
+    const query = 'SELECT * FROM sites';
+    
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error fetching sites');
+      }
+      
+      // Send all the sites as the response
+      res.send(results);
+    });
+  });
+
+// POST API to add a user
+app.post("/users", (req, res) => {
+  const { name, mobile, email, password, role } = req.body;
+  const sql = "INSERT INTO users (name, mobile, email, password, role) VALUES (?, ?, ?, ?,?)";
+  db.query(sql, [name, mobile, email,password, role], (err, result) => {
+    if (err) {
+      console.error("Error inserting user:", err);
+      res.status(500).send("Failed to add user.");
+    } else {
+      res.status(201).send("User added successfully.");
+    }
+  });
+});
+
+
+// Add a new site (POST)
+app.post('/sites', (req, res) => {
+    const { siteCode, siteName, inchargeName, location, city, state, siteManager, inchargeMobile } = req.body;
+    
+    // Insert data into the 'sites' table
+    const query = `INSERT INTO sites (site_code, site_name, incharge_name, location, city, state, site_manager, incharge_mobile) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    
+    db.query(query, [siteCode, siteName, inchargeName, location, city, state, siteManager, inchargeMobile], (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error adding site');
+      }
+      
+      // Respond with the newly added site data (with generated ID)
+      res.status(201).send({
+        id: results.insertId,
+        siteCode,
+        siteName,
+        inchargeName,
+        location,
+        city,
+        state,
+        siteManager,
+        inchargeMobile
+      });
+    });
+  });
+
+  // Login API
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  const query = "SELECT id, email, name, role FROM users WHERE email = ? AND password = ?";
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.length > 0) {
+      // User found
+      const user = results[0];
+      res.status(200).json({
+        message: "Login successful",
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+      });
+    } else {
+      // User not found
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  });
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

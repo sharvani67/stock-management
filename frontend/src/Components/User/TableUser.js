@@ -6,6 +6,7 @@ import ModalPopup from './AddUser';
 import ViewUser from './ViewUser';
 import EditUser from './EditUser';
 import axios from 'axios';
+import Sidebar from '../../Shared/SideBar/SideBar';
 
 const Table = () => {
   const [viewModalShow, setViewModalShow] = useState(false);
@@ -97,6 +98,10 @@ const Table = () => {
   ];
 
   return (
+    <div>
+    {/* <div>
+      <Sidebar />
+    </div> */}
     <div className="container mt-5">
       <h1 className="mb-4">Users</h1>
 
@@ -128,6 +133,7 @@ const Table = () => {
         handleClose={() => setEditModalShow(false)}
         handleSave={handleSaveUser}
       />
+    </div>
     </div>
   );
 };

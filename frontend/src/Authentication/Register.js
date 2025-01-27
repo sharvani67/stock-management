@@ -8,7 +8,7 @@ const Register = () => {
     fullName: "",
     email: "",
     password: "",
-    confirmPassword: "",
+   
   });
 
   const handleChange = (e) => {
@@ -69,24 +69,14 @@ const Register = () => {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formConfirmPassword" className="mb-3">
-                  <Form.Label><strong>Confirm Password:</strong></Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
-                </Form.Group>
+               
 
                 <Button type="submit" variant="success" className="w-100">
                   Register
                 </Button>
               </Form>
               <p className="text-center mt-3">
-                Already have an account? <a href="/login">Login here</a>
+                Already have an account? <a href="/">Login here</a>
               </p>
             </Card.Body>
           </Card>

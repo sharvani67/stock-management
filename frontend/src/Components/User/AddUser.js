@@ -8,9 +8,9 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
     mobile: "",
     email: "",
     role: "",
+    password: "",
   });
 
-  // If user is passed (for edit), pre-fill the form with the user data
   useEffect(() => {
     if (user) {
       setFormData({
@@ -18,14 +18,15 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
         mobile: user.mobile,
         email: user.email,
         role: user.role,
+        password: user.password,
       });
     } else {
-      // Clear form data for adding a new user
       setFormData({
         name: "",
         mobile: "",
         email: "",
         role: "",
+        password: "",
       });
     }
   }, [user]);
@@ -41,12 +42,10 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
   const handleSubmit = async () => {
     try {
       if (user) {
-        // Update logic (if you implement an update endpoint in the future)
+        // Update logic can be added here
       } else {
-        // Add a new user
         await axios.post("http://localhost:5000/users", formData);
       }
-       // Refresh the user list after adding
       handleClose(); // Close the modal
     } catch (error) {
       console.error("Error saving user:", error);
@@ -90,15 +89,28 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
               onChange={handleChange}
             />
           </Form.Group>
+          <Form.Group controlId="password" className="mt-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </Form.Group>
           <Form.Group controlId="role" className="mt-3">
             <Form.Label>Role</Form.Label>
             <Form.Control
-              type="text"
-              placeholder="Enter role"
+              as="select"
               name="role"
               value={formData.role}
               onChange={handleChange}
-            />
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </Form.Control>
           </Form.Group>
         </Form>
       </Modal.Body>

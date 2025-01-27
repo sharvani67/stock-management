@@ -1,4 +1,3 @@
-
 import './App.css';
 import AllocationTable from './Components/Allocation/Allocation';
 import CentralStockTable from './Components/CentralStock/CentralStock';
@@ -33,7 +32,7 @@ function App() {
     
       <div className="App">
         <div className="d-flex" id="wrapper">
-          {/* <Sidebar /> */}
+          <Sidebar />
           
 
           {/* Main content */}

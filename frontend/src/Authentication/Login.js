@@ -1,36 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const { login } = useContext(AuthContext);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  // Static credentials
-  const staticCredentials = {
-    email: "user@gmail.com",
-    password: "123",
-  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { email, password } = formData;
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    // Check credentials
-    if (email === staticCredentials.email && password === staticCredentials.password) {
-      console.log("Login Successful");
-      navigate("/userdashboard"); // Redirect to the home page
-    } else {
-      alert("Invalid email or password");
+      if (response.ok) {
+        const data = await response.json();
+        login(data.user); // Set user in context
+        navigate("/userdashboard"); // Redirect to dashboard
+      } else {
+        const errData = await response.json();
+        setError(errData.message);
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -67,13 +70,15 @@ const Login = () => {
                   />
                 </Form.Group>
 
+                {error && <p className="text-danger text-center">{error}</p>}
+
                 <Button type="submit" variant="success" className="w-100">
                   Login
                 </Button>
               </Form>
-              {/* <p className="text-center mt-3">
+              <p className="text-center mt-3">
                 Don’t have an account? <a href="/register">Register here</a>
-              </p> */}
+              </p>
             </Card.Body>
           </Card>
         </Col>

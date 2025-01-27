@@ -9,6 +9,7 @@ import AddBrandModal from '../../Components/Brands/AddBrand'; // Import your Add
 import UserNavbar from "../Navbar/UserNavbar";
 // import '../Purchase/AddPurchase.css';
 import axios from "axios";
+import { AuthContext } from "../../Context/AuthContext";
 
 
 const StockInForm = ({ onAddPurchase }) => {

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../Context/AuthContext";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,6 +16,7 @@ import UserNavbar from "../Navbar/UserNavbar";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const UserDashboard = () => {
+  const { user, logout } = useContext(AuthContext);
   // Data for Product A
   const productAData = {
     labels: ["Stock In", "Stock Out", "Consumed", "Balance"],
@@ -67,6 +69,7 @@ const UserDashboard = () => {
   };
 
   return (
+
     <div
       style={{
         fontFamily: "Arial, sans-serif",
@@ -75,6 +78,9 @@ const UserDashboard = () => {
       }}
     >
       <UserNavbar />
+      <h1>Welcome, {user?.name}</h1>
+      <p>Email: {user?.email}</p>
+      <p>id: {user?.id}</p>
 
       <div
         style={{
