@@ -424,7 +424,7 @@ app.get('/users', (req, res) => {
   });
 });
 
-  // Get all sites (GET)
+  //Get all sites (GET)
   app.get('/sites', (req, res) => {
     const query = 'SELECT * FROM sites';
     
@@ -455,33 +455,61 @@ app.post("/users", (req, res) => {
 
 
 // Add a new site (POST)
-app.post('/sites', (req, res) => {
-    const { siteCode, siteName, inchargeName, location, city, state, siteManager, inchargeMobile } = req.body;
+// app.post('/sites', (req, res) => {
+//     const { siteCode, siteName, inchargeName, location, city, state, siteManager, managerMobile } = req.body;
     
-    // Insert data into the 'sites' table
-    const query = `INSERT INTO sites (site_code, site_name, incharge_name, location, city, state, site_manager, incharge_mobile) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+//     // Insert data into the 'sites' table
+//     const query = `INSERT INTO sites (site_code, site_name, incharge_name, location, city, state, site_manager, incharge_mobile) 
+//                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     
-    db.query(query, [siteCode, siteName, inchargeName, location, city, state, siteManager, inchargeMobile], (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Error adding site');
-      }
+//     db.query(query, [siteCode, siteName, inchargeName, location, city, state, siteManager, managerMobile], (err, results) => {
+//       if (err) {
+//         console.error(err);
+//         return res.status(500).send('Error adding site');
+//       }
       
-      // Respond with the newly added site data (with generated ID)
-      res.status(201).send({
-        id: results.insertId,
-        siteCode,
-        siteName,
-        inchargeName,
-        location,
-        city,
-        state,
-        siteManager,
-        inchargeMobile
-      });
+//       // Respond with the newly added site data (with generated ID)
+//       res.status(201).send({
+//         id: results.insertId,
+//         siteCode,
+//         siteName,
+//         inchargeName,
+//         location,
+//         city,
+//         state,
+//         siteManager,
+//         inchargeMobile
+//       });
+//     });
+//   });
+
+// POST API to add a new site
+app.post('/sites', (req, res) => {
+  const { siteCode, siteName, location, city, state, siteManager, managerMobile } = req.body;
+
+  // Validate the request body
+  if (!siteCode || !siteName || !location || !city || !state || !siteManager || !managerMobile) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  // Insert into MySQL database
+  const query = `
+    INSERT INTO sites (siteCode, siteName, location, city, state, siteManager, managerMobile)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [siteCode, siteName, location, city, state, siteManager, managerMobile], (err, result) => {
+    if (err) {
+      console.error('Error inserting data:', err);
+      return res.status(500).json({ message: 'Failed to add site' });
+    }
+
+    res.status(201).json({
+      message: 'Site added successfully',
+      siteId: result.insertId,
     });
   });
+});
 
   // Login API
 app.post("/api/login", (req, res) => {

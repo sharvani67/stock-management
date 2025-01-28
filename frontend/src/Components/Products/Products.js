@@ -6,8 +6,10 @@ import EditProduct from "./EditProduct";
 import ViewProduct from "./ViewProduct";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import axios from "axios"; // Import Axios for API calls
+import Sidebar from "../../Shared/SideBar/SideBar";
 
 const ProductTable = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [products, setProducts] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -83,6 +85,9 @@ const ProductTable = () => {
   ];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Product Management</h1>
 
@@ -120,6 +125,8 @@ const ProductTable = () => {
         showModal={showViewModal}
         handleClose={handleCloseViewModal}
       />
+    </div>
+    </div>
     </div>
   );
 };

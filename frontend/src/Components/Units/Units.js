@@ -6,8 +6,10 @@ import AddUnit from './AddUnit';
 import ViewUnit from './ViewUnit';
 import EditUnit from './EditUnit';
 import axios from 'axios';
+import Sidebar from '../../Shared/SideBar/SideBar';
 
 const UnitTable = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [addModalShow, setAddModalShow] = useState(false);
@@ -94,6 +96,9 @@ const UnitTable = () => {
   }
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Unit Management</h1>
 
@@ -130,6 +135,8 @@ const UnitTable = () => {
         details={selectedUnit}
         onSave={handleSaveUnit}
       />
+    </div>
+    </div>
     </div>
   );
 };

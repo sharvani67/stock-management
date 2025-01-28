@@ -7,9 +7,11 @@ import Addunit from '../Units/AddUnit'; // Import your Addunit modal component
 import AddSupplierModal from '../Suppliers/AddSupplier'; // Import your AddSupplierModal component
 import AddBrandModal from '../Brands/AddBrand'; // Import your AddBrandModal component
 import '../Purchase/AddPurchase.css';
+import Sidebar from "../../Shared/SideBar/SideBar";
 
 
 const AddPurchaseForm = ({ onAddPurchase }) => {
+  const [collapsed, setCollapsed] = useState(false);
   const [formData, setFormData] = useState({
     productName: "",
     quantity: "",
@@ -106,6 +108,9 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
   };
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <Container  className="mt-5 addpurchase" >
       <Row className="justify-content-center">
         <Col md={12} lg={10}>
@@ -273,6 +278,8 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
       {/* Modal for adding brand */}
       <AddBrandModal show={showBrandModal} handleClose={() => setShowBrandModal(false)} handleSave={handleSaveBrand} />
     </Container>
+    </div>
+    </div>
   );
 };
 

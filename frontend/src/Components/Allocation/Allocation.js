@@ -6,8 +6,10 @@ import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import ViewAllocation from "./ViewAllocation";
 import EditAllocation from "./EditAllocation";
 import StockModalPopup from "./AddAllocation";
+import Sidebar from "../../Shared/SideBar/SideBar";
 
 const AllocationTable = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [viewModalShow, setViewModalShow] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
   const [modalShow, setModalShow] = useState(false); // For StockModalPopup
@@ -117,6 +119,10 @@ const AllocationTable = () => {
   ];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
+    
     <div className="container mt-5">
       <h1 className="mb-4">Allocations Management</h1>
 
@@ -154,6 +160,8 @@ const AllocationTable = () => {
         details={selectedRow}
         onSave={handleSaveStock}
       />
+    </div>
+    </div>
     </div>
   );
 };

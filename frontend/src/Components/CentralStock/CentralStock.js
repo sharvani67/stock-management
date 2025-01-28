@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DataTable from "../../layout/DataTable";
+import Sidebar from "../../Shared/SideBar/SideBar";
 
 const CentralStockTable = () => {
+   const [collapsed, setCollapsed] = useState(false);
   const [data] = useState([
     { stockSummary: "Category 1", brandName: "Brand A", qtyIn: 100, qtyOut: 40, remaining: 60 },
     { stockSummary: "Category 2", brandName: "Brand B", qtyIn: 200, qtyOut: 70, remaining: 130 },
@@ -18,6 +20,9 @@ const CentralStockTable = () => {
   ];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Central Stock Summary</h1>
 
@@ -25,6 +30,8 @@ const CentralStockTable = () => {
       <div className="table-wrapper">
         <DataTable columns={columns} data={data} />
       </div>
+    </div>
+    </div>
     </div>
   );
 };

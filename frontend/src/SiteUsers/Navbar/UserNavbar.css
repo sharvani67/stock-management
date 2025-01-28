@@ -1,4 +1,8 @@
 /* Navbar Container */
+body {
+  margin: 0;
+  padding-top: 50px; /* Adjust this value based on navbar height */
+}
 .navbar {
   display: flex;
   justify-content: space-between;

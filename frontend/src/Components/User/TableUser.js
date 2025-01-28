@@ -105,7 +105,7 @@ const Table = () => {
     <Sidebar onToggleSidebar={setCollapsed} />
     <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
       <h1 className="mb-4">Users</h1>
-      <div className="">
+      <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" className="add-button" onClick={handleAddUser}>
           <FaPlus className="me-2" />
           Add New User
@@ -114,7 +114,7 @@ const Table = () => {
 
 
       <DataTable columns={columns} data={data} />
-      </div>
+      
 
       <ModalPopup
         user={selectedUser}
@@ -135,6 +135,7 @@ const Table = () => {
         handleClose={() => setEditModalShow(false)}
         handleSave={handleSaveUser}
       />
+    </div>
     </div>
   );
 };

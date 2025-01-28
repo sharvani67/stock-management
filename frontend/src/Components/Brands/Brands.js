@@ -5,9 +5,12 @@ import DataTable from "../../layout/DataTable";
 import AddBrandModal from "./AddBrand"; // Assuming AddBrandModal is the modal component
 import ViewBrand from "./ViewBrand"; // Import ViewBrand
 import EditBrand from "./EditBrand"; // Import EditBrand
+import Sidebar from "../../Shared/SideBar/SideBar";
+
 
 const Brand = () => {
   // State to manage brands data
+  const [collapsed, setCollapsed] = useState(false);
   const [brands, setBrands] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -107,6 +110,9 @@ const Brand = () => {
   ];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Brand Management</h1>
 
@@ -143,6 +149,8 @@ const Brand = () => {
         handleClose={handleCloseEditModal}
         handleSave={handleEditBrand}
       />
+    </div>
+    </div>
     </div>
   );
 };
