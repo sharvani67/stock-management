@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo ,useContext} from "react";
 import DataTable from "../../layout/DataTable";
 import StockConsumedForm from "./StockConsumedForm";
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
+import { AuthContext } from "../../Context/AuthContext";
 
 const StockConsumedTable = () => {
+  const { user, logout } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
 
   const handleOpen = () => setShowModal(true);

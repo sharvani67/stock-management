@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import { AuthContext } from "../../Context/AuthContext";
 
 const StockConsumedForm = ({ show, handleClose }) => {
+  const { user, logout } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     productName: "",
     quantity: "",

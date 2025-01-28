@@ -1,10 +1,12 @@
-import React, { useState } from "react"; // Import useState
+import React, { useState,useContext } from "react"; // Import useState
 import DataTable from "../../layout/DataTable"; // Assuming DataTable is in the layout directory
 import StockOutModal from "./StockOutForm"; // Import the modal
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
+import { AuthContext } from "../../Context/AuthContext";
 
 const StockOutTable = () => {
+  const { user, logout } = useContext(AuthContext);
   // State for controlling the modal visibility
   const [showModal, setShowModal] = useState(false);
 

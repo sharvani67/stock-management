@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useContext} from "react";
 import { Form, Button, Container, Row, Col, Card, InputGroup } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi"; // Import React Icons
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +13,7 @@ import { AuthContext } from "../../Context/AuthContext";
 
 
 const StockInForm = ({ onAddPurchase }) => {
+  const { user, logout } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     dateTime: "",
     productName: "",

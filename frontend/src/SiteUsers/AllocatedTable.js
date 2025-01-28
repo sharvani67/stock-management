@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo,useContext } from "react";
 import DataTable from "../layout/DataTable";
 import UserNavbar from "./Navbar/UserNavbar";
+import { AuthContext } from "../Context/AuthContext";
 
 
 const AllocatedStock = () => {
+  const { user, logout } = useContext(AuthContext);
   // Define columns for the table
   const columns = useMemo(
     () => [

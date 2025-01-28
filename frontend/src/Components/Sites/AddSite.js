@@ -10,6 +10,8 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   const [state, setState] = useState('');
   const [siteManager, setSiteManager] = useState('');
   const [managerMobile, setManagerMobile] = useState('');
+  const [userMobileMap, setUserMobileMap] = useState({});
+  const [userIdNameMap, setUserIdNameMap] = useState({}); // New map for ID to name
 
   const handleAddSite = async (newSite) => {
     try {
@@ -20,7 +22,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
         },
         body: JSON.stringify(newSite),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('New site added:', data);
@@ -31,6 +33,9 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       console.error('Error:', error);
     }
   };
+  
+
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -39,6 +44,19 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
         if (response.ok) {
           const data = await response.json();
           setUsers(data);
+
+          // Create a map of user IDs to names and mobile numbers
+          const mobileMap = data.reduce((acc, user) => {
+            acc[user.id] = user.mobile;
+            return acc;
+          }, {});
+          const idNameMap = data.reduce((acc, user) => {
+            acc[user.id] = user.name;
+            return acc;
+          }, {});
+
+          setUserMobileMap(mobileMap);
+          setUserIdNameMap(idNameMap);
         } else {
           console.error('Failed to fetch users');
         }
@@ -50,6 +68,14 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
     fetchUsers();
   }, []);
 
+
+  const handleSiteManagerChange = (e) => {
+    const selectedUserId = e.target.value; // Get selected user ID
+    setSiteManager(selectedUserId); // Store the user ID
+    setManagerMobile(userMobileMap[selectedUserId] || ''); // Autofill mobile number
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -59,8 +85,9 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       location,
       city,
       state,
-      siteManager,
-      managerMobile,
+      siteManager: userIdNameMap[siteManager], // Map user ID to the name
+    managerMobile,
+    userId: siteManager, // Send user ID
     };
 
     handleAddSite(newSite);
@@ -108,7 +135,6 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-  
           <Row className="mb-3">
             <Col md={12}>
               <Form.Group controlId="location">
@@ -123,7 +149,6 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-  
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="city">
@@ -150,7 +175,6 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-  
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="siteManager">
@@ -159,18 +183,19 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
                   <Form.Select
                     name="siteManager"
                     value={siteManager}
-                    onChange={(e) => setSiteManager(e.target.value)}
+                    onChange={handleSiteManagerChange}
                     required
                   >
                     <option value="">Select a Site Manager</option>
                     {users.map((user) => (
-                      <option key={user.id} value={user.name}>
+                      <option key={user.id} value={user.id}>
                         {user.name}
                       </option>
                     ))}
                   </Form.Select>
                 </InputGroup>
               </Form.Group>
+
             </Col>
             <Col md={6}>
               <Form.Group controlId="managerMobile">
@@ -178,14 +203,15 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
                 <Form.Control
                   type="text"
                   value={managerMobile}
-                  onChange={(e) => setManagerMobile(e.target.value)}
+                  onChange={(e) => setManagerMobile(e.target.value)} // Allow manual editing if needed
                   placeholder="Enter contact number"
                   required
+                  readOnly // Optional: Make it readonly if it should not be edited
                 />
               </Form.Group>
+
             </Col>
           </Row>
-  
           <Row className="justify-content-center">
             <Col md={6} className="text-center">
               <Button variant="primary" type="submit" className="mt-3 w-100">
@@ -197,7 +223,6 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       </Modal.Body>
     </Modal>
   );
-  
 };
 
 export default AddSiteForm;
