@@ -7,7 +7,7 @@ import ViewUser from './ViewUser';
 import EditUser from './EditUser';
 import axios from 'axios';
 import Sidebar from '../../Shared/SideBar/SideBar';
-import './TableUser.css';
+import '../../CSS/AdminTable.css';
 import { BASE_URL } from '../../ApiService/Api';
 
 const Table = () => {
@@ -101,9 +101,9 @@ const Table = () => {
   ];
 
   return (
-    <div className="salesViewLeadsContainer">
+    <div className="admintablelayoutContainer">
     <Sidebar onToggleSidebar={setCollapsed} />
-    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
+    <div className={`admintablelayout ${collapsed ? "collapsed" : ""}`}>
       <h1 className="mb-4">Users</h1>
       <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" className="add-button" onClick={handleAddUser}>

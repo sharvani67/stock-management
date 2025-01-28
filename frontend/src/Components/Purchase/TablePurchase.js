@@ -76,9 +76,9 @@ const TablePurchase = () => {
   ];
 
   return (
-    <div className="salesViewLeadsContainer">
+    <div className="admintablelayoutContainer">
     <Sidebar onToggleSidebar={setCollapsed} />
-    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
+    <div className={`admintablelayout ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Purchase Management</h1>
       <div className="d-flex justify-content-end mb-3">

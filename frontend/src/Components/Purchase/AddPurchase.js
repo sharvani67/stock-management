@@ -108,9 +108,9 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
   };
 
   return (
-    <div className="salesViewLeadsContainer">
+    <div className="admintablelayoutContainer">
     <Sidebar onToggleSidebar={setCollapsed} />
-    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
+    <div className={`admintablelayout ${collapsed ? "collapsed" : ""}`}>
     <Container  className="mt-5 addpurchase" >
       <Row className="justify-content-center">
         <Col md={12} lg={10}>

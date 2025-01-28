@@ -20,9 +20,9 @@ const CentralStockTable = () => {
   ];
 
   return (
-    <div className="salesViewLeadsContainer">
+    <div className="admintablelayoutContainer">
     <Sidebar onToggleSidebar={setCollapsed} />
-    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
+    <div className={`admintablelayout ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Central Stock Summary</h1>
 
