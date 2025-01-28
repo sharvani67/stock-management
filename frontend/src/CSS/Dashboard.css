@@ -1,5 +1,28 @@
 /* Dashboard.css */
+/* Main Dashboard Container */
+.dashboard-container {
+  display: flex;
+}
 
+/* Sidebar Styling */
+.sidebar {
+  flex: 0 0 250px; /* Fixed width for sidebar */
+  position: fixed; /* Make the sidebar fixed */
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  margin-left: 250px; /* Offset content to the right of the sidebar */
+  width: calc(100% - 250px); /* Ensure it takes up the remaining space */
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 /* General card styles */
 .dashboard-card {
     border: none;

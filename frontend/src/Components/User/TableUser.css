@@ -15,8 +15,8 @@
   }
   
   .salesViewLeads {
-    /* margin-top: 60px;  Adjust based on header height 
-    margin-left: 220px;  Adjust based on sidebar width  */
+      /*Adjust based on header height */
+    margin-left: 250px;  /*Adjust based on sidebar width  */
     padding: 20px;
     width: calc(100% - 220px); /* Adjust width based on sidebar width */
     transition: margin-left 0.3s ease, width 0.3s ease;

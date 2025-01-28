@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 
 const AddSiteForm = ({ addSite, showModal, handleClose }) => {
+  const [users, setUsers] = useState([]);
   const [siteCode, setSiteCode] = useState('');
   const [siteName, setSiteName] = useState('');
-  const [inchargeName, setInchargeName] = useState('');
   const [location, setLocation] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [siteManager, setSiteManager] = useState('');
-  const [inchargeMobile, setInchargeMobile] = useState('');
+  const [managerMobile, setManagerMobile] = useState('');
 
-  // Renaming this function to avoid conflict
   const handleAddSite = async (newSite) => {
     try {
       const response = await fetch('http://localhost:5000/sites', {
@@ -21,7 +20,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
         },
         body: JSON.stringify(newSite),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('New site added:', data);
@@ -32,7 +31,24 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       console.error('Error:', error);
     }
   };
-  
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/users');
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data);
+        } else {
+          console.error('Failed to fetch users');
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,26 +56,23 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
     const newSite = {
       siteCode,
       siteName,
-      inchargeName,
       location,
       city,
       state,
       siteManager,
-      inchargeMobile,
+      managerMobile,
     };
 
-    handleAddSite(newSite); // Use the renamed function
-    handleClose(); // Close the modal after submission
+    handleAddSite(newSite);
+    handleClose();
 
-    // Clear form after submission
     setSiteCode('');
     setSiteName('');
-    setInchargeName('');
     setLocation('');
     setCity('');
     setState('');
     setSiteManager('');
-    setInchargeMobile('');
+    setManagerMobile('');
   };
 
   return (
@@ -69,7 +82,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Row>
+          <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="siteCode">
                 <Form.Label>Site Code:</Form.Label>
@@ -95,20 +108,9 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group controlId="inchargeName">
-                <Form.Label>Incharge Name:</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={inchargeName}
-                  onChange={(e) => setInchargeName(e.target.value)}
-                  placeholder="Enter incharge name"
-                  required
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
+  
+          <Row className="mb-3">
+            <Col md={12}>
               <Form.Group controlId="location">
                 <Form.Label>Location:</Form.Label>
                 <Form.Control
@@ -121,7 +123,8 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
+  
+          <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="city">
                 <Form.Label>City:</Form.Label>
@@ -147,39 +150,54 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Row>
+  
+          <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="siteManager">
-                <Form.Label>Site Manager:</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={siteManager}
-                  onChange={(e) => setSiteManager(e.target.value)}
-                  placeholder="Enter site manager name"
-                  required
-                />
+                <Form.Label>Site Manager Name:</Form.Label>
+                <InputGroup>
+                  <Form.Select
+                    name="siteManager"
+                    value={siteManager}
+                    onChange={(e) => setSiteManager(e.target.value)}
+                    required
+                  >
+                    <option value="">Select a Site Manager</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.name}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="inchargeMobile">
-                <Form.Label>Incharge Mobile:</Form.Label>
+              <Form.Group controlId="managerMobile">
+                <Form.Label>Site Manager Contact:</Form.Label>
                 <Form.Control
                   type="text"
-                  value={inchargeMobile}
-                  onChange={(e) => setInchargeMobile(e.target.value)}
-                  placeholder="Enter incharge mobile number"
+                  value={managerMobile}
+                  onChange={(e) => setManagerMobile(e.target.value)}
+                  placeholder="Enter contact number"
                   required
                 />
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="primary" type="submit" className="mt-3 w-50">
-            Add Site
-          </Button>
+  
+          <Row className="justify-content-center">
+            <Col md={6} className="text-center">
+              <Button variant="primary" type="submit" className="mt-3 w-100">
+                Add Site
+              </Button>
+            </Col>
+          </Row>
         </Form>
       </Modal.Body>
     </Modal>
   );
+  
 };
 
 export default AddSiteForm;

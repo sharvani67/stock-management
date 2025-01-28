@@ -5,8 +5,10 @@ import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import ViewPurchase from './ViewPurchase';
 import EditPurchase from './EditPurchase';
+import Sidebar from '../../Shared/SideBar/SideBar';
 
 const TablePurchase = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [purchaseData, setPurchaseData] = useState([]);
   const [viewModal, setViewModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -74,6 +76,9 @@ const TablePurchase = () => {
   ];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Purchase Management</h1>
       <div className="d-flex justify-content-end mb-3">
@@ -99,6 +104,8 @@ const TablePurchase = () => {
           onSave={handleSave}
         />
       )}
+    </div>
+    </div>
     </div>
   );
 };

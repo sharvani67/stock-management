@@ -6,8 +6,10 @@ import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa'; // Import ic
 import EditSite from './EditSite';
 import ViewSite from './ViewSite';
 import axios from 'axios'; // Import axios for API calls
+import Sidebar from '../../Shared/SideBar/SideBar';
 
 const SiteTable = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [siteData, setSiteData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -65,38 +67,40 @@ const SiteTable = () => {
   };
 
   const columns = [
-    { Header: 'Site Code', accessor: 'site_code' }, // Updated to match API key
-    { Header: 'Site Name', accessor: 'site_name' }, // Updated to match API key
-    { Header: 'Incharge Name', accessor: 'incharge_name' }, // Updated to match API key
-    { Header: 'Location', accessor: 'location' },
-    { Header: 'City', accessor: 'city' },
-    { Header: 'State', accessor: 'state' },
-    { Header: 'Site Manager', accessor: 'site_manager' }, // Updated to match API key
-    { Header: 'Incharge Mobile', accessor: 'incharge_mobile' }, // Updated to match API key
-    {
-      Header: 'Actions',
-      accessor: 'actions',
-      Cell: ({ row }) => (
-        <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
-            <FaEye />
-          </Button>
-          <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
-            <FaEdit />
-          </Button>
-          <Button
-            variant="outline-danger"
-            size="sm"
-            onClick={() => handleDelete(row.original.siteCode)}
-          >
-            <FaTrashAlt />
-          </Button>
-        </div>
-      ),
-    },
-  ];
+  { Header: 'Site Code', accessor: 'siteCode' }, // Matches "siteCode" field in the form
+  { Header: 'Site Name', accessor: 'siteName' }, // Matches "siteName" field in the form
+  { Header: 'Location', accessor: 'location' }, // Matches "location" field in the form
+  { Header: 'City', accessor: 'city' }, // Matches "city" field in the form
+  { Header: 'State', accessor: 'state' }, // Matches "state" field in the form
+  { Header: 'Site Manager', accessor: 'siteManager' }, // Matches "siteManager" field in the form
+  { Header: 'Manager Mobile', accessor: 'managerMobile' }, // Matches "managerMobile" field in the form
+  {
+    Header: 'Actions',
+    accessor: 'actions',
+    Cell: ({ row }) => (
+      <div className="d-flex align-items-center gap-2">
+        <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
+          <FaEye />
+        </Button>
+        <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
+          <FaEdit />
+        </Button>
+        <Button
+          variant="outline-danger"
+          size="sm"
+          onClick={() => handleDelete(row.original.siteCode)}
+        >
+          <FaTrashAlt />
+        </Button>
+      </div>
+    ),
+  },
+];
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Site Management</h1>
 
@@ -134,6 +138,8 @@ const SiteTable = () => {
         showModal={showEditModal}
         handleClose={handleClose}
       />
+    </div>
+    </div>
     </div>
   );
 };

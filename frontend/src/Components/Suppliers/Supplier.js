@@ -5,8 +5,10 @@ import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import AddSupplierModal from "./AddSupplier";
 import ViewSupplier from "./ViewSupplier";
 import EditSupplier from "./EditSupplier";
+import Sidebar from "../../Shared/SideBar/SideBar";
 
 const SupplierTable = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [viewShow, setViewShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
@@ -106,6 +108,9 @@ const SupplierTable = () => {
   
 
   return (
+    <div className="salesViewLeadsContainer">
+    <Sidebar onToggleSidebar={setCollapsed} />
+    <div className={`salesViewLeads ${collapsed ? "collapsed" : ""}`}>
     <div className="container mt-5">
       <h1 className="mb-4">Suppliers Management</h1>
       <div className="d-flex justify-content-end mb-3">
@@ -133,6 +138,8 @@ const SupplierTable = () => {
         details={selectedRow}
         onSave={handleSave}
       />
+    </div>
+    </div>
     </div>
   );
 };

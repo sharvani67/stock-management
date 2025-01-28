@@ -88,8 +88,8 @@ const handleSave = (updatedData) => {
   return (
     <div>
       <UserNavbar />
-      <h1>Welcome, {user?.name}</h1>
-      <p>Email: {user?.email}</p>
+      {/* <h1>Welcome, {user?.name}</h1>
+      <p>Email: {user?.email}</p> */}
       <p>id: {user?.id}</p>
 
     <div className="container mt-5">
