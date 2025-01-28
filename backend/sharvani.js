@@ -609,6 +609,67 @@ app.get('/sites', (req, res) => {
 });
 
 
+
+
+  // Login API
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  const query = "SELECT id, email, name, role FROM users WHERE email = ? AND password = ?";
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.length > 0) {
+      // User found
+      const user = results[0];
+      res.status(200).json({
+        message: "Login successful",
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+      });
+    } else {
+      // User not found
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  });
+});
+
+// GET Allocations
+app.get("/allocations", (req, res) => {
+  const sql = "SELECT * FROM allocations";
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data from database" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+// POST New Allocation
+app.post("/allocations", (req, res) => {
+  const { siteName, manager, productName, stockOutward, remainingStock } = req.body;
+  const sql = "INSERT INTO allocations (siteName, manager, productName, stockOutward, remainingStock) VALUES (?, ?, ?, ?, ?)";
+  db.query(sql, [siteName, manager, productName, stockOutward, remainingStock], (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error inserting data into database" });
+    } else {
+      res.status(201).json({ message: "Allocation added successfully", id: result.insertId });
+    }
+  });
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

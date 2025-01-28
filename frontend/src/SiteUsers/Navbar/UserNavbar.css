@@ -69,73 +69,95 @@ body {
 }
 
 /* Profile Section */
+/* Navbar Profile Section */
 .navbar-profile {
   position: relative;
+  margin-left: auto;
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: white;
 }
 
-.navbar-profile .profile-icon {
+.profile-icon {
   display: flex;
   align-items: center;
+  gap: 8px;
   font-size: 18px;
+  color: #333;
+  padding: 8px 12px;
+  background-color: #f4f4f9;
+  border-radius: 20px;
+  transition: background-color 0.3s;
 }
 
-.navbar-profile .profile-icon svg {
-  margin-right: 8px;
-  font-size: 24px;
+.profile-icon:hover {
+  background-color: #e0e0e0;
 }
 
-.navbar-profile .profile-dropdown {
+.profile-dropdown {
   position: absolute;
-  top: 100%;
+  top: 40px;
   right: 0;
-  background-color: white;
-  color: black;
-  border-radius: 4px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 150px;
-  z-index: 10;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 220px;
+  z-index: 1000;
 }
 
-.navbar-profile .profile-dropdown ul {
+.profile-dropdown ul {
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
-.navbar-profile .profile-dropdown ul li {
-  padding: 10px 15px;
-  cursor: pointer;
-}
-.navbar-profile .profile-dropdown ul li :hover{
-  color: #ffcc00;
-}
-.navbar-profile .profile-dropdown ul li a {
-  text-decoration: none;
-  color: black;
-  display: block;
+.profile-dropdown li {
+  margin-bottom: 10px;
 }
 
-
-
-/* Profile Dropdown Icons */
-.navbar-profile .profile-dropdown ul li a {
+.profile-dropdown .dropdown-button {
   display: flex;
   align-items: center;
-  font-size: 16px;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.navbar-profile .profile-dropdown ul li a svg {
-  margin-right: 10px;
-  font-size: 18px;
+.profile-dropdown .dropdown-button:hover {
+  background-color: #e0e0e0;
 }
 
-.navbar-profile .profile-dropdown ul li:hover {
-  background-color: #076ff7;
+.profile-dropdown .dropdown-content {
+  margin-top: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  width: 100%;
+  color: #555;
 }
+
+.profile-dropdown .dropdown-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-dropdown .dropdown-content li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+
 
 @media (max-width: 768px) {
   .navbar-profile {
