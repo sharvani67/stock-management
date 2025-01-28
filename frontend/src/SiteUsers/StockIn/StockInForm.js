@@ -52,6 +52,29 @@ const StockInForm = ({ onAddPurchase }) => {
     return `${year}-${month}-${day}T${hours}:${minutes}`; // Format for datetime-local
   };
 
+  const [sites, setSites] = useState([]);
+  
+    // Fetch site data based on user ID
+    useEffect(() => {
+      const fetchSites = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setSites(data);
+          } else {
+            console.error("Failed to fetch sites");
+          }
+        } catch (error) {
+          console.error("Error fetching sites:", error);
+        }
+      };
+  
+      if (user?.id) {
+        fetchSites();
+      }
+    }, [user?.id]);
+
   useEffect(() => {
     // Fetch brands from the API
     const fetchBrands = async () => {

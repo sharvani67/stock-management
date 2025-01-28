@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useEffect,useContext   } from "react";
 
 import { FaHome, FaBoxOpen, FaTruck, FaChartPie, FaFileAlt, FaBars,FaUserCircle,FaCode,FaUserAlt,FaSignOutAlt} from "react-icons/fa";
 import "./UserNavbar.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthContext";
 
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
@@ -15,6 +17,29 @@ const UserNavbar = () => {
   const toggleProfileMenu = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+  const [sites, setSites] = useState([]);
+  
+    // Fetch site data based on user ID
+    useEffect(() => {
+      const fetchSites = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setSites(data);
+          } else {
+            console.error("Failed to fetch sites");
+          }
+        } catch (error) {
+          console.error("Error fetching sites:", error);
+        }
+      };
+  
+      if (user?.id) {
+        fetchSites();
+      }
+    }, [user?.id]);
+
 
   return (
     <nav className="navbar">

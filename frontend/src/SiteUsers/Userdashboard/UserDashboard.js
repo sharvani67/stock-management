@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { Bar } from "react-chartjs-2";
 import {
@@ -17,6 +17,29 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const UserDashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  const [sites, setSites] = useState([]);
+
+  // Fetch site data based on user ID
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSites(data);
+        } else {
+          console.error("Failed to fetch sites");
+        }
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    if (user?.id) {
+      fetchSites();
+    }
+  }, [user?.id]);
+
   // Data for Product A
   const productAData = {
     labels: ["Stock In", "Stock Out", "Consumed", "Balance"],
@@ -81,6 +104,28 @@ const UserDashboard = () => {
       <h1>Welcome, {user?.name}</h1>
       <p>Email: {user?.email}</p>
       <p>id: {user?.id}</p>
+      {/* Display Site Codes */}
+      <div style={{ width: "100%", maxWidth: "600px" }}>
+          <h2 style={{ textAlign: "center" }}>Your Site Codes</h2>
+          <ul style={{ listStyleType: "none", padding: 0 }}>
+            {sites.map((site) => (
+              <li
+                key={site.id}
+                style={{
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                  backgroundColor: "#fff",
+                  textAlign: "center",
+                }}
+              >
+                <strong>Site Code:</strong> {site.siteCode} | <strong>Location:</strong>{" "}
+                {site.location}
+              </li>
+            ))}
+          </ul>
+        </div>
 
       <div
         style={{
