@@ -23,10 +23,14 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
+        const response = await fetch(`http://localhost:5000/sites`);
         if (response.ok) {
           const data = await response.json();
-          setSites(data);
+  
+          // Filter the sites based on user.id
+          const filteredSites = data.filter(site => site.userId == user?.id);
+  
+          setSites(filteredSites);  // Set the filtered data
         } else {
           console.error("Failed to fetch sites");
         }
@@ -34,11 +38,12 @@ const UserDashboard = () => {
         console.error("Error fetching sites:", error);
       }
     };
-
+  
     if (user?.id) {
       fetchSites();
     }
   }, [user?.id]);
+  
 
   // Data for Product A
   const productAData = {

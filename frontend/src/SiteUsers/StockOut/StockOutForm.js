@@ -15,7 +15,13 @@ const StockOutModal = ({ show, handleClose }) => {
     units: "",
     attachment: null,
     status: "",
+    userId: "",      // user id added here
+    siteManager: "", // site manager added here
+    siteCode: "",    // site code added here
+    siteName: "",    // site name added here
+    siteId: ""       // site id added here
   });
+  const [sites, setSites] = useState([]);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -42,6 +48,48 @@ const StockOutModal = ({ show, handleClose }) => {
       [name]: type === "file" ? files[0] : value,
     });
   };
+
+    useEffect(() => {
+      const fetchSites = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Filter the sites based on the userId (assuming that userId is associated with specific sites)
+            const userSites = data.filter(site => site.userId === user?.id);
+    
+            // If matching sites are found, use the details of the first one
+            if (userSites.length > 0) {
+              const selectedSite = userSites[0]; // Get the site details related to the user
+              
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                userId: user?.id,
+                siteManager: selectedSite.siteManager,
+                siteCode: selectedSite.siteCode,
+                siteName: selectedSite.siteName,
+                siteId: selectedSite.id,
+              }));
+              setSites(userSites);  // Save all the sites related to the user
+            } else {
+              console.error("No sites found for the user");
+            }
+          } else {
+            console.error("Failed to fetch sites");
+          }
+        } catch (error) {
+          console.error("Error fetching sites:", error);
+        }
+      };
+    
+      if (user?.id) {
+        fetchSites();
+      }
+    }, [user?.id]);
+
+    // Log the data to console before submitting
+    console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -208,7 +256,7 @@ const StockOutModal = ({ show, handleClose }) => {
           </Row>
 
           <Button variant="primary" type="submit" className="w-100">
-            Submit
+            Save
           </Button>
         </Form>
       </Modal.Body>

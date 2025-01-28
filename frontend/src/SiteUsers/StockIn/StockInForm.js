@@ -24,6 +24,11 @@ const StockInForm = ({ onAddPurchase }) => {
     brandName: "",
     billNumber: "",
     totalPrice: "",
+    userId: "",      // user id added here
+    siteManager: "", // site manager added here
+    siteCode: "",    // site code added here
+    siteName: "",    // site name added here
+    siteId: ""       // site id added here
   });
   const [brands, setBrands] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -54,26 +59,45 @@ const StockInForm = ({ onAddPurchase }) => {
 
   const [sites, setSites] = useState([]);
   
-    // Fetch site data based on user ID
-    useEffect(() => {
-      const fetchSites = async () => {
-        try {
-          const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
-          if (response.ok) {
-            const data = await response.json();
-            setSites(data);
-          } else {
-            console.error("Failed to fetch sites");
-          }
-        } catch (error) {
-          console.error("Error fetching sites:", error);
-        }
-      };
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Filter the sites based on the userId (assuming that userId is associated with specific sites)
+          const userSites = data.filter(site => site.userId === user?.id);
   
-      if (user?.id) {
-        fetchSites();
+          // If matching sites are found, use the details of the first one
+          if (userSites.length > 0) {
+            const selectedSite = userSites[0]; // Get the site details related to the user
+            
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              userId: user?.id,
+              siteManager: selectedSite.siteManager,
+              siteCode: selectedSite.siteCode,
+              siteName: selectedSite.siteName,
+              siteId: selectedSite.id,
+            }));
+            setSites(userSites);  // Save all the sites related to the user
+          } else {
+            console.error("No sites found for the user");
+          }
+        } else {
+          console.error("Failed to fetch sites");
+        }
+      } catch (error) {
+        console.error("Error fetching sites:", error);
       }
-    }, [user?.id]);
+    };
+  
+    if (user?.id) {
+      fetchSites();
+    }
+  }, [user?.id]);
+  
 
   useEffect(() => {
     // Fetch brands from the API
@@ -161,21 +185,6 @@ const StockInForm = ({ onAddPurchase }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/stock-in",
-        formData
-      );
-      alert(response.data.message);
-    } catch (error) {
-      console.error("Error adding stock:", error);
-      alert("Failed to add stock.");
-    }
-  };
-
-
 
   // Handle saving the brand data
   const handleSaveBrand = (brandData) => {
@@ -193,6 +202,20 @@ const StockInForm = ({ onAddPurchase }) => {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/stock-in",
+        formData
+      );
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error adding stock:", error);
+      alert("Failed to add stock.");
+    }
+  };
+
   return (
     <div>
       <UserNavbar />
@@ -201,7 +224,7 @@ const StockInForm = ({ onAddPurchase }) => {
           <Col md={12} lg={10}>
             <Card className="shadow-sm">
               <Card.Header>
-                <h2 className="mb-0 text-white">StockIn Form</h2>
+                <h2 className="mb-0 text-white">Purchase(Stock-In)</h2>
               </Card.Header>
               <Card.Body>
                 <Form onSubmit={handleSubmit}>
@@ -383,7 +406,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
                   <div className="d-flex justify-content-center align-items-center">
                     <Button type="submit" variant="primary" className="w-50 mt-3">
-                      Submit
+                      Save
                     </Button>
                   </div>
                 </Form>

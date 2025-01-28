@@ -227,17 +227,13 @@ app.get("/units", (req, res) => {
   });
 });
 
-// API Endpoint to handle stock-in form submission
-app.post("/stock-in", (req, res) => {
+app.post("/stock-out", (req, res) => {
   const {
-    site_name,
-    site_code,
+
     dateTime,
-    time,
-    transaction_type,
     supplierName,
     supplier_id,
-    receiver,
+    destinationSite,
     productName,
     product_id,
     brandName,
@@ -248,30 +244,36 @@ app.post("/stock-in", (req, res) => {
     available_quantity,
     billNumber,
     tran_id,
-    userid, // New field
-    sitemanager, // New field
+    userId,
+    siteManager,
+    siteCode,
+    siteName,
+    siteId
   } = req.body;
 
+  const transaction_type = "Stock Out";  // Example (could be dynamic if needed)
+  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
+  
+  // Insert data into the database using the query
   const query = `
-    INSERT INTO stockledger (
-        site_name, site_code, date, time, transaction_type, supplier,
-        supplier_id, receiver, product, product_id, brand, brand_id,
-        units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,
-        userid, sitemanager
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO stockledger (
+          site_name, site_code, date, time, transaction_type, supplier,
+          supplier_id, receiver, product, product_id, brand, brand_id,
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
   `;
 
   db.query(
     query,
     [
-      site_name,
-      site_code,
+      siteName,
+      siteCode,
       dateTime,
       time,
       transaction_type,
       supplierName,
       supplier_id,
-      receiver,
+      destinationSite,
       productName,
       product_id,
       brandName,
@@ -282,8 +284,11 @@ app.post("/stock-in", (req, res) => {
       available_quantity,
       billNumber,
       tran_id,
-      userid, // New field value
-      sitemanager, // New field value
+      userId,
+      siteManager,
+      siteId
+      
+     
     ],
     (err, result) => {
       if (err) {
@@ -296,126 +301,78 @@ app.post("/stock-in", (req, res) => {
   );
 });
 
-app.post("/stock-out", (req, res) => {
-  const {
-      site_name,
-      site_code,
-      date,
-      time,
-      transaction_type,
-      supplierName,
-      supplier_id,
-      destinationSite,
-      productName,
-      product_id,
-      brandName,
-      brand_id,
-      units,
-      quantity,
-      quantity_out,
-      available_quantity,
-      billNumber,
-      tran_id,
-  } = req.body;
-
-  const query = `
-      INSERT INTO stockledger (
-          site_name, site_code, date, time, transaction_type, supplier,
-          supplier_id, receiver, product, product_id, brand, brand_id,
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(
-      query,
-      [
-          site_name,
-          site_code,
-          date,
-          time,
-          transaction_type,
-          supplierName,
-          supplier_id,
-          destinationSite,
-          productName,
-          product_id,
-          brandName,
-          brand_id,
-          units,
-          quantity,
-          quantity_out,
-          available_quantity,
-          billNumber,
-          tran_id,
-      ],
-      (err, result) => {
-          if (err) {
-              console.error("Error inserting data:", err);
-              res.status(500).json({ message: "Failed to add stock" });
-          } else {
-              res.status(200).json({ message: "Stock added successfully" });
-          }
-      }
-  );
-});
-
 app.post("/stock-consumed", (req, res) => {
+  // Destructure the incoming data from the request body
   const {
-      site_name,
-      site_code,
-      date,
-      time,
-      transaction_type,
-      supplierName,
-      supplier_id,
-      destinationSite,
-      productName,
-      product_id,
-      brandName,
-      brand_id,
-      units,
-      quantity_in,
-      quantity,
-      available_quantity,
-      billNumber,
-      tran_id,
+    productName,
+    quantity,
+    units,
+    description,
+    dateTime,
+    brandName,
+    userId,
+    siteManager,
+    siteCode,
+    siteName,
+    siteId
   } = req.body;
 
+  // Here, the other fields like supplierName, supplier_id, etc., should be added if needed
+  // For now, let's assume transaction_type, supplierName, supplier_id, etc., are either optional or will be added later
+  const transaction_type = "Consumption";  // Example (could be dynamic if needed)
+  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
+  const supplierName = "N/A"; // Example static data
+  const supplier_id = 0; // Example static data
+  const destinationSite = siteName; // Could be used for destination
+  const product_id = 1; // Assuming a static value or you can fetch the actual product id
+  const brand_id = 1; // Assuming a static brand id for now
+  const quantity_in = 0; // Assuming stock in is not applicable in this case
+  const available_quantity = 100; // Assuming a static value for now
+  const billNumber = "INV12345"; // Example static data
+  const tran_id = Date.now(); // Example dynamic transaction id (could be replaced)
+
+  // Insert data into the database using the query
   const query = `
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
           supplier_id, receiver, product, product_id, brand, brand_id,
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
   `;
 
   db.query(
       query,
       [
-          site_name,
-          site_code,
-          date,
-          time,
-          transaction_type,
-          supplierName,
-          supplier_id,
-          destinationSite,
-          productName,
-          product_id,
-          brandName,
-          brand_id,
-          units,
-          quantity_in,
-          quantity,
-          available_quantity,
-          billNumber,
+          siteName,
+          siteCode,
+          dateTime,          // DateTime from the form
+          time,              // Time from the form
+          transaction_type,  // Static or dynamic transaction type
+          supplierName,      // Static or dynamic supplier name
+          supplier_id,       // Static or dynamic supplier ID
+          destinationSite,   // Site where the stock is consumed
+          productName,       // Product name from the form
+          product_id,        // Product ID (can be fetched or static)
+          brandName,         // Brand name from the form
+          brand_id,          // Brand ID (can be fetched or static)
+          units,             // Units from the form
+          quantity_in,       // Quantity in, assuming 0 for now
+          quantity,          // Quantity consumed (from the form)
+          available_quantity, // Available stock after consumption
+          billNumber,        // Invoice number (can be dynamic)
           tran_id,
+          userId,
+          siteManager,
+          siteId
+
+              
       ],
       (err, result) => {
           if (err) {
               console.error("Error inserting data:", err);
               res.status(500).json({ message: "Failed to add stock" });
           } else {
+              console.log("Stock added successfully:", JSON.stringify(req.body, null, 2)); // Log the submitted data
               res.status(200).json({ message: "Stock added successfully" });
           }
       }
@@ -423,21 +380,6 @@ app.post("/stock-consumed", (req, res) => {
 });
 
 
-
-  //Get all sites (GET)
-  app.get('/sites', (req, res) => {
-    const query = 'SELECT * FROM sites';
-    
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Error fetching sites');
-      }
-      
-      // Send all the sites as the response
-      res.send(results);
-    });
-  });
 
 // POST API to add a user
 app.post("/users", (req, res) => {
@@ -460,6 +402,150 @@ app.get('/users', (req, res) => {
   });
 });
 
+  // Login API
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  const query = "SELECT id, email, name, role FROM users WHERE email = ? AND password = ?";
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    if (results.length > 0) {
+      // User found
+      const user = results[0];
+      res.status(200).json({
+        message: "Login successful",
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        },
+      });
+    } else {
+      // User not found
+      res.status(401).json({ message: "Invalid email or password" });
+    }
+  });
+});
+
+// GET Allocations
+app.get("/allocations", (req, res) => {
+  const sql = "SELECT * FROM allocations";
+  db.query(sql, (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error fetching data from database" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+// POST New Allocation
+app.post("/allocations", (req, res) => {
+  const { siteName, manager, productName, stockOutward, remainingStock } = req.body;
+  const sql = "INSERT INTO allocations (siteName, manager, productName, stockOutward, remainingStock) VALUES (?, ?, ?, ?, ?)";
+  db.query(sql, [siteName, manager, productName, stockOutward, remainingStock], (err, result) => {
+    if (err) {
+      res.status(500).json({ error: "Error inserting data into database" });
+    } else {
+      res.status(201).json({ message: "Allocation added successfully", id: result.insertId });
+    }
+  });
+});
+
+//Get all sites (GET)
+app.get('/sites', (req, res) => {
+  const query = 'SELECT * FROM sites';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error fetching sites');
+    }
+    
+    // Send all the sites as the response
+    res.send(results);
+  });
+});
+
+app.post("/stock-in", (req, res) => {
+  const {
+    dateTime,
+    supplierName,
+    supplier_id,
+    receiver,
+    productName,
+    product_id,
+    brandName,
+    brand_id,
+    units,
+    quantity,
+    quantity_out,
+    available_quantity,
+    billNumber,
+    tran_id,
+    userId,
+    siteManager,
+    siteCode,
+    siteName,
+    siteId
+  } = req.body;
+
+  const transaction_type = "Purchase";  // Example (could be dynamic if needed)
+  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
+
+  // Insert data into the database using the query
+  const query = `
+      INSERT INTO stockledger (
+          site_name, site_code, date, time, transaction_type, supplier,
+          supplier_id, receiver, product, product_id, brand, brand_id,
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+  `;
+
+  db.query(
+    query,
+    [
+      siteName,
+      siteCode,
+      dateTime,
+      time,
+      transaction_type,
+      supplierName,
+      supplier_id,
+      receiver,
+      productName,
+      product_id,
+      brandName,
+      brand_id,
+      units,
+      quantity,
+      quantity_out,
+      available_quantity,
+      billNumber,
+      tran_id,
+      userId,
+      siteManager,
+      siteId
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        res.status(500).json({ message: "Failed to add stock" });
+      } else {
+        res.status(200).json({ message: "Stock added successfully" });
+      }
+    }
+  );
+});
 
 // POST API to add a new site
 app.post('/sites', (req, res) => {
@@ -522,65 +608,6 @@ app.get('/sites', (req, res) => {
   });
 });
 
-
-  // Login API
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
-  }
-
-  const query = "SELECT id, email, name, role FROM users WHERE email = ? AND password = ?";
-  db.query(query, [email, password], (err, results) => {
-    if (err) {
-      console.error("Error querying the database:", err);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-
-    if (results.length > 0) {
-      // User found
-      const user = results[0];
-      res.status(200).json({
-        message: "Login successful",
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
-      });
-    } else {
-      // User not found
-      res.status(401).json({ message: "Invalid email or password" });
-    }
-  });
-});
-
-// GET Allocations
-app.get("/allocations", (req, res) => {
-  const sql = "SELECT * FROM allocations";
-  db.query(sql, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: "Error fetching data from database" });
-    } else {
-      res.status(200).json(result);
-    }
-  });
-});
-
-// POST New Allocation
-app.post("/allocations", (req, res) => {
-  const { siteName, manager, productName, stockOutward, remainingStock } = req.body;
-  const sql = "INSERT INTO allocations (siteName, manager, productName, stockOutward, remainingStock) VALUES (?, ?, ?, ?, ?)";
-  db.query(sql, [siteName, manager, productName, stockOutward, remainingStock], (err, result) => {
-    if (err) {
-      res.status(500).json({ error: "Error inserting data into database" });
-    } else {
-      res.status(201).json({ message: "Allocation added successfully", id: result.insertId });
-    }
-  });
-});
 
 const PORT = 5000;
 app.listen(PORT, () => {

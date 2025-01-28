@@ -66,7 +66,7 @@ const UserNavbar = () => {
         <li>
           <Link to="/stockintable">
             <FaBoxOpen />
-            Stock In
+            Purchase
           </Link>
         </li>
         <li>
@@ -82,15 +82,15 @@ const UserNavbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/summary">
-            <FaFileAlt />
-            Reports
+          <Link to="/allocatedtable">
+            <FaBoxOpen />
+            StockIn(allocated)
           </Link>
         </li>
         <li>
-          <Link to="/allocatedtable">
-            <FaBoxOpen />
-            Allocated Table
+          <Link to="/summary">
+            <FaFileAlt />
+            Reports
           </Link>
         </li>
       </ul>
