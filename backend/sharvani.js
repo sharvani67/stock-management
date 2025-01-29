@@ -360,10 +360,10 @@ app.post("/stock-consumed", (req, res) => {
   // Insert data into the database using the query
   const query = `
       INSERT INTO stockledger (
-          site_name, site_code, date, time, transaction_type, supplier,
+          site_name, site_code, date,  transaction_type, supplier,
           supplier_id, receiver, product, product_id, brand, brand_id,
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+          units, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   db.query(
@@ -372,7 +372,7 @@ app.post("/stock-consumed", (req, res) => {
           siteName,
           siteCode,
           dateTime,          // DateTime from the form
-          time,              // Time from the form
+                        // Time from the form
           transaction_type,  // Static or dynamic transaction type
           supplierName,      // Static or dynamic supplier name
           supplier_id,       // Static or dynamic supplier ID
@@ -385,7 +385,7 @@ app.post("/stock-consumed", (req, res) => {
           quantity_in,       // Quantity in, assuming 0 for now
           quantity,          // Quantity consumed (from the form)
           available_quantity, // Available stock after consumption
-          billNumber,        // Invoice number (can be dynamic)
+                  // Invoice number (can be dynamic)
           tran_id,
           userId,
           siteManager,
@@ -511,17 +511,18 @@ app.post("/allocations", (req, res) => {
 //Get all sites (GET)
 app.get('/sites', (req, res) => {
   const query = 'SELECT * FROM sites';
-  
+
   db.query(query, (err, results) => {
     if (err) {
-      console.error(err);
+      console.error("Database Error:", err);
       return res.status(500).send('Error fetching sites');
     }
     
-    // Send all the sites as the response
+    console.log("Fetched Sites from DB:", results); // Debugging log
     res.send(results);
   });
 });
+
 
 app.post("/stock-in", (req, res) => {
   const {

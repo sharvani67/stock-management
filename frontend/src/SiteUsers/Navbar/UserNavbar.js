@@ -143,8 +143,12 @@ const UserNavbar = () => {
                       <ul>
                         {siteCodes.map((site) => (
                           <li key={site.id}>
-                            <strong>Code:</strong> {site.siteCode} |{" "}
-                            <strong>Location:</strong> {site.location}
+                            <p>
+                            <strong>Code:</strong> {site.siteCode}
+                            </p>
+                            <p><strong>Location:</strong> {site.location}</p>
+                            <p><strong>Site Name:</strong> {site.siteName}</p>
+                            
                           </li>
                         ))}
                       </ul>

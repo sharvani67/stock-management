@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
@@ -22,6 +22,9 @@ const StockOutModal = ({ show, handleClose }) => {
     siteId: ""       // site id added here
   });
   const [sites, setSites] = useState([]);
+
+
+
 
   useEffect(() => {
     const currentDate = new Date();
@@ -49,47 +52,47 @@ const StockOutModal = ({ show, handleClose }) => {
     });
   };
 
-    useEffect(() => {
-      const fetchSites = async () => {
-        try {
-          const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
-          if (response.ok) {
-            const data = await response.json();
-            
-            // Filter the sites based on the userId (assuming that userId is associated with specific sites)
-            const userSites = data.filter(site => site.userId === user?.id);
-    
-            // If matching sites are found, use the details of the first one
-            if (userSites.length > 0) {
-              const selectedSite = userSites[0]; // Get the site details related to the user
-              
-              setFormData((prevFormData) => ({
-                ...prevFormData,
-                userId: user?.id,
-                siteManager: selectedSite.siteManager,
-                siteCode: selectedSite.siteCode,
-                siteName: selectedSite.siteName,
-                siteId: selectedSite.id,
-              }));
-              setSites(userSites);  // Save all the sites related to the user
-            } else {
-              console.error("No sites found for the user");
-            }
-          } else {
-            console.error("Failed to fetch sites");
-          }
-        } catch (error) {
-          console.error("Error fetching sites:", error);
-        }
-      };
-    
-      if (user?.id) {
-        fetchSites();
-      }
-    }, [user?.id]);
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/sites`);
+        if (response.status === 200) {
+          const allSites = response.data;
 
-    // Log the data to console before submitting
-    console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
+          // Store all sites in state
+          setSites(allSites);
+
+          // Filter only user-specific sites
+          const userSites = allSites.filter(site => site.userId === user?.id);
+          if (userSites.length > 0) {
+            const selectedSite = userSites[0];
+            setFormData(prev => ({
+              ...prev,
+              userId: user?.id,
+              siteManager: selectedSite.siteManager,
+              siteCode: selectedSite.siteCode,
+              siteName: selectedSite.siteName,
+              siteId: selectedSite.id,
+            }));
+          } else {
+            console.warn("No user-specific sites found");
+          }
+        } else {
+          console.error("Failed to fetch sites");
+        }
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    if (user?.id) {
+      fetchSites();
+    }
+  }, [user?.id]);
+
+
+  // Log the data to console before submitting
+  console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -132,13 +135,21 @@ const StockOutModal = ({ show, handleClose }) => {
               <Form.Group controlId="formDestinationSite">
                 <Form.Label>Destination Site</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter destination site"
+                  as="select"
                   name="destinationSite"
                   value={formData.destinationSite}
                   onChange={handleChange}
                   required
-                />
+                >
+                  <option value="">Select Destination Site</option>
+                  {sites
+                    .filter(site => site.id !== formData.siteId) // Exclude selected site
+                    .map((site) => (
+                      <option key={site.id} value={site.siteName}>
+                        {site.siteName}
+                      </option>
+                    ))}
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
@@ -261,4 +272,4 @@ const StockOutModal = ({ show, handleClose }) => {
   );
 };
 
-export default StockOutModal;
+export default StockOutModal;
