@@ -7,6 +7,7 @@ import ViewAllocation from "./ViewAllocation";
 import EditAllocation from "./EditAllocation";
 import StockModalPopup from "./AddAllocation";
 import Sidebar from "../../Shared/SideBar/SideBar";
+import { BASE_URL } from '../../ApiService/Api'
 
 const AllocationTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,7 +21,7 @@ const AllocationTable = () => {
   // Fetch Data from Backend
   const fetchAllocations = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/allocations");
+      const response = await axios.get(`${BASE_URL}/allocations`);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching allocations:", error);
@@ -58,7 +59,7 @@ const AllocationTable = () => {
 
   const handleSaveStock = async (newData) => {
     try {
-      await axios.post("http://localhost:5000/allocations", newData);
+      await axios.post(`${BASE_URL}/allocations`, newData);
       fetchAllocations(); // Refresh table after adding
       handleCloseStockModal();
     } catch (error) {

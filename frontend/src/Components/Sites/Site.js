@@ -7,6 +7,7 @@ import EditSite from './EditSite';
 import ViewSite from './ViewSite';
 import axios from 'axios'; // Import axios for API calls
 import Sidebar from '../../Shared/SideBar/SideBar';
+import { BASE_URL } from '../../ApiService/Api';
 
 const SiteTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -30,7 +31,7 @@ const SiteTable = () => {
   useEffect(() => {
     const fetchSiteData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/sites');
+        const response = await axios.get(`${BASE_URL}/sites`);
         setSiteData(response.data); // Set the fetched data into state
       } catch (error) {
         console.error('Error fetching site data:', error);

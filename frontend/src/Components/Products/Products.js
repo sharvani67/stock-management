@@ -7,6 +7,7 @@ import ViewProduct from "./ViewProduct";
 import { FaEye, FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import axios from "axios"; // Import Axios for API calls
 import Sidebar from "../../Shared/SideBar/SideBar";
+import { BASE_URL } from "../../ApiService/Api";
 
 const ProductTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,7 +21,7 @@ const ProductTable = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/products");
+        const response = await axios.get(`${BASE_URL}/api/products`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);

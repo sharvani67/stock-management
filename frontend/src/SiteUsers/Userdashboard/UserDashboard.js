@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import UserNavbar from "../Navbar/UserNavbar";
+import { BASE_URL } from "../../ApiService/Api";
 
 // Register the chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -23,7 +24,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites`);
+        const response = await fetch(`${BASE_URL}/sites`);
         if (response.ok) {
           const data = await response.json();
   

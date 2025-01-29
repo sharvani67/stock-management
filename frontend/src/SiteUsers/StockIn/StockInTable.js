@@ -6,6 +6,7 @@ import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserNavbar from '../Navbar/UserNavbar';
 import { AuthContext } from "../../Context/AuthContext";
+import { BASE_URL } from '../../ApiService/Api';
 
 const StockInTable = () => {
   const { user } = useContext(AuthContext);
@@ -20,7 +21,7 @@ const StockInTable = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/stock-in", {
+        const response = await axios.get(`${BASE_URL}/stock-in`, {
           params: { userid: user.id }, // Pass user ID as query param
         });
 

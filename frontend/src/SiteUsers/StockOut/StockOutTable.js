@@ -5,6 +5,7 @@ import StockOutModal from "./StockOutForm";
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
+import { BASE_URL } from "../../ApiService/Api";
 
 const StockOutTable = () => {
   const { user, logout } = useContext(AuthContext);
@@ -21,7 +22,7 @@ const StockOutTable = () => {
     try {
       if (!user?.id) return; // Wait until user is loaded
   
-      const response = await axios.get(`http://localhost:5000/stock-out`, {
+      const response = await axios.get(`${BASE_URL}/stock-out`, {
         params: { userid: user.id } // Ensure userid is always passed
       });
   

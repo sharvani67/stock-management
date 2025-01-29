@@ -6,6 +6,7 @@ import AddBrandModal from "./AddBrand"; // Assuming AddBrandModal is the modal c
 import ViewBrand from "./ViewBrand"; // Import ViewBrand
 import EditBrand from "./EditBrand"; // Import EditBrand
 import Sidebar from "../../Shared/SideBar/SideBar";
+import { BASE_URL } from "../../ApiService/Api";
 
 
 const Brand = () => {
@@ -20,7 +21,7 @@ const Brand = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/brands");
+        const response = await fetch(`${BASE_URL}/api/brands`);
         const data = await response.json();
         console.log("API Response:", data); // Check if API data is fetched
         setBrands(data); // Ensure this sets the state

@@ -3,6 +3,7 @@ import DataTable from "../layout/DataTable";
 import UserNavbar from "./Navbar/UserNavbar";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
+import { BASE_URL } from "../ApiService/Api";
 
 const AllocatedStock = () => {
   const { user, logout } = useContext(AuthContext);
@@ -14,7 +15,7 @@ const AllocatedStock = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+        const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -48,7 +49,7 @@ const AllocatedStock = () => {
       if (!user?.id) return; // Wait until user is loaded
 
       // Fetch stock out records
-      const response = await axios.get("http://localhost:5000/allocated");
+      const response = await axios.get(`${BASE_URL}/allocated`);
 
       if (response.data) {
         // Filter records by siteName matching selected site's siteName

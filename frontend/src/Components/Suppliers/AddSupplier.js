@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { BASE_URL } from "../../ApiService/Api";
 
 const AddSupplierModal = ({ show, handleClose, handleSave }) => {
   const [supplierName, setSupplierName] = useState("");
@@ -8,7 +9,7 @@ const AddSupplierModal = ({ show, handleClose, handleSave }) => {
   const [address, setAddress] = useState("");
 
   const saveSupplier = (supplierData) => {
-    fetch("http://localhost:5000/api/suppliers", {
+    fetch(`${BASE_URL}/api/suppliers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

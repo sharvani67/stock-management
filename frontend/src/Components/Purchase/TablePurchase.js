@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import ViewPurchase from './ViewPurchase';
 import EditPurchase from './EditPurchase';
 import Sidebar from '../../Shared/SideBar/SideBar';
+import { BASE_URL } from '../../ApiService/Api';
 
 const TablePurchase = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,7 +17,7 @@ const TablePurchase = () => {
 
   useEffect(() => {
     // Fetch purchase data
-    fetch('http://localhost:5000/api/purchases')
+    fetch(`${BASE_URL}/api/purchases`)
       .then((response) => response.json())
       .then((data) => setPurchaseData(data))
       .catch((error) => console.error('Error fetching purchases:', error));
