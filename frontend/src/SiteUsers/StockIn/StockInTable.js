@@ -1,76 +1,66 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
 import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserNavbar from '../Navbar/UserNavbar';
-// import ViewPurchase from './ViewPurchase';
-// import EditPurchase from './EditPurchase';
 import { AuthContext } from "../../Context/AuthContext";
 
 const StockInTable = () => {
-  const { user, logout } = useContext(AuthContext);
-  const [purchaseData, setPurchaseData] = useState([
-    { sNo: 1, date:"20-1-2025",productName: 'Cement', quantity: 100, units: 'Bags', price: 10, supplierName: 'Global Materials', brandName: 'Ultratech' },
-    { sNo: 2, date:"20-1-2025",productName: 'Steel', quantity: 150, units: 'Sheets', price: 20, supplierName: 'ABC Supplies', brandName: 'TATA Steel' },
-    { sNo: 3, date:"20-1-2025",productName: 'Tiles', quantity: 200, units: 'Boxes', price: 30, supplierName: 'XYZ Traders', brandName: 'Tiles Brand' },
-    { sNo: 4, date:"20-1-2025",productName: 'Paints', quantity: 50, units: 'Litre', price: 40, supplierName: 'Global Materials', brandName: 'Asian' },
-    { sNo: 5, date:"20-1-2025",productName: 'Bricks', quantity: 300, units: 'Piece ', price: 50, supplierName: 'Global Materials', brandName: 'BrickSphere' },
-  ]);
+  const { user } = useContext(AuthContext);
+  const [purchaseData, setPurchaseData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [viewModal, setViewModal] = useState(false);
-const [editModal, setEditModal] = useState(false);
-const [selectedPurchase, setSelectedPurchase] = useState(null);
+  // Fetch stock-in data from API
+  useEffect(() => {
+    const fetchStockInRecords = async () => {
+      if (!user?.id) return; // Ensure user ID is available
 
-const handleView = (item) => {
-  setSelectedPurchase(item);
-  setViewModal(true);
-};
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:5000/stock-in", {
+          params: { userid: user.id }, // Pass user ID as query param
+        });
 
-const handleEdit = (item) => {
-  setSelectedPurchase(item);
-  setEditModal(true);
-};
+        setPurchaseData(response.data); // Update state with API data
+      } catch (err) {
+        console.error("Error fetching stock-in records:", err);
+        setError("Failed to fetch stock-in data.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const handleSave = (updatedData) => {
-  const updatedList = purchaseData.map((item) =>
-    item.sNo === updatedData.sNo ? updatedData : item
-  );
-  setPurchaseData(updatedList);
-};
+    fetchStockInRecords();
+  }, [user]); // Re-run when user changes
 
-  // const handleView = (item) => {
-  //   console.log('Viewing item:', item);
-  // };
-  
-
-  // const handleEdit = (item) => {
-  //   console.log('Editing item:', item);
-  // };
-
-  const handleDelete = (sNo) => {
+  // Delete a stock-in entry
+  const handleDelete = async (sNo) => {
     const updatedData = purchaseData.filter((item) => item.sNo !== sNo);
     setPurchaseData(updatedData);
   };
 
   const columns = [
-    { Header: 'S.No', accessor: 'sNo' },
+    // { Header: 'S.No', accessor: 'sNo' },
     { Header: 'Date', accessor: 'date' },
-    { Header: 'Product Name', accessor: 'productName' },
-    { Header: 'Quantity', accessor: 'quantity' },
+    { Header: 'Product Name', accessor: 'product' },
+    { Header: 'Brand Name', accessor: 'brand' },
+    { Header: 'Quantity', accessor: 'quantity_in' },
     { Header: 'Units', accessor: 'units' },
-    { Header: 'Price', accessor: 'price' },
-    { Header: 'Supplier Name', accessor: 'supplierName' },
-    { Header: 'Brand Name', accessor: 'brandName' },
+    // { Header: 'Price', accessor: 'price' },
+    { Header: 'Supplier Name', accessor: 'supplier' },
+  
     {
       Header: 'Actions',
       accessor: 'actions',
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
+          <Button variant="outline-info" size="sm">
             <FaEye />
           </Button>
-          <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
+          <Button variant="outline-warning" size="sm">
             <FaEdit />
           </Button>
           <Button
@@ -88,41 +78,25 @@ const handleSave = (updatedData) => {
   return (
     <div>
       <UserNavbar />
-      {/* <h1>Welcome, {user?.name}</h1>
-      <p>Email: {user?.email}</p> */}
-      <p>id: {user?.id}</p>
+      <div className="container mt-5">
+        <h1 className="mb-4">StockIn Management</h1>
 
-    <div className="container mt-5">
-      <h1 className="mb-4">StockIn Management</h1>
+        {/* Show loading or error message */}
+        {loading && <p>Loading data...</p>}
+        {error && <p className="text-danger">{error}</p>}
 
-      {/* Add New Purchase Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Link to="/stockin">
-          <Button variant="primary" className='add-button'><FaPlus className="me-2" />Add New StockIn</Button>
-        </Link>
-      </div>
+        {/* Add New Purchase Button */}
+        <div className="d-flex justify-content-end mb-3">
+          <Link to="/stockin">
+            <Button variant="primary" className="add-button">
+              <FaPlus className="me-2" /> Add New StockIn
+            </Button>
+          </Link>
+        </div>
 
-      {/* DataTable Wrapper */}
-      {/* <div className="table-wrapper"> */}
+        {/* DataTable */}
         <DataTable columns={columns} data={purchaseData} />
-      {/* </div> */}
-      {/* {viewModal && (
-          <ViewPurchase
-            show={viewModal}
-            handleClose={() => setViewModal(false)}
-            details={selectedPurchase}
-          />
-        )} */}
-        {/* {editModal && (
-          <EditPurchase
-            show={editModal}
-            handleClose={() => setEditModal(false)}
-            details={selectedPurchase}
-            onSave={handleSave}
-          />
-        )} */}
-
-    </div>
+      </div>
     </div>
   );
 };
