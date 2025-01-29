@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios"; // Import axios
 import DataTable from "../../layout/DataTable";
 import StockOutModal from "./StockOutForm";
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
+import { AuthContext } from "../../Context/AuthContext";
 
 const StockOutTable = () => {
+  const { user, logout } = useContext(AuthContext);
   const [data, setData] = useState([]); // State to store API data
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -14,10 +16,16 @@ const StockOutTable = () => {
   const handleClose = () => setShowModal(false);
 
   // Fetch stock-out data from API
+  // Fetch stock-out data from API
   const fetchStockOutRecords = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/stock-out"); // Call API
-      console.log("API Response:", response.data); // Debug log
+      if (!user?.id) return; // Wait until user is loaded
+  
+      const response = await axios.get(`http://localhost:5000/stock-out`, {
+        params: { userid: user.id } // Ensure userid is always passed
+      });
+  
+      console.log("Filtered API Response:", response.data);
       setData(response.data);
     } catch (error) {
       console.error("Error fetching stock-out records:", error);
@@ -25,23 +33,28 @@ const StockOutTable = () => {
       setLoading(false);
     }
   };
-
-  // Load data when component mounts
+  
+  // Load data when user is available
   useEffect(() => {
-    fetchStockOutRecords();
-  }, []);
+    if (user?.id) {
+      fetchStockOutRecords();
+    }
+  }, [user]); // Fetch again when user updates
+  
+
+  
 
   // Table columns
   const columns = React.useMemo(
     () => [
       { Header: "Date", accessor: "date" },
       { Header: "Site Name", accessor: "site_name" },
-      { Header: "Destination Site", accessor: "destinationsite" },
+      { Header: "Destination Site", accessor: "receiver" },
       { Header: "Product Name", accessor: "product" },
       { Header: "Brand Name", accessor: "brand" },
       { Header: "Quantity", accessor: "quantity_out" },
       { Header: "Units", accessor: "units" },
-      { Header: "Transaction Type", accessor: "transaction_type" },
+      // { Header: "Transaction Type", accessor: "transaction_type" },
     ],
     []
   );

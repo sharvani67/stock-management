@@ -226,10 +226,19 @@ app.get("/units", (req, res) => {
     }
   });
 });
-// GET API to fetch units
+
 app.get("/stock-out", (req, res) => {
-  const sqlQuery = "SELECT * FROM stockledger";
-  db.query(sqlQuery, (err, results) => {
+  const { userid } = req.query; // Get userid from request query
+
+  if (!userid) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  // Base SQL query with condition
+  let sqlQuery = "SELECT * FROM stockledger WHERE transaction_type = 'Stock Out' AND userid = ?";
+  let queryParams = [userid];
+
+  db.query(sqlQuery, queryParams, (err, results) => {
     if (err) {
       console.error("Error fetching data:", err);
       res.status(500).json({ message: "Error fetching data" });
@@ -238,6 +247,10 @@ app.get("/stock-out", (req, res) => {
     }
   });
 });
+
+
+
+
 
 app.post("/stock-out", (req, res) => {
   const {
@@ -392,6 +405,27 @@ app.post("/stock-consumed", (req, res) => {
   );
 });
 
+app.get("/stock-consumed", (req, res) => {
+  const { userid } = req.query; // Get userid from request query
+
+  if (!userid) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  // Base SQL query with condition
+  let sqlQuery = "SELECT * FROM stockledger WHERE transaction_type = 'Consumption' AND userid = ?";
+  let queryParams = [userid];
+
+  db.query(sqlQuery, queryParams, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ message: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
 
 
 // POST API to add a user
@@ -499,7 +533,7 @@ app.post("/stock-in", (req, res) => {
     product_id,
     brandName,
     brand_id,
-    units,
+    name,
     quantity,
     quantity_out,
     available_quantity,
@@ -539,7 +573,7 @@ app.post("/stock-in", (req, res) => {
       product_id,
       brandName,
       brand_id,
-      units,
+      name,
       quantity,
       quantity_out,
       available_quantity,
@@ -558,6 +592,27 @@ app.post("/stock-in", (req, res) => {
       }
     }
   );
+});
+
+app.get("/stock-in", (req, res) => {
+  const { userid } = req.query; // Get userid from request query
+
+  if (!userid) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  // Base SQL query with condition
+  let sqlQuery = "SELECT * FROM stockledger WHERE transaction_type = 'Purchase' AND userid = ?";
+  let queryParams = [userid];
+
+  db.query(sqlQuery, queryParams, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ message: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
 });
 
 // POST API to add a new site
@@ -622,9 +677,6 @@ app.get('/sites/:siteId', (req, res) => {
     res.status(200).json(results[0]); // Return single site details
   });
 });
-
-
-
 
 
   // Login API
