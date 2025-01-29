@@ -226,6 +226,18 @@ app.get("/units", (req, res) => {
     }
   });
 });
+// GET API to fetch units
+app.get("/stock-out", (req, res) => {
+  const sqlQuery = "SELECT * FROM stockledger";
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ message: "Error fetching data" });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
 
 app.post("/stock-out", (req, res) => {
   const {
@@ -300,6 +312,7 @@ app.post("/stock-out", (req, res) => {
     }
   );
 });
+
 
 app.post("/stock-consumed", (req, res) => {
   // Destructure the incoming data from the request body
