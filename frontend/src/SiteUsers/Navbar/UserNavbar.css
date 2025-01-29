@@ -49,7 +49,8 @@ body {
 .navbar-links li {
   margin: 0 10px;
   margin-left: 20px;
-  padding-left: 10px;
+  padding-left: 20px;
+  
 }
 
 .navbar-links a {
@@ -62,6 +63,7 @@ body {
 
 .navbar-links a:hover {
   color: #ffcc00; /* Highlight color on hover */
+  
 }
 
 .navbar-links a svg {
