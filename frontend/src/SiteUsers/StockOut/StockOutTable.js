@@ -48,7 +48,7 @@ const StockOutTable = () => {
   const columns = React.useMemo(
     () => [
       { Header: "Date", accessor: "date" },
-      { Header: "Site Name", accessor: "site_name" },
+      // { Header: "Site Name", accessor: "site_name" },
       { Header: "Destination Site", accessor: "receiver" },
       { Header: "Product Name", accessor: "product" },
       { Header: "Brand Name", accessor: "brand" },

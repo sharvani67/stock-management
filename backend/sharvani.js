@@ -738,6 +738,19 @@ app.post("/allocations", (req, res) => {
   });
 });
 
+app.get("/allocated", (req, res) => {
+  const sqlQuery = "SELECT * FROM stockledger WHERE transaction_type = 'Stock Out'";
+
+  db.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ message: "Error fetching data" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
