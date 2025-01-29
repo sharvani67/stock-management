@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import {
   FaHome,
   FaBoxOpen,
@@ -19,46 +20,53 @@ const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSiteCodeOpen, setIsSiteCodeOpen] = useState(false);
-  const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false); // To toggle user details
+  const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
   const [siteCodes, setSiteCodes] = useState([]);
-  const [userDetails, setUserDetails] = useState(null); // To store user details
+  const [userDetails, setUserDetails] = useState(null);
   const { user, logout } = useContext(AuthContext);
 
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
+  const toggleNavbar = () => setIsOpen(!isOpen);
+  const toggleProfileMenu = () => setIsProfileOpen(!isProfileOpen);
+  const toggleSiteCode = () => setIsSiteCodeOpen(!isSiteCodeOpen);
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  // logout function
+  const handleLogout = () => {
+    logout(); // Call the logout function
+    navigate("/"); // Redirect to the login page
   };
 
-  const toggleProfileMenu = () => {
-    setIsProfileOpen(!isProfileOpen);
-  };
-
-  // Fetch Site Codes for the user
-  const toggleSiteCode = async () => {
-    if (!isSiteCodeOpen) {
+  // Fetch Site Codes when the component mounts or when the user changes
+  useEffect(() => {
+    const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites?userId=${user.id}`);
+        const response = await fetch(`http://localhost:5000/sites`);
         if (response.ok) {
           const data = await response.json();
-          setSiteCodes(data);
+          const filteredSites = data.filter((site) => site.userId === user?.id);
+          setSiteCodes(filteredSites);
         } else {
-          console.error("Failed to fetch site codes");
+          console.error("Failed to fetch sites");
         }
       } catch (error) {
-        console.error("Error fetching site codes:", error);
+        console.error("Error fetching sites:", error);
       }
-    }
-    setIsSiteCodeOpen(!isSiteCodeOpen);
-  };
+    };
 
-  // Fetch User Details when My Profile is clicked
+    if (user?.id) {
+      fetchSites();
+    }
+  }, [user?.id]);
+
+  // Fetch User Details when "My Profile" is clicked
   const fetchUserDetails = async () => {
     if (!isUserDetailsOpen) {
       try {
         const response = await fetch(`http://localhost:5000/users`);
         if (response.ok) {
           const data = await response.json();
-          const userDetail = data.find((userItem) => userItem.id === user.id); // Find user by id
-          setUserDetails(userDetail); // Set user details to state
+          const userDetail = data.find((userItem) => userItem.id === user.id);
+          setUserDetails(userDetail);
         } else {
           console.error("Failed to fetch user details");
         }
@@ -71,12 +79,10 @@ const UserNavbar = () => {
 
   return (
     <nav className="navbar">
-      {/* Toggler Button */}
       <button className="navbar-toggler" onClick={toggleNavbar}>
         <FaBars />
       </button>
 
-      {/* Navigation Links */}
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
         <li>
           <Link to="/userdashboard">
@@ -116,7 +122,6 @@ const UserNavbar = () => {
         </li>
       </ul>
 
-      {/* Profile Section */}
       <div className="navbar-profile">
         <div className="profile-icon" onClick={toggleProfileMenu}>
           <FaUserCircle />
@@ -126,7 +131,6 @@ const UserNavbar = () => {
         {isProfileOpen && (
           <div className="profile-dropdown">
             <ul>
-              {/* Site Code Section */}
               <li>
                 <button className="dropdown-button" onClick={toggleSiteCode}>
                   <FaCode />
@@ -150,7 +154,6 @@ const UserNavbar = () => {
                 )}
               </li>
 
-              {/* My Profile Section */}
               <li>
                 <button className="dropdown-button" onClick={fetchUserDetails}>
                   <FaUserAlt />
@@ -171,13 +174,12 @@ const UserNavbar = () => {
                 )}
               </li>
 
-              {/* Logout Section */}
               <li>
-                <button onClick={logout} className="dropdown-button">
-                  <FaSignOutAlt />
-                  Logout
-                </button>
-              </li>
+      <button onClick={handleLogout} className="dropdown-button">
+        <FaSignOutAlt />
+        Logout
+      </button>
+    </li>
             </ul>
           </div>
         )}

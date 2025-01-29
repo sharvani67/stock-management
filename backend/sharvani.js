@@ -590,23 +590,26 @@ app.post('/sites', (req, res) => {
 
 
 // GET API to fetch sites by userId
-app.get('/sites', (req, res) => {
-  const { userId } = req.query;
+// Get a specific site by siteId (GET)
+app.get('/sites/:siteId', (req, res) => {
+  const { siteId } = req.params; // Extract siteId from URL
 
-  if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
+  const query = 'SELECT * FROM sites WHERE id = ?';
 
-  const query = `SELECT * FROM sites WHERE userId = ?`;
-  db.query(query, [userId], (err, results) => {
+  db.query(query, [siteId], (err, results) => {
     if (err) {
-      console.error("Error fetching sites:", err);
-      return res.status(500).json({ message: "Failed to fetch sites" });
+      console.error("Error fetching site:", err);
+      return res.status(500).json({ message: "Failed to fetch site details" });
     }
 
-    res.status(200).json(results);
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Site not found" });
+    }
+
+    res.status(200).json(results[0]); // Return single site details
   });
 });
+
 
 
 
