@@ -1,89 +1,70 @@
-// src/Components/Sidebar/Sidebar.js
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './SideBar.css'
+import './SideBar.css';
+import { useState, useEffect } from 'react';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 function Sidebar() {
-  return (
-    <div className="sidebar">
-      {/* Sidebar Header */}
-      <div className="sidebar-header">
-      <Link to="/dashboard" className="nav-link">
-        <h2>Dashboard</h2>
-        </Link>
-      </div>
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 992);
 
-      {/* Toggle Button for Small Screens */}
-      <button
-        className="sidebar-toggle-btn d-md-none mx-3 mb-3"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#sidebarMenu"
-        aria-expanded="false"
-        aria-controls="sidebarMenu"
-      >
-        <i className="fas fa-bars"></i>
+  // Update sidebar visibility on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsOpen(window.innerWidth >= 992);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <>
+      {/* Sidebar Toggle Button for Small Screens */}
+      <button className="sidebar-toggle-btn d-lg-none" onClick={toggleSidebar}>
+        {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* Sidebar Menu */}
-      <div id="sidebarMenu" className="sidebar-menu collapse d-md-block">
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link to="/users" className="nav-link">
-              <i className="fas fa-users"></i> Users
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/purchase" className="nav-link">
-              <i className="fas fa-shopping-cart"></i> Purchases
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/add-purchase" className="nav-link">
-              <i className="fas fa-plus-circle"></i> Add Purchase
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/site" className="nav-link">
-              <i className="fas fa-map-marker-alt"></i> Sites
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/products" className="nav-link">
-              <i className="fas fa-cogs"></i> Products
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/brands" className="nav-link">
-              <i className="fas fa-tag"></i> Brands
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/unit" className="nav-link">
-              <i className="fas fa-box"></i> Units
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/allocations" className="nav-link">
-              <i className="fas fa-archive"></i> Allocations
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/centralstock" className="nav-link">
-              <i className="fas fa-database"></i> Central Stock
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/suppliers" className="nav-link">
-              <i className="fas fa-truck"></i> Suppliers
-            </Link>
-          </li>
-        </ul>
+      {/* Sidebar Container */}
+      <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+        <div className="sidebar-header">
+          <Link to="/dashboard" className="nav-link">
+            <h2>Dashboard</h2>
+          </Link>
+        </div>
+
+        <div className="sidebar-menu">
+          <ul className="nav flex-column">
+            {[
+              { path: "/users", icon: "fas fa-users", label: "Users" },
+              { path: "/purchase", icon: "fas fa-shopping-cart", label: "Purchases" },
+              { path: "/add-purchase", icon: "fas fa-plus-circle", label: "Add Purchase" },
+              { path: "/site", icon: "fas fa-map-marker-alt", label: "Sites" },
+              { path: "/products", icon: "fas fa-cogs", label: "Products" },
+              { path: "/brands", icon: "fas fa-tag", label: "Brands" },
+              { path: "/unit", icon: "fas fa-box", label: "Units" },
+              { path: "/allocations", icon: "fas fa-archive", label: "Allocations" },
+              { path: "/centralstock", icon: "fas fa-database", label: "Central Stock" },
+              { path: "/suppliers", icon: "fas fa-truck", label: "Suppliers" },
+            ].map((item) => (
+              <li className="nav-item" key={item.path}>
+                <Link to={item.path} className="nav-link">
+                  <i className={item.icon}></i> {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+
+      {/* Overlay for Small Screens */}
+      {isOpen && window.innerWidth < 992 && <div className="overlay" onClick={toggleSidebar}></div>}
+    </>
   );
 }
-
 
 export default Sidebar;
