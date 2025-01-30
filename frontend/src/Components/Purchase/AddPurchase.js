@@ -8,6 +8,7 @@ import AddSupplierModal from '../Suppliers/AddSupplier'; // Import your AddSuppl
 import AddBrandModal from '../Brands/AddBrand'; // Import your AddBrandModal component
 import '../Purchase/AddPurchase.css';
 import Sidebar from "../../Shared/SideBar/SideBar";
+import { BASE_URL } from "../../ApiService/Api";
 
 
 const AddPurchaseForm = ({ onAddPurchase }) => {
@@ -32,7 +33,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     // Fetch brands from the API
     const fetchBrands = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/brands");
+        const response = await fetch(`${BASE_URL}/api/brands`);
         if (response.ok) {
           const data = await response.json();
           setBrands(data); // Update the brands state
@@ -59,7 +60,7 @@ const AddPurchaseForm = ({ onAddPurchase }) => {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/api/purchases", {
+      const response = await fetch(`${BASE_URL}/api/purchases`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

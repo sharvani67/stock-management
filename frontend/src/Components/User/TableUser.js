@@ -58,7 +58,7 @@ const Table = () => {
         // Add update API call if necessary
       } else {
         // Add new user
-        const response = await axios.post('http://localhost:5000/users', userData);
+        const response = await axios.post(`${BASE_URL}/users`, userData);
         setData((prev) => [...prev, response.data]);
       }
     } catch (error) {
@@ -69,7 +69,7 @@ const Table = () => {
 
   const handleDeleteUser = async (userToDelete) => {
     try {
-      await axios.delete(`http://localhost:5000/users/${userToDelete.id}`); // Ensure your server supports DELETE
+      await axios.delete(`${BASE_URL}/users/${userToDelete.id}`); // Ensure your server supports DELETE
       setData((prev) => prev.filter((user) => user.id !== userToDelete.id));
     } catch (error) {
       console.error('Error deleting user:', error);

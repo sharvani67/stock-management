@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
+import { BASE_URL } from '../../ApiService/Api';
 
 const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   const [users, setUsers] = useState([]);
@@ -15,7 +16,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
 
   const handleAddSite = async (newSite) => {
     try {
-      const response = await fetch('http://localhost:5000/sites', {
+      const response = await fetch(`${BASE_URL}/sites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/users');
+        const response = await fetch(`${BASE_URL}/users`);
         if (response.ok) {
           const data = await response.json();
           setUsers(data);

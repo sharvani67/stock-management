@@ -6,6 +6,7 @@ import AddSupplierModal from "./AddSupplier";
 import ViewSupplier from "./ViewSupplier";
 import EditSupplier from "./EditSupplier";
 import Sidebar from "../../Shared/SideBar/SideBar";
+import { BASE_URL } from "../../ApiService/Api";
 
 const SupplierTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -18,7 +19,7 @@ const SupplierTable = () => {
 
   // Fetch suppliers from the backend
   useEffect(() => {
-    fetch("http://localhost:5000/api/suppliers")
+    fetch(`${BASE_URL}/api/suppliers`)
       .then((response) => response.json())
       .then((data) => {
         setData(data); // Update the table data

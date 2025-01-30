@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios"; // Import axios for API calls
+import { BASE_URL } from "../../ApiService/Api";
 
 const StockConsumedTable = () => {
   const { user, logout } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const StockConsumedTable = () => {
     try {
       if (!user?.id) return; // Wait until user is loaded
   
-      const response = await axios.get(`http://localhost:5000/stock-consumed`, {
+      const response = await axios.get(`${BASE_URL}/stock-consumed`, {
         params: { userid: user.id } // Ensure userid is always passed
       });
   

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import '../../CSS/AddForm.css';
 import axios from "axios";
+import { BASE_URL } from "../../ApiService/Api";
 
 const Addunit = ({ show, handleClose, title, details, onSave }) => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
         // Update logic (if you implement an update endpoint in the future)
       } else {
         // Add a new unit
-        await axios.post("http://localhost:5000/units", formData);
+        await axios.post(`${BASE_URL}/units`, formData);
       }
        // Refresh the unit list after adding
       handleClose(); // Close the modal

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { BASE_URL } from "../../ApiService/Api";
 
 const AddProductModal = ({ show, handleClose, handleSave }) => {
   const [productName, setProductName] = useState("");
@@ -9,7 +10,7 @@ const AddProductModal = ({ show, handleClose, handleSave }) => {
     if (productName && description) {
       // Make POST request to the backend
       try {
-        const response = await fetch("http://localhost:5000/api/products", {
+        const response = await fetch(`${BASE_URL}/api/products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

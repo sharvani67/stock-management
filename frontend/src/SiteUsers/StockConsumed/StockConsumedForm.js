@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { BASE_URL } from "../../ApiService/Api";
 
 const StockConsumedForm = ({ show, handleClose }) => {
   const { user } = useContext(AuthContext);
@@ -58,7 +59,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+        const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
           const userSites = data.filter(site => site.userId === user?.id);
@@ -125,7 +126,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/stock-consumed",
+        `${BASE_URL}/stock-consumed`,
         formData
       );
       alert(response.data.message);

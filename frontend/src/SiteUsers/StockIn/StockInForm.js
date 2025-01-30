@@ -10,6 +10,7 @@ import UserNavbar from "../Navbar/UserNavbar";
 // import '../Purchase/AddPurchase.css';
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import { BASE_URL } from "../../ApiService/Api";
 
 
 const StockInForm = ({ onAddPurchase }) => {
@@ -62,7 +63,7 @@ const StockInForm = ({ onAddPurchase }) => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+        const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -103,7 +104,7 @@ const StockInForm = ({ onAddPurchase }) => {
     // Fetch brands from the API
     const fetchBrands = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/brands");
+        const response = await fetch(`${BASE_URL}/api/brands`);
         if (response.ok) {
           const data = await response.json();
           setBrands(data); // Update the brands state
@@ -123,7 +124,7 @@ const StockInForm = ({ onAddPurchase }) => {
     // Fetch products from the API
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch(`${BASE_URL}/api/products`);
         if (response.ok) {
           const data = await response.json();
           setProducts(data); // Update the products state
@@ -142,7 +143,7 @@ const StockInForm = ({ onAddPurchase }) => {
     // Fetch suppliers from the API
     const fetchSuppliers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/suppliers");
+        const response = await fetch(`${BASE_URL}/api/suppliers`);
         if (response.ok) {
           const data = await response.json();
           setSuppliers(data); // Update the suppliers state
@@ -162,7 +163,7 @@ const StockInForm = ({ onAddPurchase }) => {
     // Fetch units from the API
     const fetchUnits = async () => {
       try {
-        const response = await fetch("http://localhost:5000/units");
+        const response = await fetch(`${BASE_URL}/units`);
         if (response.ok) {
           const data = await response.json();
           setUnits(data); // Update the units state
@@ -206,7 +207,7 @@ const StockInForm = ({ onAddPurchase }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/stock-in",
+        `${BASE_URL}/stock-in`,
         formData
       );
       alert(response.data.message);

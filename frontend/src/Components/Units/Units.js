@@ -7,6 +7,7 @@ import ViewUnit from './ViewUnit';
 import EditUnit from './EditUnit';
 import axios from 'axios';
 import Sidebar from '../../Shared/SideBar/SideBar';
+import { BASE_URL } from '../../ApiService/Api';
 
 const UnitTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -26,7 +27,7 @@ const UnitTable = () => {
   const fetchUnits = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/units'); // Replace with your API endpoint
+      const response = await axios.get(`${BASE_URL}/units`); // Replace with your API endpoint
       setData(response.data); // Populate table with data from the API
       setLoading(false);
     } catch (error) {

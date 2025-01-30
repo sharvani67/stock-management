@@ -15,6 +15,7 @@ import {
 import "./UserNavbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
+import { BASE_URL } from "../../ApiService/Api";
 
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +41,7 @@ const UserNavbar = () => {
   useEffect(() => {
     const fetchSites = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/sites`);
+        const response = await fetch(`${BASE_URL}/sites`);
         if (response.ok) {
           const data = await response.json();
           const filteredSites = data.filter((site) => site.userId === user?.id);
@@ -62,7 +63,7 @@ const UserNavbar = () => {
   const fetchUserDetails = async () => {
     if (!isUserDetailsOpen) {
       try {
-        const response = await fetch(`http://localhost:5000/users`);
+        const response = await fetch(`${BASE_URL}/users`);
         if (response.ok) {
           const data = await response.json();
           const userDetail = data.find((userItem) => userItem.id === user.id);
@@ -142,8 +143,12 @@ const UserNavbar = () => {
                       <ul>
                         {siteCodes.map((site) => (
                           <li key={site.id}>
-                            <strong>Code:</strong> {site.siteCode} |{" "}
-                            <strong>Location:</strong> {site.location}
+                            <p>
+                            <strong>Code:</strong> {site.siteCode}
+                            </p>
+                            <p><strong>Location:</strong> {site.location}</p>
+                            <p><strong>Site Name:</strong> {site.siteName}</p>
+                            
                           </li>
                         ))}
                       </ul>
