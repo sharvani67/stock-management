@@ -22,6 +22,44 @@ const StockOutModal = ({ show, handleClose }) => {
     siteId: ""       // site id added here
   });
   const [sites, setSites] = useState([]);
+  const [stockInProducts, setStockInProducts] = useState([]); // Store products from stock-in table
+  const [stockInBrands, setStockInBrands] = useState([]); // State to store unique brands
+  const [stockInUnits, setStockInUnits] = useState([]); // State to store unique brands
+
+  // Fetch available products, brands, and units from stock-in API
+  useEffect(() => {
+    const fetchStockInData = async () => {
+      if (!user?.id) return;
+
+      try {
+        const response = await axios.get(`${BASE_URL}/stock-in`, {
+          params: { userid: user.id },
+        });
+
+        if (response.status === 200) {
+          const products = response.data;
+          setStockInProducts(products);
+
+          // Extract unique brands and units from stock-in products
+          const uniqueBrands = [
+            ...new Set(products.map((product) => product.brand)),
+          ];
+          const uniqueUnits = [
+            ...new Set(products.map((product) => product.units)),
+          ];
+
+          setStockInBrands(uniqueBrands); // Update state with unique brands
+          setStockInUnits(uniqueUnits); // Update state with unique units
+        } else {
+          console.error("Failed to fetch stock-in products");
+        }
+      } catch (error) {
+        console.error("Error fetching stock-in products:", error);
+      }
+    };
+
+    fetchStockInData();
+  }, [user?.id]);
 
 
 
@@ -157,40 +195,48 @@ const StockOutModal = ({ show, handleClose }) => {
           <Row className="mb-3">
             {/* Product Name */}
             <Col md={6}>
-              <Form.Group controlId="formProductName">
-                <Form.Label>Product Name</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Product</option>
-                  <option value="Cement">Cement</option>
-                  <option value="Bricks">Bricks</option>
-                  <option value="Paints">Paints</option>
-                </Form.Control>
-              </Form.Group>
+            <Form.Group controlId="formProductName">
+            <Form.Label>Product Name</Form.Label>
+            <Form.Control
+              as="select"
+              name="productName"
+              value={formData.productName}
+              onChange={(e) =>
+                setFormData({ ...formData, productName: e.target.value })
+              }
+              required
+            >
+              <option value="">Select Product</option>
+              {stockInProducts.map((product) => (
+                <option key={product.id} value={product.product}>
+                  {product.product}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
             </Col>
 
             {/* Brand Name */}
             <Col md={6}>
-              <Form.Group controlId="formBrandName">
-                <Form.Label>Brand Name</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="brandName"
-                  value={formData.brandName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Brand</option>
-                  <option value="Brand A">Brand A</option>
-                  <option value="Brand B">Brand B</option>
-                  <option value="Brand C">Brand C</option>
-                </Form.Control>
-              </Form.Group>
+            <Form.Group controlId="formBrandName">
+            <Form.Label>Brand Name</Form.Label>
+            <Form.Control
+              as="select"
+              name="brandName"
+              value={formData.brandName}
+              onChange={(e) =>
+                setFormData({ ...formData, brandName: e.target.value })
+              }
+              required
+            >
+              <option value="">Select Brand</option>
+              {stockInBrands.map((brand, index) => (
+                <option key={index} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
             </Col>
           </Row>
 
@@ -212,21 +258,25 @@ const StockOutModal = ({ show, handleClose }) => {
 
             {/* Units */}
             <Col md={6}>
-              <Form.Group controlId="formUnits">
-                <Form.Label>Units</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="units"
-                  value={formData.units}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Unit</option>
-                  <option value="Kgs">Kgs</option>
-                  <option value="Pieces">Pieces</option>
-                  <option value="Bags">Bags</option>
-                </Form.Control>
-              </Form.Group>
+            <Form.Group controlId="formUnits">
+            <Form.Label>Units</Form.Label>
+            <Form.Control
+              as="select"
+              name="units"
+              value={formData.units}
+              onChange={(e) =>
+                setFormData({ ...formData, units: e.target.value })
+              }
+              required
+            >
+              <option value="">Select Unit</option>
+              {stockInUnits.map((unit, index) => (
+                <option key={index} value={unit}>
+                  {unit}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
             </Col>
           </Row>
 
