@@ -1,16 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Modal, Button, Form, Row, Col, InputGroup } from "react-bootstrap";
+import React, { useState, useEffect,useContext } from "react";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
-import { FiPlus } from "react-icons/fi";
+
 
 const StockOutModal = ({ show, handleClose }) => {
   const { user, logout } = useContext(AuthContext);
-  const [showUnitModal, setShowUnitModal] = useState(false);
-  const [units, setUnits] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [showProductModal, setShowProductModal] = useState(false);
-  const [showBrandModal, setShowBrandModal] = useState(false);
   const [formData, setFormData] = useState({
     dateTime: "",
     destinationSite: "",
@@ -20,11 +15,11 @@ const StockOutModal = ({ show, handleClose }) => {
     units: "",
     attachment: null,
     status: "",
-    userId: "", // user id added here
+    userId: "",      // user id added here
     siteManager: "", // site manager added here
-    siteCode: "", // site code added here
-    siteName: "", // site name added here
-    siteId: "", // site id added here
+    siteCode: "",    // site code added here
+    siteName: "",    // site name added here
+    siteId: ""       // site id added here
   });
   const [sites, setSites] = useState([]);
 
@@ -54,52 +49,47 @@ const StockOutModal = ({ show, handleClose }) => {
     });
   };
 
-  useEffect(() => {
-    const fetchSites = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/sites?userId=${user?.id}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-
-          // Filter the sites based on the userId (assuming that userId is associated with specific sites)
-          const userSites = data.filter((site) => site.userId === user?.id);
-
-          // If matching sites are found, use the details of the first one
-          if (userSites.length > 0) {
-            const selectedSite = userSites[0]; // Get the site details related to the user
-
-            setFormData((prevFormData) => ({
-              ...prevFormData,
-              userId: user?.id,
-              siteManager: selectedSite.siteManager,
-              siteCode: selectedSite.siteCode,
-              siteName: selectedSite.siteName,
-              siteId: selectedSite.id,
-            }));
-            setSites(userSites); // Save all the sites related to the user
+    useEffect(() => {
+      const fetchSites = async () => {
+        try {
+          const response = await fetch(`http://localhost:5000/sites?userId=${user?.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Filter the sites based on the userId (assuming that userId is associated with specific sites)
+            const userSites = data.filter(site => site.userId === user?.id);
+    
+            // If matching sites are found, use the details of the first one
+            if (userSites.length > 0) {
+              const selectedSite = userSites[0]; // Get the site details related to the user
+              
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                userId: user?.id,
+                siteManager: selectedSite.siteManager,
+                siteCode: selectedSite.siteCode,
+                siteName: selectedSite.siteName,
+                siteId: selectedSite.id,
+              }));
+              setSites(userSites);  // Save all the sites related to the user
+            } else {
+              console.error("No sites found for the user");
+            }
           } else {
-            console.error("No sites found for the user");
+            console.error("Failed to fetch sites");
           }
-        } else {
-          console.error("Failed to fetch sites");
+        } catch (error) {
+          console.error("Error fetching sites:", error);
         }
-      } catch (error) {
-        console.error("Error fetching sites:", error);
+      };
+    
+      if (user?.id) {
+        fetchSites();
       }
-    };
+    }, [user?.id]);
 
-    if (user?.id) {
-      fetchSites();
-    }
-  }, [user?.id]);
-
-  // Log the data to console before submitting
-  console.log(
-    "Submitting the following data:",
-    JSON.stringify(formData, null, 2)
-  );
+    // Log the data to console before submitting
+    console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,73 +104,6 @@ const StockOutModal = ({ show, handleClose }) => {
       alert("Failed to add stock.");
     }
   };
-
-  const [products, setProducts] = useState([]); // State for storing product options
-
-  useEffect(() => {
-    // Fetch products from the API
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/products");
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data); // Update the products state
-        } else {
-          console.error("Failed to fetch products");
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    // Fetch units from the API
-    const fetchUnits = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/units");
-        if (response.ok) {
-          const data = await response.json();
-          setUnits(data); // Update the units state
-        } else {
-          console.error("Failed to fetch units");
-        }
-      } catch (error) {
-        console.error("Error fetching units:", error);
-      }
-    };
-
-    fetchUnits();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  useEffect(() => {
-    // Fetch brands from the API
-    const fetchBrands = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/brands");
-        if (response.ok) {
-          const data = await response.json();
-          setBrands(data); // Update the brands state
-        } else {
-          console.error("Failed to fetch brands");
-        }
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-      }
-    };
-
-    fetchBrands();
-  }, []);
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -224,61 +147,39 @@ const StockOutModal = ({ show, handleClose }) => {
           <Row className="mb-3">
             {/* Product Name */}
             <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <strong>Product Name:</strong>
-                </Form.Label>
-                <InputGroup>
-                  <Form.Select
-                    name="productName"
-                    value={formData.productName}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select a product</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.productName}>
-                        {product.productName}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowProductModal(true)}
-                  >
-                    <FiPlus /> {/* Trigger the supplier modal */}
-                  </Button>
-                </InputGroup>
+              <Form.Group controlId="formProductName">
+                <Form.Label>Product Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Product</option>
+                  <option value="Cement">Cement</option>
+                  <option value="Bricks">Bricks</option>
+                  <option value="Paints">Paints</option>
+                </Form.Control>
               </Form.Group>
             </Col>
 
             {/* Brand Name */}
             <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <strong>Brand Name:</strong>
-                </Form.Label>
-                <InputGroup>
-                  <Form.Select
-                    name="brandName"
-                    value={formData.brandName}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select a brand</option>
-                    {brands.map((brand) => (
-                      <option key={brand.id} value={brand.brandName}>
-                        {brand.brandName}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowBrandModal(true)}
-                  >
-                    <FiPlus /> {/* Trigger the supplier modal */}
-                  </Button>
-                </InputGroup>
+              <Form.Group controlId="formBrandName">
+                <Form.Label>Brand Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="brandName"
+                  value={formData.brandName}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Brand</option>
+                  <option value="Brand A">Brand A</option>
+                  <option value="Brand B">Brand B</option>
+                  <option value="Brand C">Brand C</option>
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
@@ -301,31 +202,20 @@ const StockOutModal = ({ show, handleClose }) => {
 
             {/* Units */}
             <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  <strong>Unit Name:</strong>
-                </Form.Label>
-                <InputGroup>
-                  <Form.Select
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select a Unit</option>
-                    {units.map((unit) => (
-                      <option key={unit.id} value={unit.name}>
-                        {unit.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowUnitModal(true)}
-                  >
-                    <FiPlus /> {/* Trigger the supplier modal */}
-                  </Button>
-                </InputGroup>
+              <Form.Group controlId="formUnits">
+                <Form.Label>Units</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="units"
+                  value={formData.units}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Unit</option>
+                  <option value="Kgs">Kgs</option>
+                  <option value="Pieces">Pieces</option>
+                  <option value="Bags">Bags</option>
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
@@ -369,8 +259,6 @@ const StockOutModal = ({ show, handleClose }) => {
         </Form>
       </Modal.Body>
     </Modal>
-
-    
   );
 };
 
