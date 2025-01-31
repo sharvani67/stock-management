@@ -5,7 +5,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
 
 const StockOutModal = ({ show, handleClose }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     dateTime: "",
     destinationSite: "",
@@ -15,96 +15,62 @@ const StockOutModal = ({ show, handleClose }) => {
     units: "",
     attachment: null,
     status: "",
-    userId: "",      // user id added here
-    siteManager: "", // site manager added here
-    siteCode: "",    // site code added here
-    siteName: "",    // site name added here
-    siteId: ""       // site id added here
+    userId: "",
+    siteManager: "",
+    siteCode: "",
+    siteName: "",
+    siteId: ""
   });
+
   const [sites, setSites] = useState([]);
-  const [stockInProducts, setStockInProducts] = useState([]); // Store products from stock-in table
-  const [stockInBrands, setStockInBrands] = useState([]); // State to store unique brands
-  const [stockInUnits, setStockInUnits] = useState([]); // State to store unique brands
+  const [stockSummary, setStockSummary] = useState([]);
+  const [filteredBrands, setFilteredBrands] = useState([]);
+  const [filteredUnits, setFilteredUnits] = useState([]);
 
-  // Fetch available products, brands, and units from stock-in API
+  // Fetch Stock Summary Data (Products, Brands, Units)
   useEffect(() => {
-    const fetchStockInData = async () => {
-      if (!user?.id) return;
-
+    const fetchStockSummary = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/stock-in`, {
-          params: { userid: user.id },
+        const response = await axios.get(`${BASE_URL}/stock-summary`, {
+          params: { userid: user?.id },
         });
-
         if (response.status === 200) {
-          const products = response.data;
-          setStockInProducts(products);
-
-          // Extract unique brands and units from stock-in products
-          const uniqueBrands = [
-            ...new Set(products.map((product) => product.brand)),
-          ];
-          const uniqueUnits = [
-            ...new Set(products.map((product) => product.units)),
-          ];
-
-          setStockInBrands(uniqueBrands); // Update state with unique brands
-          setStockInUnits(uniqueUnits); // Update state with unique units
+          setStockSummary(response.data);
         } else {
-          console.error("Failed to fetch stock-in products");
+          console.error("Failed to fetch stock summary data");
         }
       } catch (error) {
-        console.error("Error fetching stock-in products:", error);
+        console.error("Error fetching stock summary:", error);
       }
     };
 
-    fetchStockInData();
+    if (user?.id) {
+      fetchStockSummary();
+    }
   }, [user?.id]);
 
-
-
-
+  // Populate Date Automatically
   useEffect(() => {
     const currentDate = new Date();
     const formattedDateTime = formatDateTime(currentDate);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setFormData((prev) => ({
+      ...prev,
       dateTime: formattedDateTime,
     }));
   }, []);
 
-  const formatDateTime = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`; // Format for datetime-local
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "file" ? files[0] : value,
-    });
-  };
-
+  // Fetch User-Specific Sites
   useEffect(() => {
     const fetchSites = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/sites`);
         if (response.status === 200) {
           const allSites = response.data;
-
-          // Store all sites in state
           setSites(allSites);
-
-          // Filter only user-specific sites
-          const userSites = allSites.filter(site => site.userId === user?.id);
+          const userSites = allSites.filter((site) => site.userId === user?.id);
           if (userSites.length > 0) {
             const selectedSite = userSites[0];
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
               userId: user?.id,
               siteManager: selectedSite.siteManager,
@@ -112,8 +78,6 @@ const StockOutModal = ({ show, handleClose }) => {
               siteName: selectedSite.siteName,
               siteId: selectedSite.id,
             }));
-          } else {
-            console.warn("No user-specific sites found");
           }
         } else {
           console.error("Failed to fetch sites");
@@ -128,18 +92,78 @@ const StockOutModal = ({ show, handleClose }) => {
     }
   }, [user?.id]);
 
+  // Format DateTime
+  const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
 
-  // Log the data to console before submitting
-  console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
+  // Handle Form Changes
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "file" ? files[0] : value,
+    });
+  };
 
+  // Handle Product Selection
+  const handleProductChange = (e) => {
+    const selectedProduct = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      productName: selectedProduct,
+      brandName: "",
+      units: "",
+    }));
+
+    // Filter available brands and units for the selected product
+    const productBrands = [
+      ...new Set(
+        stockSummary
+          .filter((item) => item.productName === selectedProduct)
+          .map((item) => item.brandName)
+      ),
+    ];
+    setFilteredBrands(productBrands);
+    setFilteredUnits([]); // Reset units until brand is selected
+  };
+
+  // Handle Brand Selection
+  const handleBrandChange = (e) => {
+    const selectedBrand = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      brandName: selectedBrand,
+      units: "",
+    }));
+
+    // Filter available units for the selected product-brand combination
+    const productUnits = [
+      ...new Set(
+        stockSummary
+          .filter(
+            (item) =>
+              item.productName === formData.productName &&
+              item.brandName === selectedBrand
+          )
+          .map((item) => item.units)
+      ),
+    ];
+    setFilteredUnits(productUnits);
+  };
+
+  // Submit Form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${BASE_URL}/stock-out`,
-        formData
-      );
-      alert(response.data.message);
+      await axios.post(`${BASE_URL}/stock-out`, formData);
+      alert("Stock out entry added successfully!");
+      handleClose();
     } catch (error) {
       console.error("Error adding stock:", error);
       alert("Failed to add stock.");
@@ -195,48 +219,45 @@ const StockOutModal = ({ show, handleClose }) => {
           <Row className="mb-3">
             {/* Product Name */}
             <Col md={6}>
-            <Form.Group controlId="formProductName">
-            <Form.Label>Product Name</Form.Label>
-            <Form.Control
-              as="select"
-              name="productName"
-              value={formData.productName}
-              onChange={(e) =>
-                setFormData({ ...formData, productName: e.target.value })
-              }
-              required
-            >
-              <option value="">Select Product</option>
-              {stockInProducts.map((product) => (
-                <option key={product.id} value={product.product}>
-                  {product.product}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
+              <Form.Group controlId="formProductName">
+                <Form.Label>Product Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleProductChange}
+                  required
+                >
+                  <option value="">Select Product</option>
+                  {stockSummary.map((item, index) => (
+                    <option key={index} value={item.productName}>
+                      {item.productName}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
             </Col>
 
             {/* Brand Name */}
             <Col md={6}>
-            <Form.Group controlId="formBrandName">
-            <Form.Label>Brand Name</Form.Label>
-            <Form.Control
-              as="select"
-              name="brandName"
-              value={formData.brandName}
-              onChange={(e) =>
-                setFormData({ ...formData, brandName: e.target.value })
-              }
-              required
-            >
-              <option value="">Select Brand</option>
-              {stockInBrands.map((brand, index) => (
-                <option key={index} value={brand}>
-                  {brand}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
+              <Form.Group controlId="formBrandName">
+                <Form.Label>Brand Name</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="brandName"
+                  value={formData.brandName}
+                  onChange={handleBrandChange}
+                  required
+                  disabled={!formData.productName}
+                >
+                  <option value="">Select Brand</option>
+                  {filteredBrands.map((brand, index) => (
+                    <option key={index} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
             </Col>
           </Row>
 
@@ -258,25 +279,24 @@ const StockOutModal = ({ show, handleClose }) => {
 
             {/* Units */}
             <Col md={6}>
-            <Form.Group controlId="formUnits">
-            <Form.Label>Units</Form.Label>
-            <Form.Control
-              as="select"
-              name="units"
-              value={formData.units}
-              onChange={(e) =>
-                setFormData({ ...formData, units: e.target.value })
-              }
-              required
-            >
-              <option value="">Select Unit</option>
-              {stockInUnits.map((unit, index) => (
-                <option key={index} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
+              <Form.Group controlId="formUnits">
+                <Form.Label>Units</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="units"
+                  value={formData.units}
+                  onChange={handleChange}
+                  required
+                  disabled={!formData.brandName}
+                >
+                  <option value="">Select Unit</option>
+                  {filteredUnits.map((unit, index) => (
+                    <option key={index} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
             </Col>
           </Row>
 

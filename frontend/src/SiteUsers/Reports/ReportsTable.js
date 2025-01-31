@@ -1,174 +1,83 @@
-<<<<<<< HEAD
-import React, { useEffect, useMemo, useState, useContext } from "react";
-=======
 import React, { useMemo, useState, useEffect, useContext } from "react";
->>>>>>> ff7a70e253979a8e77eb4044b62fca627fd81386
 import DataTable from "../../layout/DataTable";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
-<<<<<<< HEAD
+import { BASE_URL } from "../../ApiService/Api"; // Ensure BASE_URL is correctly set
 
 const StockSummaryTable = () => {
   const { user } = useContext(AuthContext);
-  const [stockData, setStockData] = useState([]);
+  const [stockData, setStockData] = useState([]); // State to store combined stock data
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.id) return;
-
     const fetchStockData = async () => {
-      try {
-        const [stockInRes, stockOutRes, consumedRes] = await Promise.all([
-          axios.get(`/stock-in?userid=${user.id}`),
-          axios.get(`/stock-out?userid=${user.id}`),
-          axios.get(`/stock-consumed?userid=${user.id}`)
-        ]);
-
-        const stockInData = stockInRes.data;
-        const stockOutData = stockOutRes.data;
-        const consumedData = consumedRes.data;
-
-        // Aggregate data
-        const stockSummary = {};
-
-        stockInData.forEach(entry => {
-          const key = `${entry.date}-${entry.productName}-${entry.brandName}`;
-          stockSummary[key] = {
-            date: entry.date,
-            productName: entry.productName,
-            brandName: entry.brandName,
-            stockIn: (stockSummary[key]?.stockIn || 0) + entry.quantity,
-            stockOut: 0,
-            consumed: 0,
-            remainingStock: (stockSummary[key]?.remainingStock || 0) + entry.quantity,
-          };
-        });
-
-        stockOutData.forEach(entry => {
-          const key = `${entry.date}-${entry.productName}-${entry.brandName}`;
-          if (stockSummary[key]) {
-            stockSummary[key].stockOut += entry.quantity;
-            stockSummary[key].remainingStock -= entry.quantity;
-          }
-        });
-
-        consumedData.forEach(entry => {
-          const key = `${entry.date}-${entry.productName}-${entry.brandName}`;
-          if (stockSummary[key]) {
-            stockSummary[key].consumed += entry.quantity;
-            stockSummary[key].remainingStock -= entry.quantity;
-          }
-        });
-
-        setStockData(Object.values(stockSummary));
-=======
-import { BASE_URL } from "../../ApiService/Api"; // Assuming BASE_URL is set correctly
-
-const StockSummaryTable = () => {
-  const { user, logout } = useContext(AuthContext);
-  const [stockData, setStockData] = useState([]); // State to store stock data
-  const [siteId, setSiteId] = useState("1"); // Assume siteId is available or set it dynamically
-
-  // Fetch stock data dynamically
-  useEffect(() => {
-    const fetchStockData = async () => {
-      if (!user?.id || !siteId) return;
+      if (!user?.id) return; // Ensure user is available
 
       try {
+        setLoading(true);
+
         // Fetch stock-in data
         const stockInResponse = await axios.get(`${BASE_URL}/stock-in`, {
-          params: { userid: user.id, siteid: siteId },
+          params: { userid: user.id },
         });
 
-        // Fetch stock-out data
-        const stockOutResponse = await axios.get(`${BASE_URL}/stock-out`, {
-          params: { userid: user.id, siteid: siteId },
+        // Fetch allocated (stock out) data
+        const allocatedStockResponse = await axios.get(`${BASE_URL}/allocated`);
+
+        const stockInData = stockInResponse.data || [];
+        const allocatedStockData = allocatedStockResponse.data || [];
+
+        // Merge unique products, brands, and units
+        const combinedData = {};
+
+        [...stockInData, ...allocatedStockData].forEach((item) => {
+          const key = `${item.product}-${item.brand}-${item.units}`; // Unique key
+
+          if (!combinedData[key]) {
+            combinedData[key] = {
+              productName: item.product,
+              brandName: item.brand,
+              units: item.units,
+              stockIn: 0,
+              stockOut: 0,
+              remainingStock: 0,
+            };
+          }
+
+          // Add stock-in and stock-out quantities
+          if (item.quantity_in) {
+            combinedData[key].stockIn += item.quantity_in;
+          }
+          if (item.quantity_out) {
+            combinedData[key].stockOut += item.quantity_out;
+          }
+
+          // Calculate remaining stock
+          combinedData[key].remainingStock = combinedData[key].stockIn - combinedData[key].stockOut;
         });
 
-        // Fetch stock-consumed data
-        const stockConsumedResponse = await axios.get(`${BASE_URL}/stock-consumed`, {
-          params: { userid: user.id, siteid: siteId },
-        });
-
-        // Process the stock data
-        if (
-          stockInResponse.status === 200 &&
-          stockOutResponse.status === 200 &&
-          stockConsumedResponse.status === 200
-        ) {
-          const stockInData = stockInResponse.data;
-          const stockOutData = stockOutResponse.data;
-          const stockConsumedData = stockConsumedResponse.data;
-
-          // Combine data into one list
-          const data = [...stockInData, ...stockOutData, ...stockConsumedData].map((item) => ({
-            date: item.date,
-            productName: item.product,
-            brandName: item.brand,
-            stockIn: item.quantity_in || 0,
-            stockOut: item.quantity_out || 0,
-            consumed: item.quantity_out || 0, // assuming consumed uses quantity_out field
-            remainingStock: (item.quantity_in || 0) - (item.quantity_out || 0) - (item.quantity_out || 0),
-          }));
-
-          setStockData(data); // Update state with combined data
-        } else {
-          console.error("Failed to fetch stock data");
-        }
->>>>>>> ff7a70e253979a8e77eb4044b62fca627fd81386
+        // Convert object to array
+        setStockData(Object.values(combinedData));
       } catch (error) {
         console.error("Error fetching stock data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStockData();
-<<<<<<< HEAD
-  }, [user]);
+  }, [user?.id]);
 
+  // Define table columns
   const columns = useMemo(
     () => [
-      { Header: "Date", accessor: "date" },
       { Header: "Product Name", accessor: "productName" },
       { Header: "Brand Name", accessor: "brandName" },
+      { Header: "Units", accessor: "units" },
       { Header: "Stock In", accessor: "stockIn" },
       { Header: "Stock Out", accessor: "stockOut" },
-      { Header: "Consumed", accessor: "consumed" },
       { Header: "Remaining Stock", accessor: "remainingStock" },
-=======
-  }, [user?.id, siteId]);
-
-  // Define columns for the table
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Date",
-        accessor: "date",
-      },
-      {
-        Header: "Product Name",
-        accessor: "productName",
-      },
-      {
-        Header: "Brand Name",
-        accessor: "brandName",
-      },
-      {
-        Header: "Stock In",
-        accessor: "stockIn",
-      },
-      {
-        Header: "Stock Out",
-        accessor: "stockOut",
-      },
-      {
-        Header: "Consumed",
-        accessor: "consumed",
-      },
-      {
-        Header: "Remaining Stock",
-        accessor: "remainingStock",
-      },
->>>>>>> ff7a70e253979a8e77eb4044b62fca627fd81386
     ],
     []
   );
@@ -176,13 +85,9 @@ const StockSummaryTable = () => {
   return (
     <div>
       <UserNavbar />
-<<<<<<< HEAD
-=======
-
->>>>>>> ff7a70e253979a8e77eb4044b62fca627fd81386
       <div className="container mt-4">
         <h1 className="mb-4">Stock Summary</h1>
-        <DataTable columns={columns} data={stockData} />
+        {loading ? <p>Loading data...</p> : <DataTable columns={columns} data={stockData} />}
       </div>
     </div>
   );

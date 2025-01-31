@@ -21,39 +21,51 @@ const StockConsumedForm = ({ show, handleClose }) => {
   });
 
   const [sites, setSites] = useState([]);
-  const [stockInProducts, setStockInProducts] = useState([]); // Store products from stock-in table
+  const [products, setProducts] = useState([]); // Store products from StockSummaryTable
   const [brands, setBrands] = useState([]); // Store unique brands
   const [units, setUnits] = useState([]); // Store unique units
+  const [stockData, setStockData] = useState([]);
 
-  // Fetch available products from stock-in API
+
   useEffect(() => {
-    const fetchStockInProducts = async () => {
+    const fetchStockSummary = async () => {
       if (!user?.id) return;
-
+  
       try {
-        const response = await axios.get(`http://localhost:5000/stock-in`, {
-          params: { userid: user.id },
+        const response = await axios.get(`${BASE_URL}/stock-summary`, {
+          params: { userId: user.id },
         });
-
+  
         if (response.status === 200) {
-          setStockInProducts(response.data);
-
-          // Extract unique brands and units
-          const uniqueBrands = [...new Set(response.data.map(product => product.brand))];
-          const uniqueUnits = [...new Set(response.data.map(product => product.units))];
-
+          const stockSummaryData = response.data;
+  
+          // Extract unique product names, brands, and units from the fetched data
+          const uniqueProducts = [
+            ...new Set(stockSummaryData.map((item) => item.product)),
+          ];
+          const uniqueBrands = [
+            ...new Set(stockSummaryData.map((item) => item.brand)),
+          ];
+          const uniqueUnits = [
+            ...new Set(stockSummaryData.map((item) => item.units)),
+          ];
+  
+          // Set the unique values into state
+          setProducts(uniqueProducts);
           setBrands(uniqueBrands);
           setUnits(uniqueUnits);
+          setStockData(stockSummaryData); // Store full stock data if needed
         } else {
-          console.error("Failed to fetch stock-in products");
+          console.error("Failed to fetch stock summary");
         }
       } catch (error) {
-        console.error("Error fetching stock-in products:", error);
+        console.error("Error fetching stock summary:", error);
       }
     };
-
-    fetchStockInProducts();
+  
+    fetchStockSummary();
   }, [user?.id]);
+  
 
   // Fetch user-specific sites
   useEffect(() => {
@@ -65,7 +77,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
           const userSites = data.filter(site => site.userId === user?.id);
 
           if (userSites.length > 0) {
-            const selectedSite = userSites[0]; // Get the first site related to the user
+            const selectedSite = userSites[0];
 
             setFormData((prevFormData) => ({
               ...prevFormData,
@@ -93,21 +105,19 @@ const StockConsumedForm = ({ show, handleClose }) => {
   }, [user?.id]);
 
   // Format datetime
-  const formatDateTime = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
   useEffect(() => {
-    const currentDate = new Date();
-    const formattedDateTime = formatDateTime(currentDate);
+    const formatDateTime = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
     setFormData((prevFormData) => ({
       ...prevFormData,
-      dateTime: formattedDateTime,
+      dateTime: formatDateTime(new Date()),
     }));
   }, []);
 
@@ -121,20 +131,18 @@ const StockConsumedForm = ({ show, handleClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/stock-consumed`,
-        formData
-      );
+      const response = await axios.post(`${BASE_URL}/stock-consumed`, formData);
       alert(response.data.message);
     } catch (error) {
       console.error("Error adding stock:", error);
       alert("Failed to add stock.");
     }
   };
+
+
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -156,9 +164,9 @@ const StockConsumedForm = ({ show, handleClose }) => {
                   required
                 >
                   <option value="">Select Product</option>
-                  {stockInProducts.map((product) => (
-                    <option key={product.id} value={product.product}>
-                      {product.product}
+                  {products.map((product, index) => (
+                    <option key={index} value={product}>
+                      {product}
                     </option>
                   ))}
                 </Form.Control>
