@@ -1,66 +1,78 @@
-import React, { useMemo, useState, useEffect, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import DataTable from "../../layout/DataTable";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
-import { BASE_URL } from "../../ApiService/Api"; // Ensure BASE_URL is correctly set
+import { BASE_URL } from "../../ApiService/Api";
 
-const StockSummaryTable = () => {
+const StockSummary = () => {
   const { user } = useContext(AuthContext);
-  const [stockData, setStockData] = useState([]); // State to store combined stock data
+  const [stockData, setStockData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedSite, setSelectedSite] = useState(null);
 
   useEffect(() => {
     const fetchStockData = async () => {
-      if (!user?.id) return; // Ensure user is available
+      if (!user?.id) return; // Ensure user ID is available
 
       try {
         setLoading(true);
 
-        // Fetch stock-in data
-        const stockInResponse = await axios.get(`${BASE_URL}/stock-in`, {
-          params: { userid: user.id },
-        });
+        // Fetch user's sites to determine the receiver site
+        const siteResponse = await axios.get(`${BASE_URL}/sites`, { params: { userId: user.id } });
+        const userSites = siteResponse.data.filter(site => site.userId === user?.id);
 
-        // Fetch allocated (stock out) data
-        const allocatedStockResponse = await axios.get(`${BASE_URL}/allocated`);
+        if (userSites.length === 0) {
+          console.error("No sites found for the user");
+          return;
+        }
 
-        const stockInData = stockInResponse.data || [];
-        const allocatedStockData = allocatedStockResponse.data || [];
+        const site = userSites[0]; // Select the first site
+        setSelectedSite(site);
 
-        // Merge unique products, brands, and units
-        const combinedData = {};
+        // Fetch stock-in (purchased) products
+        const purchaseResponse = await axios.get(`${BASE_URL}/stock-in`, { params: { userid: user.id } });
 
-        [...stockInData, ...allocatedStockData].forEach((item) => {
-          const key = `${item.product}-${item.brand}-${item.units}`; // Unique key
+        // Fetch allocated (stock-out) products
+        const allocatedResponse = await axios.get(`${BASE_URL}/allocated`);
+        const allocatedStock = allocatedResponse.data.filter(record => record.receiver === site.siteName);
 
-          if (!combinedData[key]) {
-            combinedData[key] = {
-              productName: item.product,
-              brandName: item.brand,
-              units: item.units,
-              stockIn: 0,
-              stockOut: 0,
-              remainingStock: 0,
-            };
+        // Convert data structure for uniformity
+        const purchases = purchaseResponse.data.map(item => ({
+          product: item.product,
+          brand: item.brand,
+          stockIn: item.quantity || 0, // Assuming `quantity` represents stock-in
+          stockOut: 0, // Since this is purchase data
+        }));
+
+        const allocations = allocatedStock.map(item => ({
+          product: item.product,
+          brand: item.brand,
+          stockIn: 0, // Since this is allocated (stock-out) data
+          stockOut: item.quantity || 0, // Assuming `quantity` represents stock-out
+        }));
+
+        // Merge & Aggregate Data
+        const mergedData = [...purchases, ...allocations];
+
+        const groupedStock = mergedData.reduce((acc, item) => {
+          const key = `${item.product}-${item.brand}`; // Unique key for grouping
+
+          if (!acc[key]) {
+            acc[key] = { ...item, remainingStock: item.stockIn - item.stockOut };
+          } else {
+            acc[key].stockIn += item.stockIn;
+            acc[key].stockOut += item.stockOut;
+            acc[key].remainingStock = acc[key].stockIn - acc[key].stockOut;
           }
 
-          // Add stock-in and stock-out quantities
-          if (item.quantity_in) {
-            combinedData[key].stockIn += item.quantity_in;
-          }
-          if (item.quantity_out) {
-            combinedData[key].stockOut += item.quantity_out;
-          }
+          return acc;
+        }, {});
 
-          // Calculate remaining stock
-          combinedData[key].remainingStock = combinedData[key].stockIn - combinedData[key].stockOut;
-        });
-
-        // Convert object to array
-        setStockData(Object.values(combinedData));
+        // Convert object back to array
+        setStockData(Object.values(groupedStock));
       } catch (error) {
-        console.error("Error fetching stock data:", error);
+        console.error("Error fetching stock summary:", error);
       } finally {
         setLoading(false);
       }
@@ -70,17 +82,13 @@ const StockSummaryTable = () => {
   }, [user?.id]);
 
   // Define table columns
-  const columns = useMemo(
-    () => [
-      { Header: "Product Name", accessor: "productName" },
-      { Header: "Brand Name", accessor: "brandName" },
-      { Header: "Units", accessor: "units" },
-      { Header: "Stock In", accessor: "stockIn" },
-      { Header: "Stock Out", accessor: "stockOut" },
-      { Header: "Remaining Stock", accessor: "remainingStock" },
-    ],
-    []
-  );
+  const columns = [
+    { Header: "Product Name", accessor: "product" },
+    { Header: "Brand Name", accessor: "brand" },
+    { Header: "Stock In", accessor: "stockIn" },
+    { Header: "Stock Out", accessor: "stockOut" },
+    { Header: "Remaining Stock", accessor: "remainingStock" },
+  ];
 
   return (
     <div>
@@ -93,4 +101,4 @@ const StockSummaryTable = () => {
   );
 };
 
-export default StockSummaryTable;
+export default StockSummary;

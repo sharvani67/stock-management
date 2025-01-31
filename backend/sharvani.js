@@ -688,28 +688,8 @@ app.get("/allocated", (req, res) => {
   });
 });
 
-//API to Fetch Stock Summary
-// API to Fetch Stock Summary from Stockledger Table
-app.get("/stock-summary", (req, res) => {
-  const query = `
-    SELECT 
-      product, 
-      brand, 
-      units, 
-      COALESCE(SUM(quantity_in), 0) AS totalStockIn, 
-      COALESCE(SUM(quantity_out), 0) AS totalStockOut, 
-      (COALESCE(SUM(quantity_in), 0) - COALESCE(SUM(quantity_out), 0)) AS availableStock
-    FROM stockledger
-    GROUP BY product, brand, units
-  `;
 
-  db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
-});
+
 
 
 const PORT = 5000;
