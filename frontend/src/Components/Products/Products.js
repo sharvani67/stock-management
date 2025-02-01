@@ -63,7 +63,11 @@ const ProductTable = () => {
   };
 
   const columns = [
-    { Header: "S.No", accessor: "productId" },
+    {
+      Header: "S.No",
+      accessor: (row, index) => index + 1,
+    },
+    
     { Header: "Product Name", accessor: "productName" },
     { Header: "Description", accessor: "description" },
     {

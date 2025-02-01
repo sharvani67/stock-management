@@ -11,10 +11,14 @@ import UserNavbar from "../Navbar/UserNavbar";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
+import { useNavigate } from "react-router-dom";
+
 
 
 const StockInForm = ({ onAddPurchase }) => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     dateTime: "",
     productName: "",
@@ -226,6 +230,7 @@ const StockInForm = ({ onAddPurchase }) => {
         formData
       );
       alert(response.data.message);
+      navigate("/stockintable");
     } catch (error) {
       console.error("Error adding stock:", error);
       alert("Failed to add stock.");

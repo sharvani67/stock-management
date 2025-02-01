@@ -85,8 +85,8 @@ const StockSummary = () => {
         const allocations = allocatedStock.map((item) => ({
           product: item.product,
           brand: item.brand,
-          stockIn: 0,
-          stockOut: item.quantity || 0,
+          stockIn: item.quantity_out || 0,
+          stockOut: 0,
           stockConsumed: 0,
           units: item.units || "",
         }));

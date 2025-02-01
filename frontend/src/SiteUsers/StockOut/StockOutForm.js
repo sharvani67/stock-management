@@ -4,7 +4,7 @@ import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
 
-const StockOutModal = ({ show, handleClose }) => {
+const StockOutModal = ({ show, handleClose, handleSave }) => {
   const { user, logout } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     dateTime: "",
@@ -15,27 +15,24 @@ const StockOutModal = ({ show, handleClose }) => {
     units: "",
     attachment: null,
     status: "",
-    userId: "",      // user id added here
-    siteManager: "", // site manager added here
-    siteCode: "",    // site code added here
-    siteName: "",    // site name added here
-    siteId: ""       // site id added here
+    userId: "",
+    siteManager: "",
+    siteCode: "",
+    siteName: "",
+    siteId: ""
   });
   const [sites, setSites] = useState([]);
-
   const [brands, setBrands] = useState([]);
-
-  const [products, setProducts] = useState([]);// State for brands
+  const [products, setProducts] = useState([]);
   const [units, setUnits] = useState([]);
 
   useEffect(() => {
-    // Fetch brands from the API
     const fetchBrands = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/brands`);
         if (response.ok) {
           const data = await response.json();
-          setBrands(data); // Update the brands state
+          setBrands(data);
         } else {
           console.error("Failed to fetch brands");
         }
@@ -47,15 +44,13 @@ const StockOutModal = ({ show, handleClose }) => {
     fetchBrands();
   }, []);
 
-
   useEffect(() => {
-    // Fetch products from the API
     const fetchProducts = async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/products`);
         if (response.ok) {
           const data = await response.json();
-          setProducts(data); // Update the products state
+          setProducts(data);
         } else {
           console.error("Failed to fetch products");
         }
@@ -67,15 +62,13 @@ const StockOutModal = ({ show, handleClose }) => {
     fetchProducts();
   }, []);
 
-
   useEffect(() => {
-    // Fetch units from the API
     const fetchUnits = async () => {
       try {
         const response = await fetch(`${BASE_URL}/units`);
         if (response.ok) {
           const data = await response.json();
-          setUnits(data); // Update the units state
+          setUnits(data);
         } else {
           console.error("Failed to fetch units");
         }
@@ -86,7 +79,6 @@ const StockOutModal = ({ show, handleClose }) => {
 
     fetchUnits();
   }, []);
-
 
   useEffect(() => {
     const currentDate = new Date();
@@ -103,7 +95,7 @@ const StockOutModal = ({ show, handleClose }) => {
     const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`; // Format for datetime-local
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   const handleChange = (e) => {
@@ -120,11 +112,7 @@ const StockOutModal = ({ show, handleClose }) => {
         const response = await axios.get(`${BASE_URL}/sites`);
         if (response.status === 200) {
           const allSites = response.data;
-
-          // Store all sites in state
           setSites(allSites);
-
-          // Filter only user-specific sites
           const userSites = allSites.filter(site => site.userId === user?.id);
           if (userSites.length > 0) {
             const selectedSite = userSites[0];
@@ -152,23 +140,24 @@ const StockOutModal = ({ show, handleClose }) => {
     }
   }, [user?.id]);
 
-
-  // Log the data to console before submitting
-  console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${BASE_URL}/stock-out`,
-        formData
-      );
+      const response = await axios.post(`${BASE_URL}/stock-out`, formData);
       alert(response.data.message);
+      if (response.status === 200) {
+        handleSave(formData); // Pass the new data to the parent component
+        handleClose(); // Close the modal after saving
+        window.location.reload(); // Refresh the page after closing the modal
+      } else {
+        alert(response.data.message);
+      }
     } catch (error) {
       console.error("Error adding stock:", error);
       alert("Failed to add stock.");
     }
   };
+
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
       <Modal.Header className="bg-primary text-white" closeButton>
@@ -191,8 +180,6 @@ const StockOutModal = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-
-            {/* Destination Site */}
             <Col md={6}>
               <Form.Group controlId="formDestinationSite">
                 <Form.Label>Destination Site</Form.Label>
@@ -205,7 +192,7 @@ const StockOutModal = ({ show, handleClose }) => {
                 >
                   <option value="">Select Destination Site</option>
                   {sites
-                    .filter(site => site.id !== formData.siteId) // Exclude selected site
+                    .filter(site => site.id !== formData.siteId)
                     .map((site) => (
                       <option key={site.id} value={site.siteName}>
                         {site.siteName}
@@ -215,9 +202,7 @@ const StockOutModal = ({ show, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
-            {/* Product Name */}
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
@@ -233,12 +218,9 @@ const StockOutModal = ({ show, handleClose }) => {
                       {product.productName}
                     </option>
                   ))}
-
                 </Form.Select>
               </Form.Group>
             </Col>
-
-            {/* Brand Name */}
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
@@ -254,14 +236,11 @@ const StockOutModal = ({ show, handleClose }) => {
                       {brand.brandName}
                     </option>
                   ))}
-
                 </Form.Select>
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
-            {/* Quantity */}
             <Col md={6}>
               <Form.Group controlId="formQuantity">
                 <Form.Label>Quantity</Form.Label>
@@ -275,14 +254,12 @@ const StockOutModal = ({ show, handleClose }) => {
                 />
               </Form.Group>
             </Col>
-
-            {/* Units */}
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
                 <Form.Select
                   name="units"
-                  value={formData.name}
+                  value={formData.units}
                   onChange={handleChange}
                   required
                 >
@@ -292,14 +269,11 @@ const StockOutModal = ({ show, handleClose }) => {
                       {unit.name}
                     </option>
                   ))}
-
                 </Form.Select>
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
-            {/* Status */}
             <Col md={6}>
               <Form.Group controlId="formStatus">
                 <Form.Label>Status</Form.Label>
@@ -317,8 +291,6 @@ const StockOutModal = ({ show, handleClose }) => {
                 </Form.Control>
               </Form.Group>
             </Col>
-
-            {/* Attachment */}
             <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
@@ -330,7 +302,6 @@ const StockOutModal = ({ show, handleClose }) => {
               </Form.Group>
             </Col>
           </Row>
-
           <Button variant="primary" type="submit" className="w-100">
             Save
           </Button>
