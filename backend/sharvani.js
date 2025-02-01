@@ -701,22 +701,24 @@ app.get("/fetch-all-products", (req, res) => {
   }
 
   const query = `
-    SELECT DISTINCT product 
-    FROM stockledger 
+    SELECT product, brand, GROUP_CONCAT(DISTINCT units) AS units
+    FROM stockledger
     WHERE (siteId = ? AND transaction_type = 'Purchase') 
-    OR (receiver = ? AND transaction_type = 'Stock Out')
+       OR (receiver = ? AND transaction_type = 'Stock Out')
+    GROUP BY product, brand
   `;
 
   db.query(query, [userId, siteName], (err, results) => {
     if (err) {
-      console.error("❌ Database Error:", err);
+      console.error(" Database Error:", err);
       return res.status(500).json({ error: "Internal server error" });
     }
 
-    console.log("✅ Fetched Products:", results);  // Debugging: Check the output here
-    res.json(results);  // Ensure results are returned correctly
+    console.log(" Fetched Products:", results);
+    res.json(results);
   });
 });
+
 
 
 

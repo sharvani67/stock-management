@@ -22,63 +22,9 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     siteId: ""
   });
   const [sites, setSites] = useState([]);
-  const [brands, setBrands] = useState([]);
   const [products, setProducts] = useState([]);
-  const [units, setUnits] = useState([]);
+  const [brands, setBrands] = useState([]);
 
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/brands`);
-        if (response.ok) {
-          const data = await response.json();
-          setBrands(data);
-        } else {
-          console.error("Failed to fetch brands");
-        }
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-      }
-    };
-
-    fetchBrands();
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/products`);
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data);
-        } else {
-          console.error("Failed to fetch products");
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/units`);
-        if (response.ok) {
-          const data = await response.json();
-          setUnits(data);
-        } else {
-          console.error("Failed to fetch units");
-        }
-      } catch (error) {
-        console.error("Error fetching units:", error);
-      }
-    };
-
-    fetchUnits();
-  }, []);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -139,6 +85,36 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
       fetchSites();
     }
   }, [user?.id]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!user?.id || !formData.siteName) return;
+      try {
+        const response = await fetch(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, [user?.id, formData.siteName]);
+
+  const handleProductChange = (e) => {
+    const selectedProduct = e.target.value;
+    setFormData({ ...formData, productName: selectedProduct, brandName: "", units: "" });
+
+    const filteredBrands = products.filter((item) => item.product === selectedProduct);
+    setBrands(filteredBrands);
+  };
+
+  const handleBrandChange = (e) => {
+    const selectedBrand = e.target.value;
+    const unit = brands.find((item) => item.brand === selectedBrand)?.units || "";
+    setFormData({ ...formData, brandName: selectedBrand, units: unit });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -206,37 +182,23 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Select
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a product</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.productName}>
-                      {product.productName}
-                    </option>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
+                  <option value="">Select Product</option>
+                  {[...new Set(products.map((item) => item.product))].map((product, index) => (
+                    <option key={index} value={product}>{product}</option>
                   ))}
-                </Form.Select>
+                </Form.Control>
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
-                <Form.Select
-                  name="brandName"
-                  value={formData.brandName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a brand</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.brandName}>
-                      {brand.brandName}
-                    </option>
+                <Form.Control as="select" name="brandName" value={formData.brandName} onChange={handleBrandChange} required>
+                  <option value="">Select Brand</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand.brand}>{brand.brand}</option>
                   ))}
-                </Form.Select>
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
@@ -257,19 +219,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Select
-                  name="units"
-                  value={formData.units}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a Unit</option>
-                  {units.map((unit) => (
-                    <option key={unit.id} value={unit.name}>
-                      {unit.name}
-                    </option>
-                  ))}
-                </Form.Select>
+                <Form.Control type="text" name="units" value={formData.units} readOnly />
               </Form.Group>
             </Col>
           </Row>

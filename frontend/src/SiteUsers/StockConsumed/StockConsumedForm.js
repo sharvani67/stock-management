@@ -8,11 +8,11 @@ const StockConsumedForm = ({ show, handleClose }) => {
   const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     productName: "",
+    brandName: "",
     quantity: "",
     units: "",
     description: "",
     dateTime: "",
-    brandName: "",
     userId: "",
     siteManager: "",
     siteCode: "",
@@ -21,6 +21,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
   });
 
   const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [sites, setSites] = useState([]);
 
   // Fetch Sites for the Logged-in User
@@ -59,7 +60,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
     }
   }, [user?.id]);
 
-  
+
   // Format datetime
   useEffect(() => {
     const formatDateTime = (date) => {
@@ -77,44 +78,42 @@ const StockConsumedForm = ({ show, handleClose }) => {
     }));
   }, []);
 
-  // Fetch Products (Both Purchased & Allocated)
   useEffect(() => {
     const fetchProducts = async () => {
       if (!user?.id || !formData.siteName) return;
-
       try {
         const response = await fetch(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
         const data = await response.json();
-        console.log("✅ API Response:", data); // Debugging log
-
-        // Check if data is an array and has the 'product' field
-        if (Array.isArray(data) && data.length > 0) {
-          // Extract 'product' field from the response
-          setProducts(data.map((item) => item.product));  // Use 'product' from the backend
-        } else {
-          setProducts([]);  // In case of no products, set empty array
+        if (Array.isArray(data)) {
+          setProducts(data);
         }
       } catch (error) {
-        console.error("❌ Error fetching products:", error);
+        console.error("Error fetching products:", error);
       }
     };
-
     fetchProducts();
   }, [user?.id, formData.siteName]);
-  // Handle Form Input Changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+  const handleProductChange = (e) => {
+    const selectedProduct = e.target.value;
+    setFormData({ ...formData, productName: selectedProduct, brandName: "", units: "" });
+
+    const filteredBrands = products.filter((item) => item.product === selectedProduct);
+    setBrands(filteredBrands);
   };
 
-  // Handle Form Submission
+  const handleBrandChange = (e) => {
+    const selectedBrand = e.target.value;
+    const unit = brands.find((item) => item.brand === selectedBrand)?.units || "";
+    setFormData({ ...formData, brandName: selectedBrand, units: unit });
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
-
     try {
       const response = await axios.post(`${BASE_URL}/stock-consumed`, formData);
       alert(response.data.message);
@@ -135,15 +134,11 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleChange} required>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
                   <option value="">Select Product</option>
-                  {products.length > 0 ? (
-                    products.map((product, index) => (
-                      <option key={index} value={product}>{product}</option>
-                    ))
-                  ) : (
-                    <option value="">No products available</option>
-                  )}
+                  {[...new Set(products.map((item) => item.product))].map((product, index) => (
+                    <option key={index} value={product}>{product}</option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -151,7 +146,12 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter Brand" name="brandName" value={formData.brandName} onChange={handleChange} required />
+                <Form.Control as="select" name="brandName" value={formData.brandName} onChange={handleBrandChange} required>
+                  <option value="">Select Brand</option>
+                  {brands.map((brand, index) => (
+                    <option key={index} value={brand.brand}>{brand.brand}</option>
+                  ))}
+                </Form.Control>
               </Form.Group>
             </Col>
           </Row>
@@ -167,7 +167,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Control type="text" placeholder="Enter Units" name="units" value={formData.units} onChange={handleChange} required />
+                <Form.Control type="text" name="units" value={formData.units} readOnly />
               </Form.Group>
             </Col>
           </Row>
@@ -191,12 +191,12 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={12}>
               <Form.Group controlId="formDescription">
                 <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="Enter description" name="description" value={formData.description} onChange={handleChange} />
+                <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>
 
-          <Button variant="primary" type="submit" className="w-100">
+          <Button variant="primary" type="submit" className="w-100 mt-3">
             Submit
           </Button>
         </Form>
