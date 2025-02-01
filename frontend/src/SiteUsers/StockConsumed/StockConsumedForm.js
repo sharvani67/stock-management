@@ -20,71 +20,10 @@ const StockConsumedForm = ({ show, handleClose }) => {
     siteId: "",
   });
 
+  const [products, setProducts] = useState([]);
   const [sites, setSites] = useState([]);
-  const [brands, setBrands] = useState([]);
 
-  const [products, setProducts] = useState([]);// State for brands
-  const [units, setUnits] = useState([]);
-
-  useEffect(() => {
-    // Fetch brands from the API
-    const fetchBrands = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/brands`);
-        if (response.ok) {
-          const data = await response.json();
-          setBrands(data); // Update the brands state
-        } else {
-          console.error("Failed to fetch brands");
-        }
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-      }
-    };
-
-    fetchBrands();
-  }, []);
-
-
-  useEffect(() => {
-    // Fetch products from the API
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/products`);
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data); // Update the products state
-        } else {
-          console.error("Failed to fetch products");
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-
-  useEffect(() => {
-    // Fetch units from the API
-    const fetchUnits = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/units`);
-        if (response.ok) {
-          const data = await response.json();
-          setUnits(data); // Update the units state
-        } else {
-          console.error("Failed to fetch units");
-        }
-      } catch (error) {
-        console.error("Error fetching units:", error);
-      }
-    };
-
-    fetchUnits();
-  }, []);
-  // Fetch user-specific sites
+  // Fetch Sites for the Logged-in User
   useEffect(() => {
     const fetchSites = async () => {
       try {
@@ -120,6 +59,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
     }
   }, [user?.id]);
 
+  
   // Format datetime
   useEffect(() => {
     const formatDateTime = (date) => {
@@ -137,6 +77,31 @@ const StockConsumedForm = ({ show, handleClose }) => {
     }));
   }, []);
 
+  // Fetch Products (Both Purchased & Allocated)
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!user?.id || !formData.siteName) return;
+
+      try {
+        const response = await fetch(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
+        const data = await response.json();
+        console.log("✅ API Response:", data); // Debugging log
+
+        // Check if data is an array and has the 'product' field
+        if (Array.isArray(data) && data.length > 0) {
+          // Extract 'product' field from the response
+          setProducts(data.map((item) => item.product));  // Use 'product' from the backend
+        } else {
+          setProducts([]);  // In case of no products, set empty array
+        }
+      } catch (error) {
+        console.error("❌ Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [user?.id, formData.siteName]);
+  // Handle Form Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -145,6 +110,7 @@ const StockConsumedForm = ({ show, handleClose }) => {
     });
   };
 
+  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting the following data:", JSON.stringify(formData, null, 2));
@@ -169,40 +135,23 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Select
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a product</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.productName}>
-                      {product.productName}
-                    </option>
-                  ))}
-
-                </Form.Select>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleChange} required>
+                  <option value="">Select Product</option>
+                  {products.length > 0 ? (
+                    products.map((product, index) => (
+                      <option key={index} value={product}>{product}</option>
+                    ))
+                  ) : (
+                    <option value="">No products available</option>
+                  )}
+                </Form.Control>
               </Form.Group>
             </Col>
 
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
-                <Form.Select
-                  name="brandName"
-                  value={formData.brandName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a brand</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.brandName}>
-                      {brand.brandName}
-                    </option>
-                  ))}
-
-                </Form.Select>
+                <Form.Control type="text" placeholder="Enter Brand" name="brandName" value={formData.brandName} onChange={handleChange} required />
               </Form.Group>
             </Col>
           </Row>
@@ -218,24 +167,10 @@ const StockConsumedForm = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Select
-                  name="units"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a Unit</option>
-                  {units.map((unit) => (
-                    <option key={unit.id} value={unit.name}>
-                      {unit.name}
-                    </option>
-                  ))}
-
-                </Form.Select>
+                <Form.Control type="text" placeholder="Enter Units" name="units" value={formData.units} onChange={handleChange} required />
               </Form.Group>
             </Col>
           </Row>
-
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group controlId="formDateTime">

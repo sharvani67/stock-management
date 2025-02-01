@@ -689,32 +689,38 @@ app.get("/allocated", (req, res) => {
 });
 
 
-// Define a route for the stock summary
-app.get('/stock-summary', (req, res) => {
-  const userId = req.query.userId;
 
-  // Query to fetch stock summary based on the user ID
+
+
+// API to Fetch Products (Both Purchased & Allocated)
+app.get("/fetch-all-products", (req, res) => {
+  const { userId, siteName } = req.query;
+
+  if (!userId || !siteName) {
+    return res.status(400).json({ error: "Missing userId or siteName" });
+  }
+
   const query = `
-    SELECT product, brand, units 
-    FROM stock 
-    WHERE user_id = ?
+    SELECT DISTINCT product 
+    FROM stockledger 
+    WHERE (siteId = ? AND transaction_type = 'Purchase') 
+    OR (receiver = ? AND transaction_type = 'Stock Out')
   `;
 
-  db.query(query, [userId], (err, results) => {
+  db.query(query, [userId, siteName], (err, results) => {
     if (err) {
-      console.error('Error fetching stock summary:', err);
-      res.status(500).send('Error fetching stock summary');
-      return;
+      console.error("❌ Database Error:", err);
+      return res.status(500).json({ error: "Internal server error" });
     }
 
-    // Send unique products, brands, and units as response
-    const uniqueProducts = [...new Set(results.map(item => item.product))];
-    const uniqueBrands = [...new Set(results.map(item => item.brand))];
-    const uniqueUnits = [...new Set(results.map(item => item.units))];
-
-    res.json({ products: uniqueProducts, brands: uniqueBrands, units: uniqueUnits });
+    console.log("✅ Fetched Products:", results);  // Debugging: Check the output here
+    res.json(results);  // Ensure results are returned correctly
   });
 });
+
+
+
+
 
 
 const PORT = 5000;

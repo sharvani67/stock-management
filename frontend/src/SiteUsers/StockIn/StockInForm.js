@@ -461,7 +461,7 @@ const StockInForm = ({ onAddPurchase }) => {
           handleClose={() => setShowProductModal(false)}
           handleSave={handleSaveProduct}
         />
-        {/* Modal for adding unit */}
+        
         {/* Modal for adding unit */}
         <AddUnit
           show={showUnitModal}
