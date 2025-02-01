@@ -107,32 +107,6 @@ const UserDashboard = () => {
       }}
     >
       <UserNavbar />
-      <h1>Welcome, {user?.name}</h1>
-      <p>Email: {user?.email}</p>
-      <p>id: {user?.id}</p>
-      {/* Display Site Codes */}
-      <div style={{ width: "100%", maxWidth: "600px" }}>
-          <h2 style={{ textAlign: "center" }}>Your Site Codes</h2>
-          <ul style={{ listStyleType: "none", padding: 0 }}>
-            {sites.map((site) => (
-              <li
-                key={site.id}
-                style={{
-                  padding: "10px",
-                  border: "1px solid #ddd",
-                  marginBottom: "10px",
-                  borderRadius: "8px",
-                  backgroundColor: "#fff",
-                  textAlign: "center",
-                }}
-              >
-                <strong>Site Code:</strong> {site.siteCode} | <strong>Location:</strong>{" "}
-                {site.location}
-              </li>
-            ))}
-          </ul>
-        </div>
-
       <div
         style={{
           padding: "20px",
