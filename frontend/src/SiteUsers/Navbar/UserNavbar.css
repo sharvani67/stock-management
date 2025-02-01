@@ -53,6 +53,7 @@ body {
   
 }
 
+
 .navbar-links a {
   text-decoration: none;
   color: white;
@@ -60,6 +61,8 @@ body {
   display: flex;
   align-items: center;
 }
+
+
 
 .navbar-links a:hover {
   color: #ffcc00; /* Highlight color on hover */
