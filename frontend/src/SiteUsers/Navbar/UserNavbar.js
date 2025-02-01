@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 import {
   FaHome,
   FaBoxOpen,
@@ -26,7 +26,8 @@ const UserNavbar = () => {
   const [userDetails, setUserDetails] = useState(null);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const profileRef = useRef(null); // Ref for detecting clicks outside
+  const location = useLocation(); // Get current URL
+  const profileRef = useRef(null);
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const toggleProfileMenu = () => setIsProfileOpen((prev) => !prev);
@@ -95,37 +96,37 @@ const UserNavbar = () => {
 
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
         <li>
-          <Link to="/userdashboard">
+          <Link to="/userdashboard" className={location.pathname === "/userdashboard" ? "active" : ""}>
             <FaHome />
             Dashboard
           </Link>
         </li>
         <li>
-          <Link to="/stockintable">
+          <Link to="/stockintable" className={location.pathname === "/stockintable" ? "active" : ""}>
             <FaBoxOpen />
             Purchase
           </Link>
         </li>
         <li>
-          <Link to="/stockout">
+          <Link to="/stockout" className={location.pathname === "/stockout" ? "active" : ""}>
             <FaTruck />
             Stock Out
           </Link>
         </li>
         <li>
-          <Link to="/stockconsumed">
+          <Link to="/stockconsumed" className={location.pathname === "/stockconsumed" ? "active" : ""}>
             <FaChartPie />
             Stock Consumed
           </Link>
         </li>
         <li>
-          <Link to="/allocatedtable">
+          <Link to="/allocatedtable" className={location.pathname === "/allocatedtable" ? "active" : ""}>
             <FaBoxOpen />
             StockIn (Allocated)
           </Link>
         </li>
         <li>
-          <Link to="/summary">
+          <Link to="/summary" className={location.pathname === "/summary" ? "active" : ""}>
             <FaFileAlt />
             Reports
           </Link>
