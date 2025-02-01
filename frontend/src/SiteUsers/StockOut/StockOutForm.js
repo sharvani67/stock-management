@@ -23,7 +23,69 @@ const StockOutModal = ({ show, handleClose }) => {
   });
   const [sites, setSites] = useState([]);
 
+  const [brands, setBrands] = useState([]);
 
+  const [products, setProducts] = useState([]);// State for brands
+  const [units, setUnits] = useState([]);
+
+  useEffect(() => {
+    // Fetch brands from the API
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/brands`);
+        if (response.ok) {
+          const data = await response.json();
+          setBrands(data); // Update the brands state
+        } else {
+          console.error("Failed to fetch brands");
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+
+  useEffect(() => {
+    // Fetch products from the API
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/products`);
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data); // Update the products state
+        } else {
+          console.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+
+  useEffect(() => {
+    // Fetch units from the API
+    const fetchUnits = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/units`);
+        if (response.ok) {
+          const data = await response.json();
+          setUnits(data); // Update the units state
+        } else {
+          console.error("Failed to fetch units");
+        }
+      } catch (error) {
+        console.error("Error fetching units:", error);
+      }
+    };
+
+    fetchUnits();
+  }, []);
 
 
   useEffect(() => {
@@ -159,18 +221,20 @@ const StockOutModal = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="productName"
                   value={formData.productName}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Product</option>
-                  <option value="Cement">Cement</option>
-                  <option value="Bricks">Bricks</option>
-                  <option value="Paints">Paints</option>
-                </Form.Control>
+                  <option value="">Select a product</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.productName}>
+                      {product.productName}
+                    </option>
+                  ))}
+
+                </Form.Select>
               </Form.Group>
             </Col>
 
@@ -178,18 +242,20 @@ const StockOutModal = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="brandName"
                   value={formData.brandName}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Brand</option>
-                  <option value="Brand A">Brand A</option>
-                  <option value="Brand B">Brand B</option>
-                  <option value="Brand C">Brand C</option>
-                </Form.Control>
+                  <option value="">Select a brand</option>
+                  {brands.map((brand) => (
+                    <option key={brand.id} value={brand.brandName}>
+                      {brand.brandName}
+                    </option>
+                  ))}
+
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
@@ -214,18 +280,20 @@ const StockOutModal = ({ show, handleClose }) => {
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="units"
-                  value={formData.units}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Unit</option>
-                  <option value="Kgs">Kgs</option>
-                  <option value="Pieces">Pieces</option>
-                  <option value="Bags">Bags</option>
-                </Form.Control>
+                  <option value="">Select a Unit</option>
+                  {units.map((unit) => (
+                    <option key={unit.id} value={unit.name}>
+                      {unit.name}
+                    </option>
+                  ))}
+
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>

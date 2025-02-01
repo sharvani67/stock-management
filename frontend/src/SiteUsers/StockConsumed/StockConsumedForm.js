@@ -21,52 +21,69 @@ const StockConsumedForm = ({ show, handleClose }) => {
   });
 
   const [sites, setSites] = useState([]);
-  const [products, setProducts] = useState([]); // Store products from StockSummaryTable
-  const [brands, setBrands] = useState([]); // Store unique brands
-  const [units, setUnits] = useState([]); // Store unique units
-  const [stockData, setStockData] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  const [products, setProducts] = useState([]);// State for brands
+  const [units, setUnits] = useState([]);
+
+  useEffect(() => {
+    // Fetch brands from the API
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/api/brands`);
+        if (response.ok) {
+          const data = await response.json();
+          setBrands(data); // Update the brands state
+        } else {
+          console.error("Failed to fetch brands");
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
 
 
   useEffect(() => {
-    const fetchStockSummary = async () => {
-      if (!user?.id) return;
-  
+    // Fetch products from the API
+    const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/stock-summary`, {
-          params: { userId: user.id },
-        });
-  
-        if (response.status === 200) {
-          const stockSummaryData = response.data;
-  
-          // Extract unique product names, brands, and units from the fetched data
-          const uniqueProducts = [
-            ...new Set(stockSummaryData.map((item) => item.product)),
-          ];
-          const uniqueBrands = [
-            ...new Set(stockSummaryData.map((item) => item.brand)),
-          ];
-          const uniqueUnits = [
-            ...new Set(stockSummaryData.map((item) => item.units)),
-          ];
-  
-          // Set the unique values into state
-          setProducts(uniqueProducts);
-          setBrands(uniqueBrands);
-          setUnits(uniqueUnits);
-          setStockData(stockSummaryData); // Store full stock data if needed
+        const response = await fetch(`${BASE_URL}/api/products`);
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data); // Update the products state
         } else {
-          console.error("Failed to fetch stock summary");
+          console.error("Failed to fetch products");
         }
       } catch (error) {
-        console.error("Error fetching stock summary:", error);
+        console.error("Error fetching products:", error);
       }
     };
-  
-    fetchStockSummary();
-  }, [user?.id]);
-  
 
+    fetchProducts();
+  }, []);
+
+
+  useEffect(() => {
+    // Fetch units from the API
+    const fetchUnits = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/units`);
+        if (response.ok) {
+          const data = await response.json();
+          setUnits(data); // Update the units state
+        } else {
+          console.error("Failed to fetch units");
+        }
+      } catch (error) {
+        console.error("Error fetching units:", error);
+      }
+    };
+
+    fetchUnits();
+  }, []);
   // Fetch user-specific sites
   useEffect(() => {
     const fetchSites = async () => {
@@ -74,11 +91,10 @@ const StockConsumedForm = ({ show, handleClose }) => {
         const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
-          const userSites = data.filter(site => site.userId === user?.id);
+          const userSites = data.filter((site) => site.userId === user?.id);
 
           if (userSites.length > 0) {
             const selectedSite = userSites[0];
-
             setFormData((prevFormData) => ({
               ...prevFormData,
               userId: user?.id,
@@ -142,8 +158,6 @@ const StockConsumedForm = ({ show, handleClose }) => {
     }
   };
 
-
-
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
       <Modal.Header className="bg-primary text-white" closeButton>
@@ -152,130 +166,97 @@ const StockConsumedForm = ({ show, handleClose }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
-            {/* Product Name */}
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="productName"
                   value={formData.productName}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Product</option>
-                  {products.map((product, index) => (
-                    <option key={index} value={product}>
-                      {product}
+                  <option value="">Select a product</option>
+                  {products.map((product) => (
+                    <option key={product.id} value={product.productName}>
+                      {product.productName}
                     </option>
                   ))}
-                </Form.Control>
+
+                </Form.Select>
               </Form.Group>
             </Col>
 
-            {/* Brand Name */}
             <Col md={6}>
               <Form.Group controlId="formBrandName">
                 <Form.Label>Brand Name</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="brandName"
                   value={formData.brandName}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Brand</option>
-                  {brands.map((brand, index) => (
-                    <option key={index} value={brand}>
-                      {brand}
+                  <option value="">Select a brand</option>
+                  {brands.map((brand) => (
+                    <option key={brand.id} value={brand.brandName}>
+                      {brand.brandName}
                     </option>
                   ))}
-                </Form.Control>
+
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
 
           <Row className="mb-3">
-            {/* Quantity */}
             <Col md={6}>
               <Form.Group controlId="formQuantity">
                 <Form.Label>Quantity</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Enter quantity"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  required
-                />
+                <Form.Control type="number" placeholder="Enter quantity" name="quantity" value={formData.quantity} onChange={handleChange} required />
               </Form.Group>
             </Col>
 
-            {/* Units */}
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Select
                   name="units"
-                  value={formData.units}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Unit</option>
-                  {units.map((unit, index) => (
-                    <option key={index} value={unit}>
-                      {unit}
+                  <option value="">Select a Unit</option>
+                  {units.map((unit) => (
+                    <option key={unit.id} value={unit.name}>
+                      {unit.name}
                     </option>
                   ))}
-                </Form.Control>
+
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
 
           <Row className="mb-3">
-            {/* Date & Time */}
             <Col md={6}>
               <Form.Group controlId="formDateTime">
                 <Form.Label>Date & Time</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  name="dateTime"
-                  value={formData.dateTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dateTime: e.target.value })
-                  }
-                  required
-                />
+                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })} required />
               </Form.Group>
             </Col>
 
-            {/* Attachment */}
             <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="attachment"
-                  onChange={handleChange}
-                />
+                <Form.Control type="file" name="attachment" onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>
 
           <Row>
-            {/* Description */}
             <Col md={12}>
               <Form.Group controlId="formDescription">
                 <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Enter description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                />
+                <Form.Control as="textarea" rows={3} placeholder="Enter description" name="description" value={formData.description} onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>

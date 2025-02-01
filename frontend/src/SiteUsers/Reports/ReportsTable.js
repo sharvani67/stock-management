@@ -143,4 +143,4 @@ const StockSummary = () => {
   );
 };
 
-export default StockSummary;
+export default StockSummary;
