@@ -47,16 +47,23 @@ const AllocatedStock = () => {
   const fetchStockOutRecords = async () => {
     try {
       if (!user?.id) return; // Wait until user is loaded
-
+  
       // Fetch stock out records
       const response = await axios.get(`${BASE_URL}/allocated`);
-
+  
       if (response.data) {
         // Filter records by siteName matching selected site's siteName
-        const filteredRecords = response.data.filter(record => record.receiver === selectedSite?.siteName);
-
-        console.log("Filtered Stock Out Records:", filteredRecords);
-        setData(filteredRecords);
+        const filteredRecords = response.data.filter(
+          (record) => record.receiver === selectedSite?.siteName
+        );
+  
+        // Sort records by date in descending order (latest first)
+        const sortedRecords = filteredRecords.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+  
+        console.log("Filtered & Sorted Stock Out Records:", sortedRecords);
+        setData(sortedRecords);
       }
     } catch (error) {
       console.error("Error fetching stock-out records:", error);
@@ -64,6 +71,7 @@ const AllocatedStock = () => {
       setLoading(false);
     }
   };
+  
 
   // Load data when user or site details are available
   useEffect(() => {

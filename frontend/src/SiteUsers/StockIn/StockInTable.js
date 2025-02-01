@@ -18,14 +18,20 @@ const StockInTable = () => {
   useEffect(() => {
     const fetchStockInRecords = async () => {
       if (!user?.id) return; // Ensure user ID is available
-
+  
       try {
         setLoading(true);
         const response = await axios.get(`${BASE_URL}/stock-in`, {
           params: { userid: user.id }, // Pass user ID as query param
         });
-
-        setPurchaseData(response.data); // Update state with API data
+  
+        // Sort records by date in descending order (latest first)
+        const sortedData = response.data.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+  
+        console.log("Sorted Stock-In Records:", sortedData);
+        setPurchaseData(sortedData); // Update state with sorted data
       } catch (err) {
         console.error("Error fetching stock-in records:", err);
         setError("Failed to fetch stock-in data.");
@@ -33,9 +39,10 @@ const StockInTable = () => {
         setLoading(false);
       }
     };
-
+  
     fetchStockInRecords();
   }, [user]); // Re-run when user changes
+  // 
 
   // Delete a stock-in entry
   const handleDelete = async (sNo) => {
