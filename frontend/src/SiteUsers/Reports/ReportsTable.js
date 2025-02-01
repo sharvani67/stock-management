@@ -41,6 +41,7 @@ const StockSummary = () => {
         const purchases = purchaseResponse.data.map(item => ({
           product: item.product,
           brand: item.brand,
+          units: item.units,
           stockIn: item.quantity || 0, // Assuming `quantity` represents stock-in
           stockOut: 0, // Since this is purchase data
         }));
@@ -48,6 +49,7 @@ const StockSummary = () => {
         const allocations = allocatedStock.map(item => ({
           product: item.product,
           brand: item.brand,
+          units: item.units,
           stockIn: 0, // Since this is allocated (stock-out) data
           stockOut: item.quantity || 0, // Assuming `quantity` represents stock-out
         }));
@@ -85,6 +87,7 @@ const StockSummary = () => {
   const columns = [
     { Header: "Product Name", accessor: "product" },
     { Header: "Brand Name", accessor: "brand" },
+    { Header: "Units", accessor: "units" },
     { Header: "Stock In", accessor: "stockIn" },
     { Header: "Stock Out", accessor: "stockOut" },
     { Header: "Remaining Stock", accessor: "remainingStock" },
