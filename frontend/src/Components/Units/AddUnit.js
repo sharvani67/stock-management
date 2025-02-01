@@ -4,7 +4,7 @@ import '../../CSS/AddForm.css';
 import axios from "axios";
 import { BASE_URL } from "../../ApiService/Api";
 
-const Addunit = ({ show, handleClose, title, details, onSave }) => {
+const AddUnit = ({ show, handleClose, title, details, handleSave }) => {
   const [formData, setFormData] = useState({
     serialNo: "",
     name: "",
@@ -13,7 +13,6 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
   });
 
   useEffect(() => {
-    // Populate form data if editing or viewing an item
     if (details) {
       setFormData(details);
     } else {
@@ -34,28 +33,32 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
+      let response;
       if (details) {
-        // Update logic (if you implement an update endpoint in the future)
+        // Update logic
+        response = await axios.put(`${BASE_URL}/units/${details.id}`, formData);
       } else {
-        // Add a new unit
-        await axios.post(`${BASE_URL}/units`, formData);
+        // Add new unit
+        response = await axios.post(`${BASE_URL}/units`, formData);
       }
-       // Refresh the unit list after adding
-      handleClose(); // Close the modal
+      
+      if (response.status === 200 || response.status === 201) {
+        handleSave(response.data); // Pass saved data to parent
+        handleClose(); // Close the modal
+      }
     } catch (error) {
       console.error("Error saving unit:", error);
+      alert("Failed to save unit. Please try again.");
     }
   };
-  
-  
-  
 
   return (
     <Modal show={show} onHide={handleClose} centered className="add-form-modal">
-      <Modal.Header closeButton >
-        <Modal.Title>Add New Unit</Modal.Title>
+      <Modal.Header closeButton>
+        <Modal.Title>{details ? "Edit Unit" : "Add New Unit"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -97,21 +100,20 @@ const Addunit = ({ show, handleClose, title, details, onSave }) => {
               value={formData.baseUnit}
               onChange={handleChange}
               required
-            >
-            </Form.Control>
+            />
           </Form.Group>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" type="submit">
+              {details ? "Save Changes" : "Add Unit"}
+            </Button>
+          </Modal.Footer>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          {details ? "Save Changes" : "Add Unit"}
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };
 
-export default Addunit;
+export default AddUnit;

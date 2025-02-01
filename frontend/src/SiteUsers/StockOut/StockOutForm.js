@@ -274,7 +274,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
             </Col>
           </Row>
           <Row className="mb-3">
-            <Col md={6}>
+            {/* <Col md={6}>
               <Form.Group controlId="formStatus">
                 <Form.Label>Status</Form.Label>
                 <Form.Control
@@ -290,7 +290,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
                   <option value="Cancelled">Cancelled</option>
                 </Form.Control>
               </Form.Group>
-            </Col>
+            </Col> */}
             <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>

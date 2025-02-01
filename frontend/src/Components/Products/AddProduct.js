@@ -27,7 +27,7 @@ const AddProductModal = ({ show, handleClose, handleSave }) => {
         }
       } catch (error) {
         console.error("Error adding product:", error);
-        alert("Failed to add product.");
+        
       }
     } else {
       alert("Please fill all fields.");

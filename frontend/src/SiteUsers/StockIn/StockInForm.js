@@ -12,6 +12,7 @@ import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
 import { useNavigate } from "react-router-dom";
+import AddUnit from "../../Components/Units/AddUnit";
 
 
 
@@ -184,26 +185,26 @@ const StockInForm = ({ onAddPurchase }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     setFormData((prevState) => {
       const updatedData = {
         ...prevState,
         [name]: value,
       };
-  
+
       // Convert price and quantity to numbers
       const price = parseFloat(updatedData.price) || 0;
       const quantity = parseFloat(updatedData.quantity) || 0;
-  
+
       // Calculate total price when both fields have valid values
       if (name === "price" || name === "quantity") {
         updatedData.totalPrice = price * quantity;
       }
-  
+
       return updatedData;
     });
   };
-  
+
 
 
   // Handle saving the brand data
@@ -221,6 +222,25 @@ const StockInForm = ({ onAddPurchase }) => {
       supplierName: supplierData.supplierName,
     }));
   };
+
+  const handleSaveProduct = (productData) => {
+    setProducts((prevProducts) => [...prevProducts, productData]);
+    setFormData((prevState) => ({
+      ...prevState,
+      productName: productData.productName,
+    }));
+    setShowProductModal(false); // Close the modal
+  };
+
+  const handleSaveUnit = (unitData) => {
+  setUnits((prevUnits) => [...prevUnits, unitData]); 
+  setFormData((prevState) => ({
+    ...prevState,
+    name: unitData.name, // Update form state with new unit
+  }));
+  setShowUnitModal(false); // Close the modal
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -436,16 +456,31 @@ const StockInForm = ({ onAddPurchase }) => {
         </Row>
 
         {/* Modal for adding product */}
-        <AddProduct onAddProduct={(product) => console.log("Product added:", product)} show={showProductModal} handleClose={() => setShowProductModal(false)} title="Add Product" details={null} onSave={() => { }} />
-
+        <AddProduct
+          show={showProductModal}
+          handleClose={() => setShowProductModal(false)}
+          handleSave={handleSaveProduct}
+        />
         {/* Modal for adding unit */}
-        <Addunit show={showUnitModal} handleClose={() => setShowUnitModal(false)} title="Add Unit" details={null} onSave={() => { }} />
+        {/* Modal for adding unit */}
+        <AddUnit
+          show={showUnitModal}
+          handleClose={() => setShowUnitModal(false)}
+          handleSave={handleSaveUnit}
+        />
+
 
         {/* Modal for adding supplier */}
-        <AddSupplierModal show={showSupplierModal} handleClose={() => setShowSupplierModal(false)} handleSave={handleSaveSupplier} />
+        <AddSupplierModal
+          show={showSupplierModal}
+          handleClose={() => setShowSupplierModal(false)}
+          handleSave={handleSaveSupplier} />
 
         {/* Modal for adding brand */}
-        <AddBrandModal show={showBrandModal} handleClose={() => setShowBrandModal(false)} handleSave={handleSaveBrand} />
+        <AddBrandModal
+          show={showBrandModal}
+          handleClose={() => setShowBrandModal(false)}
+          handleSave={handleSaveBrand} />
       </Container>
     </div>
   );
