@@ -90,8 +90,8 @@
 }
 
 .sidebar-menu .nav-link:hover {
-  background: linear-gradient(to right, #1a77e0, #5eece5);
-  color: white;
+  background: linear-gradient(to right, #1a77e0, #5eece5, #168beb);
+  color: rgb(0, 0, 0);
   transform: translateX(5px);
 }
 
