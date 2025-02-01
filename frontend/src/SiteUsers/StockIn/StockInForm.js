@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Form, Button, Container, Row, Col, Card, InputGroup } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi"; // Import React Icons
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -59,21 +59,21 @@ const StockInForm = ({ onAddPurchase }) => {
   };
 
   const [sites, setSites] = useState([]);
-  
+
   useEffect(() => {
     const fetchSites = async () => {
       try {
         const response = await fetch(`${BASE_URL}/sites?userId=${user?.id}`);
         if (response.ok) {
           const data = await response.json();
-          
+
           // Filter the sites based on the userId (assuming that userId is associated with specific sites)
           const userSites = data.filter(site => site.userId === user?.id);
-  
+
           // If matching sites are found, use the details of the first one
           if (userSites.length > 0) {
             const selectedSite = userSites[0]; // Get the site details related to the user
-            
+
             setFormData((prevFormData) => ({
               ...prevFormData,
               userId: user?.id,
@@ -93,12 +93,12 @@ const StockInForm = ({ onAddPurchase }) => {
         console.error("Error fetching sites:", error);
       }
     };
-  
+
     if (user?.id) {
       fetchSites();
     }
   }, [user?.id]);
-  
+
 
   useEffect(() => {
     // Fetch brands from the API
@@ -180,11 +180,26 @@ const StockInForm = ({ onAddPurchase }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  
+    setFormData((prevState) => {
+      const updatedData = {
+        ...prevState,
+        [name]: value,
+      };
+  
+      // Convert price and quantity to numbers
+      const price = parseFloat(updatedData.price) || 0;
+      const quantity = parseFloat(updatedData.quantity) || 0;
+  
+      // Calculate total price when both fields have valid values
+      if (name === "price" || name === "quantity") {
+        updatedData.totalPrice = price * quantity;
+      }
+  
+      return updatedData;
+    });
   };
+  
 
 
   // Handle saving the brand data
@@ -398,8 +413,7 @@ const StockInForm = ({ onAddPurchase }) => {
                           type="number"
                           name="totalPrice"
                           value={formData.totalPrice}
-                          onChange={handleInputChange}
-                          required
+                          readOnly
                         />
                       </Form.Group>
                     </Col>
