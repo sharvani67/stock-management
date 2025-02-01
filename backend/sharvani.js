@@ -689,7 +689,32 @@ app.get("/allocated", (req, res) => {
 });
 
 
+// Define a route for the stock summary
+app.get('/stock-summary', (req, res) => {
+  const userId = req.query.userId;
 
+  // Query to fetch stock summary based on the user ID
+  const query = `
+    SELECT product, brand, units 
+    FROM stock 
+    WHERE user_id = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching stock summary:', err);
+      res.status(500).send('Error fetching stock summary');
+      return;
+    }
+
+    // Send unique products, brands, and units as response
+    const uniqueProducts = [...new Set(results.map(item => item.product))];
+    const uniqueBrands = [...new Set(results.map(item => item.brand))];
+    const uniqueUnits = [...new Set(results.map(item => item.units))];
+
+    res.json({ products: uniqueProducts, brands: uniqueBrands, units: uniqueUnits });
+  });
+});
 
 
 const PORT = 5000;

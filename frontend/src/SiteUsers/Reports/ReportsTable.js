@@ -13,59 +13,97 @@ const StockSummary = () => {
 
   useEffect(() => {
     const fetchStockData = async () => {
-      if (!user?.id) return; // Ensure user ID is available
+      if (!user?.id) return;
 
       try {
         setLoading(true);
 
         // Fetch user's sites to determine the receiver site
-        const siteResponse = await axios.get(`${BASE_URL}/sites`, { params: { userId: user.id } });
-        const userSites = siteResponse.data.filter(site => site.userId === user?.id);
+        const siteResponse = await axios.get(`${BASE_URL}/sites`, {
+          params: { userId: user.id },
+        });
+        const userSites = siteResponse.data.filter((site) => site.userId === user?.id);
 
         if (userSites.length === 0) {
           console.error("No sites found for the user");
+          setLoading(false);
           return;
         }
 
-        const site = userSites[0]; // Select the first site
+        const site = userSites[0];
         setSelectedSite(site);
 
         // Fetch stock-in (purchased) products
-        const purchaseResponse = await axios.get(`${BASE_URL}/stock-in`, { params: { userid: user.id } });
+        const stockInResponse = await axios.get(`${BASE_URL}/stock-in`, {
+          params: { userid: user.id },
+        });
+
+        // Fetch stock-out (issued) products
+        const stockOutResponse = await axios.get(`${BASE_URL}/stock-out`, {
+          params: { userid: user.id },
+        });
+
+        // Fetch stock consumed products
+        const stockConsumedResponse = await axios.get(`${BASE_URL}/stock-consumed`, {
+          params: { userid: user.id },
+        });
 
         // Fetch allocated (stock-out) products
         const allocatedResponse = await axios.get(`${BASE_URL}/allocated`);
-        const allocatedStock = allocatedResponse.data.filter(record => record.receiver === site.siteName);
+        const allocatedStock = allocatedResponse.data.filter(
+          (record) => record.receiver === site.siteName
+        );
 
         // Convert data structure for uniformity
-        const purchases = purchaseResponse.data.map(item => ({
+        const stockInData = stockInResponse.data.map((item) => ({
           product: item.product,
           brand: item.brand,
-          units: item.units,
-          stockIn: item.quantity || 0, // Assuming `quantity` represents stock-in
-          stockOut: 0, // Since this is purchase data
+          stockIn: item.quantity_in || 0,
+          stockOut: 0,
+          stockConsumed: 0,
+          units: item.units || "",
         }));
 
-        const allocations = allocatedStock.map(item => ({
+        const stockOutData = stockOutResponse.data.map((item) => ({
           product: item.product,
           brand: item.brand,
-          units: item.units,
-          stockIn: 0, // Since this is allocated (stock-out) data
-          stockOut: item.quantity || 0, // Assuming `quantity` represents stock-out
+          stockIn: 0,
+          stockOut: item.quantity_out || 0,
+          stockConsumed: 0,
+          units: item.units || "",
+        }));
+
+        const stockConsumedData = stockConsumedResponse.data.map((item) => ({
+          product: item.product,
+          brand: item.brand,
+          stockIn: 0,
+          stockOut: 0,
+          stockConsumed: item.quantity_out || 0, // Assuming stock consumption is recorded under quantity_out
+          units: item.units || "",
+        }));
+
+        const allocations = allocatedStock.map((item) => ({
+          product: item.product,
+          brand: item.brand,
+          stockIn: 0,
+          stockOut: item.quantity || 0,
+          stockConsumed: 0,
+          units: item.units || "",
         }));
 
         // Merge & Aggregate Data
-        const mergedData = [...purchases, ...allocations];
+        const mergedData = [...stockInData, ...stockOutData, ...stockConsumedData, ...allocations];
 
         const groupedStock = mergedData.reduce((acc, item) => {
           const key = `${item.product}-${item.brand}`; // Unique key for grouping
 
           if (!acc[key]) {
-            acc[key] = { ...item, remainingStock: item.stockIn - item.stockOut };
+            acc[key] = { ...item, remainingStock: item.stockIn - (item.stockOut + item.stockConsumed) };
           } else {
             acc[key].stockIn += item.stockIn;
             acc[key].stockOut += item.stockOut;
-            acc[key].remainingStock = acc[key].stockIn - acc[key].stockOut;
+            acc[key].stockConsumed += item.stockConsumed;
+            acc[key].remainingStock = acc[key].stockIn - (acc[key].stockOut + acc[key].stockConsumed);
           }
 
           return acc;
@@ -87,9 +125,10 @@ const StockSummary = () => {
   const columns = [
     { Header: "Product Name", accessor: "product" },
     { Header: "Brand Name", accessor: "brand" },
-    { Header: "Units", accessor: "units" },
     { Header: "Stock In", accessor: "stockIn" },
+    { Header: "Units", accessor: "units" },
     { Header: "Stock Out", accessor: "stockOut" },
+    { Header: "Stock Consumed", accessor: "stockConsumed" },
     { Header: "Remaining Stock", accessor: "remainingStock" },
   ];
 
@@ -104,4 +143,4 @@ const StockSummary = () => {
   );
 };
 
-export default StockSummary;
+export default StockSummary;

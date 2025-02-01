@@ -281,7 +281,7 @@ const StockOutModal = ({ show, handleClose }) => {
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
                 <Form.Select
-                  name="name"
+                  name="units"
                   value={formData.name}
                   onChange={handleChange}
                   required
