@@ -19,19 +19,24 @@ const StockOutTable = () => {
   const fetchStockOutRecords = async () => {
     try {
       if (!user?.id) return;
-
+  
       const response = await axios.get(`${BASE_URL}/stock-out`, {
         params: { userid: user.id }
       });
-
+  
       console.log("Filtered API Response:", response.data);
-      setData(response.data);
+  
+      // Sort data by date in descending order (latest first)
+      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+      setData(sortedData);
     } catch (error) {
       console.error("Error fetching stock-out records:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (user?.id) {
@@ -52,9 +57,9 @@ const StockOutTable = () => {
   );
 
   const handleSave = (newData) => {
-    setData(prevData => [...prevData, newData]); // Add new data to the existing data
+    setData(prevData => [newData, ...prevData]); // Add new data at the beginning
   };
-
+  
   return (
     <div>
       <UserNavbar />

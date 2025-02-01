@@ -27,17 +27,22 @@ const StockConsumedTable = () => {
       if (!user?.id) return; // Wait until user is loaded
   
       const response = await axios.get(`${BASE_URL}/stock-consumed`, {
-        params: { userid: user.id } // Ensure userid is always passed
+        params: { userid: user.id }, // Ensure userid is always passed
       });
   
       console.log("Filtered API Response:", response.data);
-      setData(response.data);
+  
+      // Sort data by date in descending order (latest first)
+      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+      setData(sortedData);
     } catch (error) {
       console.error("Error fetching stock-consumed records:", error);
     } finally {
       setLoading(false);
     }
   };
+  
   
   // Load data when user is available
   useEffect(() => {
