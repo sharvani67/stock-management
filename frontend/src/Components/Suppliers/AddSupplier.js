@@ -33,6 +33,7 @@ const AddSupplierModal = ({ show, handleClose, handleSave }) => {
     if (supplierName && contact && address && email) {
       saveSupplier({ supplierName, contact, address, email });
       handleClose(); // Close the modal after saving
+      window.location.reload();
     } else {
       alert("Please fill all fields.");
     }

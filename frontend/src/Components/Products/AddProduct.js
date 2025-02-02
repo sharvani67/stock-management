@@ -22,6 +22,7 @@ const AddProductModal = ({ show, handleClose, handleSave }) => {
         if (response.ok) {
           handleSave({ productName, description });
           handleClose(); // Close the modal after saving
+          window.location.reload();
         } else {
           alert(result.message);
         }

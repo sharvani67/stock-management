@@ -93,6 +93,7 @@ const AddSiteForm = ({ addSite, showModal, handleClose }) => {
 
     handleAddSite(newSite);
     handleClose();
+    window.location.reload(); //Refreshing page
 
     setSiteCode('');
     setSiteName('');

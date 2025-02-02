@@ -17,11 +17,6 @@ const StockConsumedTable = () => {
   const handleOpen = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-  const handleSubmit = (formData) => {
-    console.log("Form Data Submitted: ", formData);
-    // Process form data here
-  };
-
   const fetchStockOutRecords = async () => {
     try {
       if (!user?.id) return; // Wait until user is loaded
@@ -63,6 +58,9 @@ const StockConsumedTable = () => {
     ],
     []
   );
+  const handleSave = (newData) => {
+    setData(prevData => [newData, ...prevData]); // Add new data at the beginning
+  };
 
   return (
     <div>
@@ -75,7 +73,7 @@ const StockConsumedTable = () => {
           </Button>
         </div>
 
-        <StockConsumedForm show={showModal} handleClose={handleClose} handleSubmit={handleSubmit} />
+        <StockConsumedForm show={showModal} handleClose={handleClose} handleSave={handleSave} />
 
         {loading ? (
           <p>Loading...</p>

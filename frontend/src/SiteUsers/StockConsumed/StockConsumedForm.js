@@ -4,7 +4,7 @@ import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
 
-const StockConsumedForm = ({ show, handleClose }) => {
+const StockConsumedForm = ({ show, handleClose, handleSave }) => {
   const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     productName: "",
@@ -115,13 +115,20 @@ const StockConsumedForm = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${BASE_URL}/stock-consumed`, formData);
-      alert(response.data.message);
+        const response = await axios.post(`${BASE_URL}/stock-consumed`, formData);
+        alert(response.data.message);
+
+        if (response.status === 200) {
+            handleSave(formData); // Pass the new data to the parent component
+            handleClose(); // Close the modal after saving
+            window.location.reload(); // Refresh the page after closing the modal
+        }
     } catch (error) {
-      console.error("Error adding stock:", error);
-      alert("Failed to add stock.");
+        console.error("Error adding stock:", error);
+        alert("Failed to add stock.");
     }
-  };
+};
+
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>

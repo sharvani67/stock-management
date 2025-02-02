@@ -48,6 +48,7 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
         await axios.post(`${BASE_URL}/users`, formData);
       }
       handleClose(); // Close the modal
+      window.location.reload();
     } catch (error) {
       console.error("Error saving user:", error);
     }
