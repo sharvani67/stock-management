@@ -23,15 +23,17 @@ const Table = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/users`); // Update the URL if needed
-        setData(response.data);
+        const response = await axios.get(`${BASE_URL}/users`);
+        const sortedData = response.data.sort((a, b) => b.id - a.id); // Sorting in descending order
+        setData(sortedData);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
-
+  
     fetchUsers();
   }, []);
+  
 
   const handleViewUser = (user) => {
     setSelectedUser(user);

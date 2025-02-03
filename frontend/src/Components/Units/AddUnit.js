@@ -46,7 +46,8 @@ const AddUnit = ({ show, handleClose, title, details, handleSave }) => {
       }
       
       if (response.status === 200 || response.status === 201) {
-        handleSave(response.data); // Pass saved data to parent
+        handleSave(response.data);
+        window.location.reload(); // Pass saved data to parent
         handleClose(); // Close the modal
       }
     } catch (error) {
