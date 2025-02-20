@@ -12,6 +12,8 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     productName: "",
     quantity_out: "",
     units: "",
+    attachment:"",
+    description:"",
     attachment: null,
     status: "",
     userId: "",
@@ -188,11 +190,6 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
             <Col md={6}>
-              
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={6}>
               <Form.Group controlId="formQuantity">
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control
@@ -205,31 +202,15 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
                 />
               </Form.Group>
             </Col>
+          </Row>
+          <Row className="mb-3">
+            
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
                 <Form.Control type="text" name="units" value={formData.units} readOnly />
               </Form.Group>
             </Col>
-          </Row>
-          <Row className="mb-3">
-            {/* <Col md={6}>
-              <Form.Group controlId="formStatus">
-                <Form.Label>Status</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Cancelled">Cancelled</option>
-                </Form.Control>
-              </Form.Group>
-            </Col> */}
             <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
@@ -241,6 +222,15 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
           </Row>
+        
+          <Row>
+                              <Col md={12}>
+                                <Form.Group controlId="formDescription">
+                                  <Form.Label>Description</Form.Label>
+                                  <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
+                                </Form.Group>
+                              </Col>
+                            </Row>
           <Button variant="primary" type="submit" className="w-100">
             Save
           </Button>

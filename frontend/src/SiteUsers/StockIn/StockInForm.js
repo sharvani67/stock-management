@@ -27,7 +27,7 @@ const StockInForm = ({ onAddPurchase }) => {
     units: "",
     price: "",
     supplierName: "",
-    
+    description:"",
     billNumber: "",
     totalPrice: "",
     userId: "",      // user id added here
@@ -36,14 +36,14 @@ const StockInForm = ({ onAddPurchase }) => {
     siteName: "",    // site name added here
     siteId: ""       // site id added here
   });
-  
+
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [units, setUnits] = useState([]);
   const [showProductModal, setShowProductModal] = useState(false);
   const [showUnitModal, setShowUnitModal] = useState(false); // State for unit modal
   const [showSupplierModal, setShowSupplierModal] = useState(false); // State for supplier modal
-  
+
 
   useEffect(() => {
     const currentDate = new Date();
@@ -188,7 +188,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
 
 
-  
+
 
   // Handle saving the supplier data
   const handleSaveSupplier = (supplierData) => {
@@ -208,13 +208,13 @@ const StockInForm = ({ onAddPurchase }) => {
   };
 
   const handleSaveUnit = (unitData) => {
-  setUnits((prevUnits) => [...prevUnits, unitData]); 
-  setFormData((prevState) => ({
-    ...prevState,
-    name: unitData.name, // Update form state with new unit
-  }));
-  setShowUnitModal(false); // Close the modal
-};
+    setUnits((prevUnits) => [...prevUnits, unitData]);
+    setFormData((prevState) => ({
+      ...prevState,
+      name: unitData.name, // Update form state with new unit
+    }));
+    setShowUnitModal(false); // Close the modal
+  };
 
 
   const handleSubmit = async (e) => {
@@ -259,9 +259,22 @@ const StockInForm = ({ onAddPurchase }) => {
                         />
                       </Form.Group>
                     </Col>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label><strong>Bill Number:</strong></Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="billNumber"
+                          value={formData.billNumber}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                    
                   </Row>
                   <Row>
-                    <Col md={6}>
+                  <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label><strong>Product Name:</strong></Form.Label>
                         <InputGroup>
@@ -286,21 +299,8 @@ const StockInForm = ({ onAddPurchase }) => {
 
                       </Form.Group>
                     </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label><strong>Bill Number:</strong></Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="billNumber"
-                          value={formData.billNumber}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
 
-                  <Row>
+                    
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label><strong>Supplier Name:</strong></Form.Label>
@@ -326,10 +326,9 @@ const StockInForm = ({ onAddPurchase }) => {
 
                       </Form.Group>
                     </Col>
-                    <Col md={6}>
-                      
-                    </Col>
                   </Row>
+
+                  
 
                   <Row>
                     <Col md={6}>
@@ -397,6 +396,15 @@ const StockInForm = ({ onAddPurchase }) => {
                     </Col>
                   </Row>
 
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group controlId="formDescription">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleInputChange} />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+
                   <div className="d-flex justify-content-center align-items-center">
                     <Button type="submit" variant="primary" className="w-50 mt-3">
                       Save
@@ -414,7 +422,7 @@ const StockInForm = ({ onAddPurchase }) => {
           handleClose={() => setShowProductModal(false)}
           handleSave={handleSaveProduct}
         />
-        
+
         {/* Modal for adding unit */}
         <AddUnit
           show={showUnitModal}
@@ -429,7 +437,7 @@ const StockInForm = ({ onAddPurchase }) => {
           handleClose={() => setShowSupplierModal(false)}
           handleSave={handleSaveSupplier} />
 
-        
+
       </Container>
     </div>
   );

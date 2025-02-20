@@ -179,6 +179,8 @@ app.post("/stock-out", (req, res) => {
     productName,
     product_id,
     units,
+    attachment,
+    description,
     quantity,
     quantity_out,
     available_quantity,
@@ -199,8 +201,9 @@ app.post("/stock-out", (req, res) => {
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
           supplier_id, receiver, product, product_id,
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+          units,attachment,
+    description, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
   `;
 
   db.query(
@@ -217,6 +220,8 @@ app.post("/stock-out", (req, res) => {
       productName,
       product_id,
       units,
+      attachment,
+      description,
       quantity,
       quantity_out,
       available_quantity,
@@ -245,6 +250,7 @@ app.post("/stock-consumed", (req, res) => {
     productName,
     quantity,
     units,
+    attachment,
     description,
     dateTime,
     userId,
@@ -272,8 +278,9 @@ app.post("/stock-consumed", (req, res) => {
       INSERT INTO stockledger (
           site_name, site_code, date,  transaction_type, supplier,
           supplier_id, receiver, product, product_id,
-          units, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          units,attachment,
+    description, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
   `;
 
   db.query(
@@ -289,7 +296,9 @@ app.post("/stock-consumed", (req, res) => {
           destinationSite,   // Site where the stock is consumed
           productName,       // Product name from the form
           product_id,        // Product ID (can be fetched or static)
-          units,             // Units from the form
+          units, 
+          attachment,
+          description,            // Units from the form
           quantity_in,       // Quantity in, assuming 0 for now
           quantity,          // Quantity consumed (from the form)
           available_quantity, // Available stock after consumption
@@ -407,7 +416,8 @@ app.post("/stock-in", (req, res) => {
     siteManager,
     siteCode,
     siteName,
-    siteId
+    siteId,
+    description,
   } = req.body;
 
   const transaction_type = "Purchase";  // Example (could be dynamic if needed)
@@ -418,8 +428,8 @@ app.post("/stock-in", (req, res) => {
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
           supplier_id, receiver, product, product_id, 
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid, description
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
   `;
 
   db.query(
@@ -443,7 +453,8 @@ app.post("/stock-in", (req, res) => {
       tran_id,
       userId,
       siteManager,
-      siteId
+      siteId,
+      description
     ],
     (err, result) => {
       if (err) {

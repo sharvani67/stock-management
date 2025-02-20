@@ -11,6 +11,7 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
     
     quantity: "",
     units: "",
+    attachment:"",
     description: "",
     dateTime: "",
     userId: "",
@@ -132,6 +133,13 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
+
+          <Col md={6}>
+              <Form.Group controlId="formDateTime">
+                <Form.Label>Date & Time</Form.Label>
+                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })} required />
+              </Form.Group>
+            </Col>
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
@@ -163,14 +171,9 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
             </Col>
           </Row>
           <Row className="mb-3">
-            <Col md={6}>
-              <Form.Group controlId="formDateTime">
-                <Form.Label>Date & Time</Form.Label>
-                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })} required />
-              </Form.Group>
-            </Col>
+            
 
-            <Col md={6}>
+            <Col md={12}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
                 <Form.Control type="file" name="attachment" onChange={handleChange} />
