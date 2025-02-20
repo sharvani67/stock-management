@@ -7,31 +7,29 @@ import { Link } from 'react-router-dom';
 import UserNavbar from '../Navbar/UserNavbar';
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from '../../ApiService/Api';
+import ViewStockInModal from './View_Stockin';
+
+import EditStockIn from './Update_Stockin';
 
 const StockInTable = () => {
   const { user } = useContext(AuthContext);
   const [purchaseData, setPurchaseData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  // Fetch stock-in data from API
   useEffect(() => {
     const fetchStockInRecords = async () => {
-      if (!user?.id) return; // Ensure user ID is available
-  
+      if (!user?.id) return;
       try {
         setLoading(true);
         const response = await axios.get(`${BASE_URL}/stock-in`, {
-          params: { userid: user.id }, // Pass user ID as query param
+          params: { userid: user.id },
         });
-  
-        // Sort records by date in descending order (latest first)
-        const sortedData = response.data.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-  
-        console.log("Sorted Stock-In Records:", sortedData);
-        setPurchaseData(sortedData); // Update state with sorted data
+        const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setPurchaseData(sortedData);
       } catch (err) {
         console.error("Error fetching stock-in records:", err);
         setError("Failed to fetch stock-in data.");
@@ -39,42 +37,48 @@ const StockInTable = () => {
         setLoading(false);
       }
     };
-  
     fetchStockInRecords();
-  }, [user]); // Re-run when user changes
-  // 
+  }, [user]);
 
-  // Delete a stock-in entry
-  const handleDelete = async (sNo) => {
-    const updatedData = purchaseData.filter((item) => item.sNo !== sNo);
-    setPurchaseData(updatedData);
+  
+  const handleDelete = async (stockInId) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+  
+    try {
+      const response = await axios.delete(`${BASE_URL}/stock-in/${stockInId}`);
+      
+      if (response.data.success) {
+        setPurchaseData(prevData => prevData.filter(stock => stock.sNo !== stockInId));
+        alert("Stock-in record deleted successfully.");
+      } else {
+        alert(response.data.message || "Failed to delete stock-in record.");
+      }
+    } catch (error) {
+      console.error("Error deleting stock-in record:", error);
+      alert("An error occurred while deleting the record.");
+    }
   };
+  
 
+  
   const columns = [
-    // { Header: 'S.No', accessor: 'sNo' },
     { Header: 'Date', accessor: 'date' },
     { Header: 'Product Name', accessor: 'product' },
     { Header: 'Quantity', accessor: 'quantity_in' },
     { Header: 'Units', accessor: 'units' },
-    // { Header: 'Price', accessor: 'price' },
     { Header: 'Supplier Name', accessor: 'supplier' },
-  
     {
       Header: 'Actions',
       accessor: 'actions',
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-info" size="sm">
+          <Button variant="outline-info" size="sm" onClick={() => { setSelectedStock(row.original); setShowViewModal(true); }}>
             <FaEye />
           </Button>
-          <Button variant="outline-warning" size="sm">
+          <Button variant="outline-warning" size="sm" onClick={() => { setSelectedStock(row.original); setShowEditModal(true); }}>
             <FaEdit />
           </Button>
-          <Button
-            variant="outline-danger"
-            size="sm"
-            onClick={() => handleDelete(row.original.sNo)}
-          >
+          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.original.sNo)}>
             <FaTrashAlt />
           </Button>
         </div>
@@ -88,11 +92,9 @@ const StockInTable = () => {
       <div className="container mt-5">
         <h1 className="mb-4">StockIn Management</h1>
 
-        {/* Show loading or error message */}
         {loading && <p>Loading data...</p>}
         {error && <p className="text-danger">{error}</p>}
 
-        {/* Add New Purchase Button */}
         <div className="d-flex justify-content-end mb-3">
           <Link to="/stockin">
             <Button variant="primary" className="add-button">
@@ -101,9 +103,12 @@ const StockInTable = () => {
           </Link>
         </div>
 
-        {/* DataTable */}
         <DataTable columns={columns} data={purchaseData} />
       </div>
+
+      <ViewStockInModal show={showViewModal} handleClose={() => setShowViewModal(false)} stockInData={selectedStock} />
+
+      {showEditModal && <EditStockIn show={showEditModal} handleClose={() => setShowEditModal(false)} stockData={selectedStock} />}
     </div>
   );
 };

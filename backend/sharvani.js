@@ -418,6 +418,8 @@ app.post("/stock-in", (req, res) => {
     siteName,
     siteId,
     description,
+    price,
+    total_price,
   } = req.body;
 
   const transaction_type = "Purchase";  // Example (could be dynamic if needed)
@@ -428,8 +430,8 @@ app.post("/stock-in", (req, res) => {
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
           supplier_id, receiver, product, product_id, 
-          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid, description
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+          units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid, description,price,total_price
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)
   `;
 
   db.query(
@@ -454,7 +456,10 @@ app.post("/stock-in", (req, res) => {
       userId,
       siteManager,
       siteId,
-      description
+      description,
+      price,
+      total_price
+
     ],
     (err, result) => {
       if (err) {
@@ -596,9 +601,52 @@ app.get("/fetch-all-products", (req, res) => {
 });
 
 
+// PUT API to Update Stock-In Data (Without Attachment)
+app.put('/update-stock-in/:id', (req, res) => {
+  const { id } = req.params;
+  const {
+      billNumber,
+      productName,
+      supplierName,
+      unitName,
+      price,
+      quantity,
+      total_price,
+      description,
+  } = req.body;
 
+  // Update Query
+  const sql = `UPDATE stockledger 
+               SET invoice_no = ?, product = ?, supplier = ?, units = ?, price = ?, quantity_in = ?, total_price = ?, description = ?
+               WHERE id = ?`;
 
+  db.query(sql, [billNumber, productName, supplierName, unitName, price, quantity, total_price, description, id], (err, result) => {
+      if (err) {
+          console.error('Error updating stock-in:', err);
+          return res.status(500).json({ success: false, message: 'Failed to update stock-in' });
+      }
+      res.json({ success: true, message: 'Stock-in updated successfully' });
+  });
+});
 
+// Delete Stock-In Record API
+app.delete('/stock-in/:id', (req, res) => {
+  const stockInId = req.params.id;
+  const sql = 'DELETE FROM stockin_table WHERE sNo = ?';
+
+  db.query(sql, [stockInId], (err, result) => {
+    if (err) {
+      console.error('Error deleting stock-in record:', err);
+      return res.status(500).json({ success: false, message: 'Failed to delete stock-in record' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Stock-in record not found' });
+    }
+
+    res.json({ success: true, message: 'Stock-in record deleted successfully' });
+  });
+});
 
 
 const PORT = 5000;

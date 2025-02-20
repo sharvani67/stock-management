@@ -29,7 +29,7 @@ const StockInForm = ({ onAddPurchase }) => {
     supplierName: "",
     description:"",
     billNumber: "",
-    totalPrice: "",
+    total_price: "",
     userId: "",      // user id added here
     siteManager: "", // site manager added here
     siteCode: "",    // site code added here
@@ -179,7 +179,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
       // Calculate total price when both fields have valid values
       if (name === "price" || name === "quantity") {
-        updatedData.totalPrice = price * quantity;
+        updatedData.total_price = price * quantity;
       }
 
       return updatedData;
@@ -388,8 +388,8 @@ const StockInForm = ({ onAddPurchase }) => {
                         <Form.Label><strong>Total Price:</strong></Form.Label>
                         <Form.Control
                           type="number"
-                          name="totalPrice"
-                          value={formData.totalPrice}
+                          name="total_price"
+                          value={formData.total_price}
                           readOnly
                         />
                       </Form.Group>
