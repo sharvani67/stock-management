@@ -49,7 +49,7 @@ const StockOutTable = () => {
       { Header: "Date", accessor: "date" },
       { Header: "Destination Site", accessor: "receiver" },
       { Header: "Product Name", accessor: "product" },
-      { Header: "Brand Name", accessor: "brand" },
+     
       { Header: "Quantity", accessor: "quantity_out" },
       { Header: "Units", accessor: "units" },
     ],

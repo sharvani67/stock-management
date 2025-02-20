@@ -57,7 +57,7 @@ const StockSummary = () => {
         // Convert data structure for uniformity
         const stockInData = stockInResponse.data.map((item) => ({
           product: item.product,
-          brand: item.brand,
+          
           stockIn: item.quantity_in || 0,
           stockOut: 0,
           stockConsumed: 0,
@@ -66,7 +66,7 @@ const StockSummary = () => {
 
         const stockOutData = stockOutResponse.data.map((item) => ({
           product: item.product,
-          brand: item.brand,
+          
           stockIn: 0,
           stockOut: item.quantity_out || 0,
           stockConsumed: 0,
@@ -75,7 +75,7 @@ const StockSummary = () => {
 
         const stockConsumedData = stockConsumedResponse.data.map((item) => ({
           product: item.product,
-          brand: item.brand,
+          
           stockIn: 0,
           stockOut: 0,
           stockConsumed: item.quantity_out || 0, // Assuming stock consumption is recorded under quantity_out
@@ -84,7 +84,7 @@ const StockSummary = () => {
 
         const allocations = allocatedStock.map((item) => ({
           product: item.product,
-          brand: item.brand,
+          
           stockIn: item.quantity_out || 0,
           stockOut: 0,
           stockConsumed: 0,
@@ -95,7 +95,7 @@ const StockSummary = () => {
         const mergedData = [...stockInData, ...stockOutData, ...stockConsumedData, ...allocations];
 
         const groupedStock = mergedData.reduce((acc, item) => {
-          const key = `${item.product}-${item.brand}`; // Unique key for grouping
+          const key = `${item.product}`// Unique key for grouping
 
           if (!acc[key]) {
             acc[key] = { ...item, remainingStock: item.stockIn - (item.stockOut + item.stockConsumed) };
@@ -124,7 +124,6 @@ const StockSummary = () => {
   // Define table columns
   const columns = [
     { Header: "Product Name", accessor: "product" },
-    { Header: "Brand Name", accessor: "brand" },
     { Header: "Stock In", accessor: "stockIn" },
     { Header: "Units", accessor: "units" },
     { Header: "Stock Out", accessor: "stockOut" },

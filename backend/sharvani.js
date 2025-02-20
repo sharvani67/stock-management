@@ -60,37 +60,6 @@ app.get("/api/suppliers", (req, res) => {
   });
 
 
-  // POST API to add a brand
-app.post("/api/brands", (req, res) => {
-    const { brandName, description } = req.body;
-  
-    // Validate input
-    if (!brandName || !description) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-  
-    // Insert brand into the database
-    const query = "INSERT INTO brands (brandName, description) VALUES (?, ?)";
-    db.query(query, [brandName, description], (err, result) => {
-      if (err) {
-        console.error("Error adding brand:", err);
-        return res.status(500).json({ message: "Failed to add brand." });
-      }
-      res.status(201).json({ message: "Brand added successfully.", brandId: result.insertId });
-    });
-  });
-
-  // GET API to fetch all brands
-app.get("/api/brands", (req, res) => {
-    const query = "SELECT * FROM brands";
-    db.query(query, (err, result) => {
-      if (err) {
-        console.error("Error fetching brands:", err);
-        return res.status(500).json({ message: "Failed to fetch brands." });
-      }
-      res.status(200).json(result); // Return the brands as a JSON response
-    });
-  });
 
   // POST route to add a new product
   app.post("/api/products", (req, res) => {
@@ -125,77 +94,7 @@ app.get("/api/products", (req, res) => {
   });
   
  
-// API endpoint to handle adding a purchase
-app.post('/api/purchases', (req, res) => {
-  const {
-    productName,
-    quantity,
-    units,
-    price,
-    supplierName,
-    brandName,
-    billNumber,
-    billDate,
-  } = req.body;
 
-  if (
-    !productName ||
-    !quantity ||
-    !units ||
-    !price ||
-    !supplierName ||
-    !brandName ||
-    !billNumber ||
-    !billDate
-  ) {
-    res.status(400).send({ message: 'All fields are required.' });
-    return;
-  }
-
-  const sql = `
-    INSERT INTO purchases 
-    (product_name, quantity, units, price, supplier_name, brand_name, bill_number, bill_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(
-    sql,
-    [productName, quantity, units, price, supplierName, brandName, billNumber, billDate],
-    (err, result) => {
-      if (err) {
-        console.error('Error inserting data:', err);
-        res.status(500).send('Error saving purchase data.');
-        return;
-      }
-      res.status(201).send({ message: 'Purchase added successfully!', id: result.insertId });
-    }
-  );
-});
-
-
-// GET API to fetch purchase data
-app.get('/api/purchases', (req, res) => {
-  const sql = `SELECT 
-                id AS sNo, 
-                product_name AS productName, 
-                quantity, 
-                units, 
-                price, 
-                supplier_name AS supplierName, 
-                brand_name AS brandName 
-               FROM purchases`;
-
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).send({ message: 'Error fetching purchase data.' });
-      return;
-    }
-
-    res.status(200).send(results);
-  });
-});
- 
 
 app.post("/units", (req, res) => {
   const { serialNo, name, shortName, baseUnit } = req.body;
@@ -279,8 +178,6 @@ app.post("/stock-out", (req, res) => {
     destinationSite,
     productName,
     product_id,
-    brandName,
-    brand_id,
     units,
     quantity,
     quantity_out,
@@ -301,9 +198,9 @@ app.post("/stock-out", (req, res) => {
   const query = `
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
-          supplier_id, receiver, product, product_id, brand, brand_id,
+          supplier_id, receiver, product, product_id,
           units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   db.query(
@@ -319,8 +216,6 @@ app.post("/stock-out", (req, res) => {
       destinationSite,
       productName,
       product_id,
-      brandName,
-      brand_id,
       units,
       quantity,
       quantity_out,
@@ -352,7 +247,6 @@ app.post("/stock-consumed", (req, res) => {
     units,
     description,
     dateTime,
-    brandName,
     userId,
     siteManager,
     siteCode,
@@ -368,7 +262,6 @@ app.post("/stock-consumed", (req, res) => {
   const supplier_id = 0; // Example static data
   const destinationSite = siteName; // Could be used for destination
   const product_id = 1; // Assuming a static value or you can fetch the actual product id
-  const brand_id = 1; // Assuming a static brand id for now
   const quantity_in = 0; // Assuming stock in is not applicable in this case
   const available_quantity = 100; // Assuming a static value for now
   const billNumber = "INV12345"; // Example static data
@@ -378,9 +271,9 @@ app.post("/stock-consumed", (req, res) => {
   const query = `
       INSERT INTO stockledger (
           site_name, site_code, date,  transaction_type, supplier,
-          supplier_id, receiver, product, product_id, brand, brand_id,
+          supplier_id, receiver, product, product_id,
           units, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
@@ -396,8 +289,6 @@ app.post("/stock-consumed", (req, res) => {
           destinationSite,   // Site where the stock is consumed
           productName,       // Product name from the form
           product_id,        // Product ID (can be fetched or static)
-          brandName,         // Brand name from the form
-          brand_id,          // Brand ID (can be fetched or static)
           units,             // Units from the form
           quantity_in,       // Quantity in, assuming 0 for now
           quantity,          // Quantity consumed (from the form)
@@ -480,29 +371,7 @@ app.post("/api/login", (req, res) => {
 });
 
 // GET Allocations
-app.get("/allocations", (req, res) => {
-  const sql = "SELECT * FROM allocations";
-  db.query(sql, (err, result) => {
-    if (err) {
-      res.status(500).json({ error: "Error fetching data from database" });
-    } else {
-      res.status(200).json(result);
-    }
-  });
-});
 
-// POST New Allocation
-app.post("/allocations", (req, res) => {
-  const { siteName, manager, productName, stockOutward, remainingStock } = req.body;
-  const sql = "INSERT INTO allocations (siteName, manager, productName, stockOutward, remainingStock) VALUES (?, ?, ?, ?, ?)";
-  db.query(sql, [siteName, manager, productName, stockOutward, remainingStock], (err, result) => {
-    if (err) {
-      res.status(500).json({ error: "Error inserting data into database" });
-    } else {
-      res.status(201).json({ message: "Allocation added successfully", id: result.insertId });
-    }
-  });
-});
 
 //Get all sites (GET)
 app.get('/sites', (req, res) => {
@@ -528,8 +397,6 @@ app.post("/stock-in", (req, res) => {
     receiver,
     productName,
     product_id,
-    brandName,
-    brand_id,
     name,
     quantity,
     quantity_out,
@@ -550,9 +417,9 @@ app.post("/stock-in", (req, res) => {
   const query = `
       INSERT INTO stockledger (
           site_name, site_code, date, time, transaction_type, supplier,
-          supplier_id, receiver, product, product_id, brand, brand_id,
+          supplier_id, receiver, product, product_id, 
           units, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   db.query(
@@ -568,8 +435,6 @@ app.post("/stock-in", (req, res) => {
       receiver,
       productName,
       product_id,
-      brandName,
-      brand_id,
       name,
       quantity,
       quantity_out,
@@ -701,11 +566,11 @@ app.get("/fetch-all-products", (req, res) => {
   }
 
   const query = `
-    SELECT product, brand, GROUP_CONCAT(DISTINCT units) AS units
+    SELECT product, GROUP_CONCAT(DISTINCT units) AS units
     FROM stockledger
     WHERE (siteId = ? AND transaction_type = 'Purchase') 
        OR (receiver = ? AND transaction_type = 'Stock Out')
-    GROUP BY product, brand
+    GROUP BY product
   `;
 
   db.query(query, [userId, siteName], (err, results) => {

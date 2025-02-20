@@ -92,10 +92,6 @@ const AllocatedStock = () => {
         accessor: "product",
       },
       {
-        Header: "Brand Name",
-        accessor: "brand",
-      },
-      {
         Header: "Quantity",
         accessor: "quantity_out",
       },

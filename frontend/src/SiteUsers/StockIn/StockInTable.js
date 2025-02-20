@@ -54,7 +54,6 @@ const StockInTable = () => {
     // { Header: 'S.No', accessor: 'sNo' },
     { Header: 'Date', accessor: 'date' },
     { Header: 'Product Name', accessor: 'product' },
-    { Header: 'Brand Name', accessor: 'brand' },
     { Header: 'Quantity', accessor: 'quantity_in' },
     { Header: 'Units', accessor: 'units' },
     // { Header: 'Price', accessor: 'price' },

@@ -10,7 +10,6 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     dateTime: "",
     destinationSite: "",
     productName: "",
-    brandName: "",
     quantity_out: "",
     units: "",
     attachment: null,
@@ -23,7 +22,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
   });
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
-  const [brands, setBrands] = useState([]);
+ 
 
 
   useEffect(() => {
@@ -104,17 +103,15 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
-    setFormData({ ...formData, productName: selectedProduct, brandName: "", units: "" });
-
-    const filteredBrands = products.filter((item) => item.product === selectedProduct);
-    setBrands(filteredBrands);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      productName: selectedProduct,
+      units: products.find((item) => item.product === selectedProduct)?.units || "",
+    }));
   };
+  
 
-  const handleBrandChange = (e) => {
-    const selectedBrand = e.target.value;
-    const unit = brands.find((item) => item.brand === selectedBrand)?.units || "";
-    setFormData({ ...formData, brandName: selectedBrand, units: unit });
-  };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -191,15 +188,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="formBrandName">
-                <Form.Label>Brand Name</Form.Label>
-                <Form.Control as="select" name="brandName" value={formData.brandName} onChange={handleBrandChange} required>
-                  <option value="">Select Brand</option>
-                  {brands.map((brand, index) => (
-                    <option key={index} value={brand.brand}>{brand.brand}</option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+              
             </Col>
           </Row>
           <Row className="mb-3">

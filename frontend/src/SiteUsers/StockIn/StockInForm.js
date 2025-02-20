@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AddProduct from '../../Components/Products/AddProduct'; // Import your AddProduct modal component
 import Addunit from '../../Components/Units/AddUnit'; // Import your Addunit modal component
 import AddSupplierModal from '../../Components/Suppliers/AddSupplier'; // Import your AddSupplierModal component
-import AddBrandModal from '../../Components/Brands/AddBrand'; // Import your AddBrandModal component
+
 import UserNavbar from "../Navbar/UserNavbar";
 // import '../Purchase/AddPurchase.css';
 import axios from "axios";
@@ -27,7 +27,7 @@ const StockInForm = ({ onAddPurchase }) => {
     units: "",
     price: "",
     supplierName: "",
-    brandName: "",
+    
     billNumber: "",
     totalPrice: "",
     userId: "",      // user id added here
@@ -36,14 +36,14 @@ const StockInForm = ({ onAddPurchase }) => {
     siteName: "",    // site name added here
     siteId: ""       // site id added here
   });
-  const [brands, setBrands] = useState([]);
+  
   const [suppliers, setSuppliers] = useState([]);
-  const [products, setProducts] = useState([]);// State for brands
+  const [products, setProducts] = useState([]);
   const [units, setUnits] = useState([]);
   const [showProductModal, setShowProductModal] = useState(false);
   const [showUnitModal, setShowUnitModal] = useState(false); // State for unit modal
   const [showSupplierModal, setShowSupplierModal] = useState(false); // State for supplier modal
-  const [showBrandModal, setShowBrandModal] = useState(false); // State for brand modal
+  
 
   useEffect(() => {
     const currentDate = new Date();
@@ -104,25 +104,6 @@ const StockInForm = ({ onAddPurchase }) => {
     }
   }, [user?.id]);
 
-
-  useEffect(() => {
-    // Fetch brands from the API
-    const fetchBrands = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/api/brands`);
-        if (response.ok) {
-          const data = await response.json();
-          setBrands(data); // Update the brands state
-        } else {
-          console.error("Failed to fetch brands");
-        }
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-      }
-    };
-
-    fetchBrands();
-  }, []);
 
 
   useEffect(() => {
@@ -207,13 +188,7 @@ const StockInForm = ({ onAddPurchase }) => {
 
 
 
-  // Handle saving the brand data
-  const handleSaveBrand = (brandData) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      brandName: brandData.brandName,
-    }));
-  };
+  
 
   // Handle saving the supplier data
   const handleSaveSupplier = (supplierData) => {
@@ -352,29 +327,7 @@ const StockInForm = ({ onAddPurchase }) => {
                       </Form.Group>
                     </Col>
                     <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label><strong>Brand Name:</strong></Form.Label>
-                        <InputGroup>
-                          <Form.Select
-                            name="brandName"
-                            value={formData.brandName}
-                            onChange={handleInputChange}
-                            required
-                          >
-                            <option value="">Select a brand</option>
-                            {brands.map((brand) => (
-                              <option key={brand.id} value={brand.brandName}>
-                                {brand.brandName}
-                              </option>
-                            ))}
-
-                          </Form.Select>
-                          <Button variant="outline-secondary" onClick={() => setShowBrandModal(true)}>
-                            <FiPlus /> {/* Trigger the supplier modal */}
-                          </Button>
-                        </InputGroup>
-
-                      </Form.Group>
+                      
                     </Col>
                   </Row>
 
@@ -476,11 +429,7 @@ const StockInForm = ({ onAddPurchase }) => {
           handleClose={() => setShowSupplierModal(false)}
           handleSave={handleSaveSupplier} />
 
-        {/* Modal for adding brand */}
-        <AddBrandModal
-          show={showBrandModal}
-          handleClose={() => setShowBrandModal(false)}
-          handleSave={handleSaveBrand} />
+        
       </Container>
     </div>
   );

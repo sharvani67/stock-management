@@ -51,7 +51,6 @@ const StockConsumedTable = () => {
     () => [
       { Header: "Date", accessor: "date" },
       { Header: "Product Name", accessor: "product" },
-      { Header: "Brand Name", accessor: "brand" },
       { Header: "Quantity", accessor: "quantity_out" },
       { Header: "Units", accessor: "units" },
       // { Header: "Description", accessor: "description" },
