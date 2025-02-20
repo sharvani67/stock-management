@@ -27,7 +27,7 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         login(data.user); // Set user in context
-        navigate("/userdashboard"); // Redirect to dashboard
+        navigate("/home"); // Redirect to dashboard
       } else {
         const errData = await response.json();
         setError(errData.message);

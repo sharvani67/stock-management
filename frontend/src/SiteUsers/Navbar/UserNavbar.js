@@ -8,6 +8,8 @@ import {
   FaFileAlt,
   FaBars,
   FaUserCircle,
+  FaTachometerAlt,
+  FaBell,
   FaCode,
   FaUserAlt,
   FaSignOutAlt,
@@ -16,6 +18,7 @@ import "./UserNavbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
+import logo from "../../assets/images/iiiq_logo.png"; // ✅ Ensure the logo is in the correct folder
 
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,45 +93,84 @@ const UserNavbar = () => {
 
   return (
     <nav className="navbar">
+      {/* <div className="navbar-logo">
+        <Link to="/">
+          <img src={logo} alt="MS Constructions Logo" />
+        </Link>
+      </div> */}
       <button className="navbar-toggler" onClick={toggleNavbar}>
         <FaBars />
       </button>
-
+      
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
         <li>
-          <Link to="/userdashboard" className={location.pathname === "/userdashboard" ? "active" : ""}>
+          <Link to="/home" className={location.pathname === "/home" ? "active" : ""}>
             <FaHome />
+            Home
+          </Link>
+        </li>
+
+        <li>
+          <Link
+            to="/userdashboard"
+            className={location.pathname === "/userdashboard" ? "active" : ""}
+          >
+            <FaTachometerAlt />
             Dashboard
           </Link>
         </li>
         <li>
-          <Link to="/stockintable" className={location.pathname === "/stockintable" ? "active" : ""}>
+          <Link
+            to="/stockintable"
+            className={location.pathname === "/stockintable" ? "active" : ""}
+          >
             <FaBoxOpen />
             Purchase
           </Link>
         </li>
         <li>
-          <Link to="/stockout" className={location.pathname === "/stockout" ? "active" : ""}>
+          <Link
+            to="/stockout"
+            className={location.pathname === "/stockout" ? "active" : ""}
+          >
             <FaTruck />
             Stock Out
           </Link>
         </li>
         <li>
-          <Link to="/stockconsumed" className={location.pathname === "/stockconsumed" ? "active" : ""}>
+          <Link
+            to="/stockconsumed"
+            className={location.pathname === "/stockconsumed" ? "active" : ""}
+          >
             <FaChartPie />
             Stock Consumed
           </Link>
         </li>
         <li>
-          <Link to="/allocatedtable" className={location.pathname === "/allocatedtable" ? "active" : ""}>
+          <Link
+            to="/allocatedtable"
+            className={location.pathname === "/allocatedtable" ? "active" : ""}
+          >
             <FaBoxOpen />
             StockIn (Allocated)
           </Link>
         </li>
         <li>
-          <Link to="/summary" className={location.pathname === "/summary" ? "active" : ""}>
+          <Link
+            to="/summary"
+            className={location.pathname === "/summary" ? "active" : ""}
+          >
             <FaFileAlt />
             Reports
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/userdashboard"
+            className={location.pathname === "/userdashboard" ? "active" : ""}
+          >
+            <FaBell />
+            Notification
           </Link>
         </li>
       </ul>
@@ -152,9 +194,15 @@ const UserNavbar = () => {
                       <ul>
                         {siteCodes.map((site) => (
                           <li key={site.id}>
-                            <p><strong>Code:</strong> {site.siteCode}</p>
-                            <p><strong>Location:</strong> {site.location}</p>
-                            <p><strong>Site Name:</strong> {site.siteName}</p>
+                            <p>
+                              <strong>Code:</strong> {site.siteCode}
+                            </p>
+                            <p>
+                              <strong>Location:</strong> {site.location}
+                            </p>
+                            <p>
+                              <strong>Site Name:</strong> {site.siteName}
+                            </p>
                           </li>
                         ))}
                       </ul>
@@ -171,9 +219,15 @@ const UserNavbar = () => {
                 </button>
                 {isUserDetailsOpen && userDetails && (
                   <div className="dropdown-content">
-                    <p><strong>Name:</strong> {userDetails.name}</p>
-                    <p><strong>Email:</strong> {userDetails.email}</p>
-                    <p><strong>Role:</strong> {userDetails.role}</p>
+                    <p>
+                      <strong>Name:</strong> {userDetails.name}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {userDetails.email}
+                    </p>
+                    <p>
+                      <strong>Role:</strong> {userDetails.role}
+                    </p>
                   </div>
                 )}
               </li>
