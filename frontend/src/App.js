@@ -25,15 +25,14 @@ import StockConsumedTable from './SiteUsers/StockConsumed/StockConsumedTable';
 import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
 import UserDashboard from './SiteUsers/Userdashboard/UserDashboard';
 import AllocatedStock from './SiteUsers/AllocatedTable';
+import Home from './SiteUsers/Home/Home'; // ✅ Fixed Import (Ensure File is Named Home.js)
 
 function App() {
   return (
     <Router>
-    
       <div className="App">
         <div className="d-flex" id="wrapper">
           {/* <Sidebar /> */}
-          
 
           {/* Main content */}
           <div id="page-content-wrapper" className="w-100">
@@ -42,7 +41,6 @@ function App() {
               <Route path="/purchase" element={<TablePurchase />} />
               <Route path="/add-purchase" element={<AddPurchaseForm />} />
               <Route path="/site" element={<SiteTable />} />
-              
               <Route path="/products" element={<ProductTable />} />
               <Route path="/brands" element={<Brand />} />
               <Route path="/unit" element={<UnitTable />} />
@@ -50,28 +48,23 @@ function App() {
               <Route path="/centralstock" element={<CentralStockTable />} />
               <Route path="/suppliers" element={<SupplierTable />} />
               <Route path="/dashboard" element={<Dashboard />} />
-  
-
+              
               <Route path="/" element={<Login />} />
               <Route path="/register" element={<Register />} />
-
               <Route path="/stockin" element={<StockInForm />} />
               <Route path="/stockintable" element={<StockInTable />} />
-
               <Route path="/stockout" element={<StockOutTable />} />
               <Route path="/stockconsumed" element={<StockConsumedTable />} />
-              <Route path="/summary" element={<StockSummaryTable />}/>
-
-              <Route path="/userdashboard" element={<UserDashboard />}/>
-
-              <Route path="/allocatedtable" element={<AllocatedStock />}/>
-              
+              <Route path="/summary" element={<StockSummaryTable />} />
+              <Route path="/userdashboard" element={<UserDashboard />} />
+              <Route path="/allocatedtable" element={<AllocatedStock />} />
+              <Route path="/home" element={<Home />} /> {/* ✅ Fixed Routing */}
             </Routes>
           </div>
         </div>
       </div>
-    </Router>
-  );
+    </Router>
+  );
 }
 
 export default App;
