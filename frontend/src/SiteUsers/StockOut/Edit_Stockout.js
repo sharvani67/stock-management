@@ -6,15 +6,23 @@ import { BASE_URL } from "../../ApiService/Api";
 
 const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) => {
   const { user } = useContext(AuthContext);
-  const [formData, setFormData] = useState({ ...stockOutData, dateTime: "" });
+  const [formData, setFormData] = useState({
+    ...stockOutData,
+    dateTime: stockOutData.date || "",
+    destinationSite: stockOutData.receiver || "", // Prefill destination site
+  });
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    setFormData({
-      ...stockOutData,
-      dateTime: stockOutData.date || "",
-    });
+    if (stockOutData) {
+      setFormData({
+        ...stockOutData,
+        dateTime: stockOutData.date || "",
+        destinationSite: stockOutData.receiver || "", 
+        productName: stockOutData.product || "",// Ensure destination site is prefilled
+      });
+    }
   }, [stockOutData]);
 
   useEffect(() => {
@@ -35,30 +43,25 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
               siteName: selectedSite.siteName,
               siteId: selectedSite.id,
             }));
-          } else {
-            console.warn("No user-specific sites found");
           }
-        } else {
-          console.error("Failed to fetch sites");
         }
       } catch (error) {
         console.error("Error fetching sites:", error);
       }
     };
 
-    if (user?.id) {
-      fetchSites();
-    }
+    if (user?.id) fetchSites();
   }, [user?.id]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       if (!user?.id || !formData.siteName) return;
       try {
-        const response = await fetch(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setProducts(data);
+        const response = await axios.get(`${BASE_URL}/fetch-all-products`, {
+          params: { userId: user?.id, siteName: formData.siteName }
+        });
+        if (Array.isArray(response.data)) {
+          setProducts(response.data);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -69,10 +72,11 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
+    const productData = products.find((item) => item.product === selectedProduct);
     setFormData((prevFormData) => ({
       ...prevFormData,
       productName: selectedProduct,
-      units: products.find((item) => item.product === selectedProduct)?.units || "",
+      units: productData?.units || "",
     }));
   };
 
@@ -86,20 +90,41 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    const formDataToSend = new FormData();
+    
+    // Append form fields
+    formDataToSend.append("date", formData.date);
+    formDataToSend.append("destinationSite", formData.destinationSite);
+    formDataToSend.append("receiver", formData.destinationSite); // Save as receiver in DB
+    formDataToSend.append("productName", formData.productName);
+    formDataToSend.append("quantity_out", formData.quantity_out);
+    formDataToSend.append("units", formData.units);
+    formDataToSend.append("description", formData.description);
+  
+    // Append file only if a new file is selected
+    if (formData.attachment instanceof File) {
+      formDataToSend.append("attachment", formData.attachment);
+    }
+  
     try {
-      const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formData);
-      alert(response.data.message);
+      const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
       if (response.status === 200) {
-        handleUpdate(formData); // Pass the updated data to the parent component
-        handleClose(); // Close the modal after updating
+        alert("Stock Out updated successfully!");
+        handleUpdate(response.data); // Ensure updated data is passed
+        handleClose();
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.error("Error updating stock:", error);
+      console.error("Error updating stock:", error.response?.data || error.message);
       alert("Failed to update stock.");
     }
   };
+  
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -116,9 +141,7 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
                   type="datetime-local"
                   name="dateTime"
                   value={formData.dateTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dateTime: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })}
                   required
                 />
               </Form.Group>
@@ -134,13 +157,11 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
                   required
                 >
                   <option value="">Select Destination Site</option>
-                  {sites
-                    .filter(site => site.id !== formData.siteId)
-                    .map((site) => (
-                      <option key={site.id} value={site.siteName}>
-                        {site.siteName}
-                      </option>
-                    ))}
+                  {sites.filter(site => site.id !== formData.siteId).map((site) => (
+                    <option key={site.id} value={site.siteName}>
+                      {site.siteName}
+                    </option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Col>

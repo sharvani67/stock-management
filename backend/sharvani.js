@@ -665,7 +665,95 @@ app.delete('/stock-in/:id', (req, res) => {
 });
 
 
+// API route with file upload
+app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
+  const stockId = req.params.id;
+  const {
+    date, // Use 'date' instead of 'dateTime'
+    destinationSite,
+    productName,
+    quantity_out,
+    units,
+    description,
+  } = req.body;
 
+  const attachment = req.file ? req.file.filename : null; // Save new file or keep null
+
+  console.log("Updating stock ID:", stockId);
+  console.log("Received Data:", req.body);
+  console.log("Uploaded File:", req.file);
+
+  if (!stockId) {
+    return res.status(400).json({ success: false, message: "Stock ID is required" });
+  }
+
+  // First, get the existing record to check if there's already an attachment
+  const getExistingSql = "SELECT attachment FROM stockledger WHERE id = ?";
+  db.query(getExistingSql, [stockId], (err, results) => {
+    if (err) {
+      console.error("Error fetching existing stock record:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: "Stock record not found" });
+    }
+
+    const existingAttachment = results[0].attachment;
+    const finalAttachment = attachment || existingAttachment; // Keep old file if no new upload
+
+    const updateSql = `
+      UPDATE stockledger 
+      SET 
+        date = ?,  
+        receiver = ?, 
+        product = ?, 
+        quantity_out = ?, 
+        units = ?, 
+        description = ?, 
+        attachment = ?
+      WHERE id = ?`;
+
+    const values = [date, destinationSite, productName, quantity_out, units, description, finalAttachment, stockId];
+
+    db.query(updateSql, values, (updateErr, result) => {
+      if (updateErr) {
+        console.error("MySQL Error:", updateErr);
+        return res.status(500).json({ success: false, message: "Database error occurred" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Stock record not found" });
+      }
+
+      res.status(200).json({ success: true, message: "Stock updated successfully", attachment: finalAttachment });
+    });
+  });
+});
+ 
+// DELETE Stock-Out Record
+app.delete("/stock-out/:id", (req, res) => {
+  const stockId = req.params.id;
+
+  if (!stockId) {
+    return res.status(400).json({ success: false, message: "Stock ID is required" });
+  }
+
+  const sql = "DELETE FROM stockledger WHERE id = ?";
+  
+  db.query(sql, [stockId], (err, result) => {
+    if (err) {
+      console.error("MySQL Error:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Stock record not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Stock record deleted successfully" });
+  });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
