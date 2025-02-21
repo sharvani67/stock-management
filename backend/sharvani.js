@@ -256,81 +256,76 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
 });
 
 
-app.post("/stock-consumed", (req, res) => {
-  // Destructure the incoming data from the request body
+// POST Route with File Upload
+app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
+  console.log("Received file:", req.file);  // Debugging log
+  console.log("Received body:", req.body);  // Debugging log
+
   const {
     productName,
     quantity,
     units,
-    attachment,
     description,
     dateTime,
     userId,
     siteManager,
     siteCode,
     siteName,
-    siteId
+    siteId,
   } = req.body;
 
-  // Here, the other fields like supplierName, supplier_id, etc., should be added if needed
-  // For now, let's assume transaction_type, supplierName, supplier_id, etc., are either optional or will be added later
-  const transaction_type = "Consumption";  // Example (could be dynamic if needed)
-  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
-  const supplierName = "N/A"; // Example static data
-  const supplier_id = 0; // Example static data
-  const destinationSite = siteName; // Could be used for destination
-  const product_id = 1; // Assuming a static value or you can fetch the actual product id
-  const quantity_in = 0; // Assuming stock in is not applicable in this case
-  const available_quantity = 100; // Assuming a static value for now
-  const billNumber = "INV12345"; // Example static data
-  const tran_id = Date.now(); // Example dynamic transaction id (could be replaced)
+  const transaction_type = "Consumption"; 
+  const supplierName = "N/A"; 
+  const supplier_id = 0; 
+  const destinationSite = siteName; 
+  const product_id = req.body.product_id || null; // Ensure product_id is dynamic
+  const quantity_in = 0; 
+  const available_quantity = req.body.available_quantity || 0; // Avoid hardcoding
+  const tran_id = Date.now(); 
 
-  // Insert data into the database using the query
+  // ✅ Corrected file upload handling
+  const attachment = req.file ? `/uploads/${req.file.filename}` : null;
+  console.log("Attachment path:", attachment);
+
   const query = `
-      INSERT INTO stockledger (
-          site_name, site_code, date,  transaction_type, supplier,
-          supplier_id, receiver, product, product_id,
-          units,attachment,
-    description, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+    INSERT INTO stockledger (
+      site_name, site_code, date, transaction_type, supplier,
+      supplier_id, receiver, product, product_id,
+      units, attachment, description, quantity_in, quantity_out,
+      available_quantity, tran_id, userid, sitemanager, siteid
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
-      query,
-      [
-          siteName,
-          siteCode,
-          dateTime,          // DateTime from the form
-                        // Time from the form
-          transaction_type,  // Static or dynamic transaction type
-          supplierName,      // Static or dynamic supplier name
-          supplier_id,       // Static or dynamic supplier ID
-          destinationSite,   // Site where the stock is consumed
-          productName,       // Product name from the form
-          product_id,        // Product ID (can be fetched or static)
-          units, 
-          attachment,
-          description,            // Units from the form
-          quantity_in,       // Quantity in, assuming 0 for now
-          quantity,          // Quantity consumed (from the form)
-          available_quantity, // Available stock after consumption
-                  // Invoice number (can be dynamic)
-          tran_id,
-          userId,
-          siteManager,
-          siteId
-
-              
-      ],
-      (err, result) => {
-          if (err) {
-              console.error("Error inserting data:", err);
-              res.status(500).json({ message: "Failed to add stock" });
-          } else {
-              console.log("Stock added successfully:", JSON.stringify(req.body, null, 2)); // Log the submitted data
-              res.status(200).json({ message: "Stock added successfully" });
-          }
+    query,
+    [
+      siteName,
+      siteCode,
+      dateTime,
+      transaction_type,
+      supplierName,
+      supplier_id,
+      destinationSite,
+      productName,
+      product_id,
+      units,
+      attachment,
+      description,
+      quantity_in,
+      quantity,
+      available_quantity,
+      tran_id,
+      userId,
+      siteManager,
+      siteId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        return res.status(500).json({ message: "Failed to add stock" });
       }
+      return res.status(200).json({ message: "Stock added successfully", attachment });
+    }
   );
 });
 
