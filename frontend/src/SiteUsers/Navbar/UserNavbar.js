@@ -18,7 +18,7 @@ import "./UserNavbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
-import logo from "../../assets/images/iiiq_logo.png"; // ✅ Ensure the logo is in the correct folder
+import logo from "../../assets/images/MSlogo.jpg"; // ✅ Ensure the logo is in the correct folder
 
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -93,11 +93,11 @@ const UserNavbar = () => {
 
   return (
     <nav className="navbar">
-      {/* <div className="navbar-logo">
-        <Link to="/">
+      <div className="navbar-logo">
+        <Link to="">
           <img src={logo} alt="MS Constructions Logo" />
         </Link>
-      </div> */}
+      </div>
       <button className="navbar-toggler" onClick={toggleNavbar}>
         <FaBars />
       </button>
@@ -166,8 +166,8 @@ const UserNavbar = () => {
         </li>
         <li>
           <Link
-            to="/userdashboard"
-            className={location.pathname === "/userdashboard" ? "active" : ""}
+            to=" "
+            className={location.pathname === "" ? "active" : ""}
           >
             <FaBell />
             Notification
