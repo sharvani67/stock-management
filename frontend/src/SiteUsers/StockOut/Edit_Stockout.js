@@ -90,7 +90,6 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
 
     try {
       // Make PUT request to update the stock-out data
@@ -101,34 +100,6 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
         handleUpdate(formData); // Pass the updated data to the parent component
         handleClose(); // Close the modal after updating
         alert(response.data.message || "Stock-Out updated successfully");
-=======
-  
-    const formDataToSend = new FormData();
-    
-    // Append form fields
-    formDataToSend.append("date", formData.date);
-    formDataToSend.append("destinationSite", formData.destinationSite);
-    formDataToSend.append("receiver", formData.destinationSite); // Save as receiver in DB
-    formDataToSend.append("productName", formData.productName);
-    formDataToSend.append("quantity_out", formData.quantity_out);
-    formDataToSend.append("units", formData.units);
-    formDataToSend.append("description", formData.description);
-  
-    // Append file only if a new file is selected
-    if (formData.attachment instanceof File) {
-      formDataToSend.append("attachment", formData.attachment);
-    }
-  
-    try {
-      const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-  
-      if (response.status === 200) {
-        alert("Stock Out updated successfully!");
-        handleUpdate(response.data); // Ensure updated data is passed
-        handleClose();
->>>>>>> 4a17b8216a3405f69987826b2ab5bdc1518749ec
       } else {
         alert(response.data.message || "Failed to update stock-out");
       }
