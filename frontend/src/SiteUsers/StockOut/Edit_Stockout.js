@@ -22,23 +22,43 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
       try {
         const response = await axios.get(`${BASE_URL}/sites`);
         if (response.status === 200) {
-          setSites(response.data);
+          const allSites = response.data;
+          setSites(allSites);
+          const userSites = allSites.filter(site => site.userId === user?.id);
+          if (userSites.length > 0) {
+            const selectedSite = userSites[0];
+            setFormData(prev => ({
+              ...prev,
+              userId: user?.id,
+              siteManager: selectedSite.siteManager,
+              siteCode: selectedSite.siteCode,
+              siteName: selectedSite.siteName,
+              siteId: selectedSite.id,
+            }));
+          } else {
+            console.warn("No user-specific sites found");
+          }
+        } else {
+          console.error("Failed to fetch sites");
         }
       } catch (error) {
         console.error("Error fetching sites:", error);
       }
     };
-    
-    fetchSites();
-  }, []);
+
+    if (user?.id) {
+      fetchSites();
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       if (!user?.id || !formData.siteName) return;
       try {
-        const response = await axios.get(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
-        if (Array.isArray(response.data)) {
-          setProducts(response.data);
+        const response = await fetch(`${BASE_URL}/fetch-all-products?userId=${user?.id}&siteName=${formData.siteName}`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setProducts(data);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -46,14 +66,6 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
     };
     fetchProducts();
   }, [user?.id, formData.siteName]);
-
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "file" ? files[0] : value,
-    });
-  };
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
@@ -64,18 +76,28 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
     }));
   };
 
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "file" ? files[0] : value,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formData);
       alert(response.data.message);
       if (response.status === 200) {
-        handleUpdate(formData);
-        handleClose();
+        handleUpdate(formData); // Pass the updated data to the parent component
+        handleClose(); // Close the modal after updating
+      } else {
+        alert(response.data.message);
       }
     } catch (error) {
-      console.error("Error updating stock record:", error);
-      alert("Failed to update stock record.");
+      console.error("Error updating stock:", error);
+      alert("Failed to update stock.");
     }
   };
 
@@ -88,26 +110,44 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formDateTime">
                 <Form.Label>Date & Time</Form.Label>
-                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} readOnly />
+                <Form.Control
+                  type="datetime-local"
+                  name="dateTime"
+                  value={formData.dateTime}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dateTime: e.target.value })
+                  }
+                  required
+                />
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formDestinationSite">
                 <Form.Label>Destination Site</Form.Label>
-                <Form.Control as="select" name="destinationSite" value={formData.destinationSite} onChange={handleChange} required>
+                <Form.Control
+                  as="select"
+                  name="destinationSite"
+                  value={formData.destinationSite}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="">Select Destination Site</option>
-                  {sites.filter(site => site.id !== formData.siteId).map((site) => (
-                    <option key={site.id} value={site.siteName}>{site.siteName}</option>
-                  ))}
+                  {sites
+                    .filter(site => site.id !== formData.siteId)
+                    .map((site) => (
+                      <option key={site.id} value={site.siteName}>
+                        {site.siteName}
+                      </option>
+                    ))}
                 </Form.Control>
               </Form.Group>
             </Col>
           </Row>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
                 <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
                   <option value="">Select Product</option>
@@ -118,34 +158,47 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formQuantity">
                 <Form.Label>Quantity</Form.Label>
-                <Form.Control type="number" placeholder="Enter quantity" name="quantity_out" value={formData.quantity_out} onChange={handleChange} required />
+                <Form.Control
+                  type="number"
+                  placeholder="Enter quantity"
+                  name="quantity_out"
+                  value={formData.quantity_out}
+                  onChange={handleChange}
+                  required
+                />
               </Form.Group>
             </Col>
           </Row>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
                 <Form.Control type="text" name="units" value={formData.units} readOnly />
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group>
+              <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
-                <Form.Control type="file" name="attachment" onChange={handleChange} />
+                <Form.Control
+                  type="file"
+                  name="attachment"
+                  onChange={handleChange}
+                />
               </Form.Group>
             </Col>
           </Row>
-          <Row className="mb-3">
+
+          <Row>
             <Col md={12}>
-              <Form.Group>
+              <Form.Group controlId="formDescription">
                 <Form.Label>Description</Form.Label>
                 <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>
+
           <Button variant="warning" type="submit" className="w-100">
             Update
           </Button>

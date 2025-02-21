@@ -81,7 +81,19 @@ const EditStockIn = ({ show, handleClose, stockData, handleUpdate }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+      
+      // Automatically update total price if price or quantity is changed
+      if (name === "price" || name === "quantity") {
+        const price = parseFloat(updatedData.price) || 0; // Default to 0 if not a valid number
+        const quantity = parseFloat(updatedData.quantity) || 0; // Default to 0 if not a valid number
+        updatedData.total_price = price * quantity; // Update total_price
+      }
+      
+      return updatedData;
+    });
   };
 
   const handleSubmit = async (e) => {
