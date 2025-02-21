@@ -90,6 +90,18 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
+
+    try {
+      // Make PUT request to update the stock-out data
+      const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formData);
+
+      if (response.status === 200) {
+        // Notify parent component to update the stock-out list
+        handleUpdate(formData); // Pass the updated data to the parent component
+        handleClose(); // Close the modal after updating
+        alert(response.data.message || "Stock-Out updated successfully");
+=======
   
     const formDataToSend = new FormData();
     
@@ -116,8 +128,9 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
         alert("Stock Out updated successfully!");
         handleUpdate(response.data); // Ensure updated data is passed
         handleClose();
+>>>>>>> 4a17b8216a3405f69987826b2ab5bdc1518749ec
       } else {
-        alert(response.data.message);
+        alert(response.data.message || "Failed to update stock-out");
       }
     } catch (error) {
       console.error("Error updating stock:", error.response?.data || error.message);

@@ -1,8 +1,9 @@
 /* Navbar Container */
 body {
   margin: 0;
-  padding-top: 50px; /* Adjust this value based on navbar height */
+  padding-top: 50px; /* Adjust this value based on navbar height */
 }
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -19,10 +20,8 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
 }
 
-
 /* ✅ Logo Styling */
-/* Logo Styling */
-/* .navbar-logo img {
+.navbar-logo img {
   height: 40px;
   width: auto;
 }
@@ -31,23 +30,31 @@ body {
   display: flex;
   align-items: center;
   margin-right: 20px;
-} */
+}
 
-/* Responsive Adjustments */
-/* @media (max-width: 768px) {
+/* Hide logo on mobile and tablet (screens <= 768px) */
+@media (max-width: 768px) {
+  .navbar-logo {
+    display: none; /* Hide logo */
+  }
+
   .navbar-logo img {
-    height: 35px;
+    display: none; /* Also hide image */
   }
 
   .navbar-links {
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */
+    padding-left: 20px;
+    margin-left: 10px;
   }
 
   .navbar-links li {
     text-align: center;
+    padding-left: 20px;
   }
-} */
+}
+
 /* Toggler Button */
 .navbar-toggler {
   display: none;
@@ -69,10 +76,8 @@ body {
 .navbar-links li {
   margin: 0 10px;
   margin-left: 0px;
-  padding-left: 10px;
-  
+  padding-left: 2px;
 }
-
 
 .navbar-links a {
   text-decoration: none;
@@ -82,11 +87,8 @@ body {
   align-items: center;
 }
 
-
-
 .navbar-links a:hover {
   color: #ffcc00; /* Highlight color on hover */
-  
 }
 
 .navbar-links a svg {
@@ -94,7 +96,6 @@ body {
 }
 
 /* Profile Section */
-/* Navbar Profile Section */
 .navbar-profile {
   position: relative;
   margin-left: auto;
@@ -182,16 +183,7 @@ body {
   color: #555;
 }
 
-
-
-@media (max-width: 768px) {
-  .navbar-profile {
-    margin-left: 10px;
-  }
-}
-
-
-/* Responsive Design */
+/* Responsive Design for devices with screen width <= 768px (Mobile + iPad) */
 @media (max-width: 768px) {
   .navbar-toggler {
     display: block;
@@ -205,7 +197,7 @@ body {
     position: absolute;
     top: 100%;
     left: 0;
-    padding: 10px 0;
+    padding: 0px 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
@@ -217,8 +209,13 @@ body {
     margin: 10px 0;
     text-align: center;
   }
+
+  .navbar-profile {
+    margin-left: 10px;
+  }
 }
 
+/* Further responsiveness for very small screens (e.g., phones) */
 @media (max-width: 480px) {
   .navbar-logo {
     font-size: 20px;
@@ -229,30 +226,4 @@ body {
   }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .navbar-toggler {
-    display: block;
-  }
-
-  .navbar-links {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background-color: #007bff;
-    position: absolute;
-    top: 100%;
-    left: 0px;
-    padding: 10px 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .navbar-links.active {
-    display: flex;
-  }
-
-  .navbar-links li {
-    margin: 10px 0;
-    text-align: center;
-  }
-}
+/* Larger Screens (Laptop and Desktop) */
