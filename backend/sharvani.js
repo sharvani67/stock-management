@@ -256,7 +256,6 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
 });
 
 
-// POST Route with File Upload
 app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
   console.log("Received file:", req.file);  // Debugging log
   console.log("Received body:", req.body);  // Debugging log
@@ -278,14 +277,14 @@ app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
   const supplierName = "N/A"; 
   const supplier_id = 0; 
   const destinationSite = siteName; 
-  const product_id = req.body.product_id || null; // Ensure product_id is dynamic
+  const product_id = req.body.product_id || null;
   const quantity_in = 0; 
-  const available_quantity = req.body.available_quantity || 0; // Avoid hardcoding
+  const available_quantity = req.body.available_quantity || 0;
   const tran_id = Date.now(); 
 
-  // ✅ Corrected file upload handling
-  const attachment = req.file ? `/uploads/${req.file.filename}` : null;
-  console.log("Attachment path:", attachment);
+  // ✅ Ensure file handling is correct
+  const attachment = req.file ? req.file.filename : null;
+  console.log("Stored Attachment Filename:", attachment);
 
   const query = `
     INSERT INTO stockledger (
@@ -309,7 +308,7 @@ app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
       productName,
       product_id,
       units,
-      attachment,
+      attachment, // ✅ Corrected file saving
       description,
       quantity_in,
       quantity,
@@ -328,6 +327,7 @@ app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
     }
   );
 });
+
 
 app.get("/stock-consumed", (req, res) => {
   const { userid } = req.query; // Get userid from request query

@@ -53,7 +53,7 @@ const StockConsumedTable = () => {
       { Header: "Product Name", accessor: "product" },
       { Header: "Quantity", accessor: "quantity_out" },
       { Header: "Units", accessor: "units" },
-      // { Header: "Description", accessor: "description" },
+      { Header: "Description", accessor: "description" },
     ],
     []
   );

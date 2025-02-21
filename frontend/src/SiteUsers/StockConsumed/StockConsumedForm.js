@@ -102,21 +102,28 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
       units: products.find((item) => item.product === selectedProduct)?.units || "",
     }));
   };
-  
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "file" ? files[0] : value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     const formDataToSend = new FormData();
+  
+    // Append text fields
     Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
+      if (key !== "attachment") {
+        formDataToSend.append(key, formData[key]);
+      }
     });
   
-    // Append file if selected
-    if (formData.attachment) {
+    // Append file properly
+    if (formData.attachment && formData.attachment instanceof File) {
       formDataToSend.append("attachment", formData.attachment);
     }
   
@@ -125,9 +132,8 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
   
-      alert(response.data.message);
-  
       if (response.status === 200) {
+        alert(response.data.message);
         handleSave({ ...formData, attachment: response.data.attachment });
         handleClose();
         window.location.reload();
@@ -137,6 +143,7 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
       alert("Failed to add stock.");
     }
   };
+  
   
 
   return (
