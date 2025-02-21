@@ -350,6 +350,86 @@ app.get("/stock-consumed", (req, res) => {
   });
 });
 
+app.put("/stock-consumed/:id", upload.single("attachment"), (req, res) => {
+  console.log("Received request:", req.body);
+  console.log("Uploaded file:", req.file);
+
+  const stockId = req.params.id;
+  if (!stockId) {
+    return res.status(400).json({ error: "Stock ID is required" });
+  }
+  
+  const { dateTime, productName, quantity, units, description } = req.body;
+  const attachment = req.file ? req.file.filename : null; 
+
+  console.log("Parsed data:", { stockId, dateTime, productName, quantity, units, description, attachment });
+
+  const updateQuery = `
+    UPDATE stockledger SET 
+      date = ?, 
+      product = ?, 
+      quantity_out = ?, 
+      units = ?, 
+      description = ?, 
+      attachment = ?
+    WHERE id = ?
+  `;
+
+  const queryParams = [dateTime, productName, quantity, units, description, attachment, stockId];
+
+  db.query(updateQuery, queryParams, (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    
+    console.log("Update successful", result);
+    res.status(200).json({ message: "Stock consumed record updated successfully", attachment });
+  });
+});
+
+app.delete("/stock-consumed/:id", (req, res) => {
+  const stockId = req.params.id;
+
+  if (!stockId) {
+    return res.status(400).json({ error: "Stock ID is required" });
+  }
+
+  // Fetch the attachment file path
+  const getAttachmentQuery = "SELECT attachment FROM stockledger WHERE id = ?";
+  db.query(getAttachmentQuery, [stockId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Stock record not found" });
+    }
+
+    const attachmentPath = results[0].attachment ? `uploads/${results[0].attachment}` : null;
+
+    // Delete the record
+    const deleteQuery = "DELETE FROM stockledger WHERE id = ?";
+    db.query(deleteQuery, [stockId], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      // If the record had an attachment, delete the file
+      if (attachmentPath) {
+        const fs = require("fs");
+        fs.unlink(attachmentPath, (err) => {
+          if (err) console.error("Error deleting file:", err);
+        });
+      }
+
+      res.status(200).json({ message: "Stock record deleted successfully!" });
+    });
+  });
+});
+
 
   // Login API
 

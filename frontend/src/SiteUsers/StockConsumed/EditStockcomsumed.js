@@ -25,9 +25,9 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
   useEffect(() => {
     if (stockConsumedData) {
       setFormData({
-        dateTime: stockConsumedData.dateTime || "",
-        productName: stockConsumedData.productName || "",
-        quantity: stockConsumedData.quantity || "",
+        dateTime: stockConsumedData.date || "",
+        productName: stockConsumedData.product|| "",
+        quantity: stockConsumedData.quantity_out|| "",
         units: stockConsumedData.units || "",
         attachment: stockConsumedData.attachment || "",
         description: stockConsumedData.description || "",
@@ -39,6 +39,34 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
       });
     }
   }, [stockConsumedData]);
+
+  useEffect(() => {
+    const fetchSites = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/sites`);
+        if (response.status === 200) {
+          const allSites = response.data;
+          setSites(allSites);
+          const userSites = allSites.filter(site => site.userId === user?.id);
+          if (userSites.length > 0) {
+            const selectedSite = userSites[0];
+            setFormData(prev => ({
+              ...prev,
+              userId: user?.id,
+              siteManager: selectedSite.siteManager,
+              siteCode: selectedSite.siteCode,
+              siteName: selectedSite.siteName,
+              siteId: selectedSite.id,
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    if (user?.id) fetchSites();
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchProducts = async () => {

@@ -58,18 +58,20 @@ const StockConsumedTable = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
+  
     try {
       const response = await axios.delete(`${BASE_URL}/stock-consumed/${id}`);
+      
       if (response.status === 200) {
         setData((prevData) => prevData.filter((item) => item.id !== id));
         alert("Stock record deleted successfully!");
       }
     } catch (error) {
       alert("Failed to delete stock record.");
-      console.error("Error deleting stock record:", error);
+      console.error("Error deleting stock record:", error.response?.data || error.message);
     }
   };
-
+  
   const handleSave = (newData) => {
     setData((prevData) => [newData, ...prevData]);
   };
