@@ -169,9 +169,23 @@ app.get("/stock-out", (req, res) => {
 });
 
 
-app.post("/stock-out", (req, res) => {
-  const {
+const multer = require("multer");
+const path = require("path");
 
+// Configure Multer for file storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Ensure this folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+const upload = multer({ storage });
+
+app.post("/stock-out", upload.single("attachment"), (req, res) => {
+  const {
     dateTime,
     supplierName,
     supplier_id,
@@ -179,7 +193,6 @@ app.post("/stock-out", (req, res) => {
     productName,
     product_id,
     units,
-    attachment,
     description,
     quantity,
     quantity_out,
@@ -190,20 +203,20 @@ app.post("/stock-out", (req, res) => {
     siteManager,
     siteCode,
     siteName,
-    siteId
+    siteId,
   } = req.body;
 
-  const transaction_type = "Stock Out";  // Example (could be dynamic if needed)
-  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
-  
-  // Insert data into the database using the query
+  const attachment = req.file ? req.file.filename : null; // Store file path or filename
+  const transaction_type = "Stock Out";
+  const time = new Date(dateTime).toLocaleTimeString();
+
   const query = `
-      INSERT INTO stockledger (
-          site_name, site_code, date, time, transaction_type, supplier,
-          supplier_id, receiver, product, product_id,
-          units,attachment,
-    description, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+    INSERT INTO stockledger (
+      site_name, site_code, date, time, transaction_type, supplier,
+      supplier_id, receiver, product, product_id,
+      units, attachment, description, quantity_in, quantity_out, 
+      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
@@ -229,9 +242,7 @@ app.post("/stock-out", (req, res) => {
       tran_id,
       userId,
       siteManager,
-      siteId
-      
-     
+      siteId,
     ],
     (err, result) => {
       if (err) {
@@ -244,81 +255,77 @@ app.post("/stock-out", (req, res) => {
   );
 });
 
-app.post("/stock-consumed", (req, res) => {
-  // Destructure the incoming data from the request body
+
+// POST Route with File Upload
+app.post("/stock-consumed", upload.single("attachment"), (req, res) => {
+  console.log("Received file:", req.file);  // Debugging log
+  console.log("Received body:", req.body);  // Debugging log
+
   const {
     productName,
     quantity,
     units,
-    attachment,
     description,
     dateTime,
     userId,
     siteManager,
     siteCode,
     siteName,
-    siteId
+    siteId,
   } = req.body;
 
-  // Here, the other fields like supplierName, supplier_id, etc., should be added if needed
-  // For now, let's assume transaction_type, supplierName, supplier_id, etc., are either optional or will be added later
-  const transaction_type = "Consumption";  // Example (could be dynamic if needed)
-  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
-  const supplierName = "N/A"; // Example static data
-  const supplier_id = 0; // Example static data
-  const destinationSite = siteName; // Could be used for destination
-  const product_id = 1; // Assuming a static value or you can fetch the actual product id
-  const quantity_in = 0; // Assuming stock in is not applicable in this case
-  const available_quantity = 100; // Assuming a static value for now
-  const billNumber = "INV12345"; // Example static data
-  const tran_id = Date.now(); // Example dynamic transaction id (could be replaced)
+  const transaction_type = "Consumption"; 
+  const supplierName = "N/A"; 
+  const supplier_id = 0; 
+  const destinationSite = siteName; 
+  const product_id = req.body.product_id || null; // Ensure product_id is dynamic
+  const quantity_in = 0; 
+  const available_quantity = req.body.available_quantity || 0; // Avoid hardcoding
+  const tran_id = Date.now(); 
 
-  // Insert data into the database using the query
+  // ✅ Corrected file upload handling
+  const attachment = req.file ? `/uploads/${req.file.filename}` : null;
+  console.log("Attachment path:", attachment);
+
   const query = `
-      INSERT INTO stockledger (
-          site_name, site_code, date,  transaction_type, supplier,
-          supplier_id, receiver, product, product_id,
-          units,attachment,
-    description, quantity_in, quantity_out, available_quantity,  tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+    INSERT INTO stockledger (
+      site_name, site_code, date, transaction_type, supplier,
+      supplier_id, receiver, product, product_id,
+      units, attachment, description, quantity_in, quantity_out,
+      available_quantity, tran_id, userid, sitemanager, siteid
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
-      query,
-      [
-          siteName,
-          siteCode,
-          dateTime,          // DateTime from the form
-                        // Time from the form
-          transaction_type,  // Static or dynamic transaction type
-          supplierName,      // Static or dynamic supplier name
-          supplier_id,       // Static or dynamic supplier ID
-          destinationSite,   // Site where the stock is consumed
-          productName,       // Product name from the form
-          product_id,        // Product ID (can be fetched or static)
-          units, 
-          attachment,
-          description,            // Units from the form
-          quantity_in,       // Quantity in, assuming 0 for now
-          quantity,          // Quantity consumed (from the form)
-          available_quantity, // Available stock after consumption
-                  // Invoice number (can be dynamic)
-          tran_id,
-          userId,
-          siteManager,
-          siteId
-
-              
-      ],
-      (err, result) => {
-          if (err) {
-              console.error("Error inserting data:", err);
-              res.status(500).json({ message: "Failed to add stock" });
-          } else {
-              console.log("Stock added successfully:", JSON.stringify(req.body, null, 2)); // Log the submitted data
-              res.status(200).json({ message: "Stock added successfully" });
-          }
+    query,
+    [
+      siteName,
+      siteCode,
+      dateTime,
+      transaction_type,
+      supplierName,
+      supplier_id,
+      destinationSite,
+      productName,
+      product_id,
+      units,
+      attachment,
+      description,
+      quantity_in,
+      quantity,
+      available_quantity,
+      tran_id,
+      userId,
+      siteManager,
+      siteId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        return res.status(500).json({ message: "Failed to add stock" });
       }
+      return res.status(200).json({ message: "Stock added successfully", attachment });
+    }
   );
 });
 
@@ -653,7 +660,95 @@ app.delete('/stock-in/:id', (req, res) => {
 });
 
 
+// API route with file upload
+app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
+  const stockId = req.params.id;
+  const {
+    date, // Use 'date' instead of 'dateTime'
+    destinationSite,
+    productName,
+    quantity_out,
+    units,
+    description,
+  } = req.body;
 
+  const attachment = req.file ? req.file.filename : null; // Save new file or keep null
+
+  console.log("Updating stock ID:", stockId);
+  console.log("Received Data:", req.body);
+  console.log("Uploaded File:", req.file);
+
+  if (!stockId) {
+    return res.status(400).json({ success: false, message: "Stock ID is required" });
+  }
+
+  // First, get the existing record to check if there's already an attachment
+  const getExistingSql = "SELECT attachment FROM stockledger WHERE id = ?";
+  db.query(getExistingSql, [stockId], (err, results) => {
+    if (err) {
+      console.error("Error fetching existing stock record:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: "Stock record not found" });
+    }
+
+    const existingAttachment = results[0].attachment;
+    const finalAttachment = attachment || existingAttachment; // Keep old file if no new upload
+
+    const updateSql = `
+      UPDATE stockledger 
+      SET 
+        date = ?,  
+        receiver = ?, 
+        product = ?, 
+        quantity_out = ?, 
+        units = ?, 
+        description = ?, 
+        attachment = ?
+      WHERE id = ?`;
+
+    const values = [date, destinationSite, productName, quantity_out, units, description, finalAttachment, stockId];
+
+    db.query(updateSql, values, (updateErr, result) => {
+      if (updateErr) {
+        console.error("MySQL Error:", updateErr);
+        return res.status(500).json({ success: false, message: "Database error occurred" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Stock record not found" });
+      }
+
+      res.status(200).json({ success: true, message: "Stock updated successfully", attachment: finalAttachment });
+    });
+  });
+});
+ 
+// DELETE Stock-Out Record
+app.delete("/stock-out/:id", (req, res) => {
+  const stockId = req.params.id;
+
+  if (!stockId) {
+    return res.status(400).json({ success: false, message: "Stock ID is required" });
+  }
+
+  const sql = "DELETE FROM stockledger WHERE id = ?";
+  
+  db.query(sql, [stockId], (err, result) => {
+    if (err) {
+      console.error("MySQL Error:", err);
+      return res.status(500).json({ success: false, message: "Database error occurred" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Stock record not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Stock record deleted successfully" });
+  });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {

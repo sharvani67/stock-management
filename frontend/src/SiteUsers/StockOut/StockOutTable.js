@@ -64,13 +64,23 @@ const StockOutTable = () => {
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) return;
+  
     try {
-      await axios.delete(`${BASE_URL}/stock-out/${id}`);
-      setData(data.filter((item) => item.id !== id));
+      const response = await axios.delete(`${BASE_URL}/stock-out/${id}`);
+  
+      if (response.status === 200) {
+        alert("Stock record deleted successfully!");
+        setData((prevData) => prevData.filter((item) => item.id !== id)); // Remove from UI
+      } else {
+        alert(response.data.message);
+      }
     } catch (error) {
       console.error("Error deleting stock-out record:", error);
+      alert("Failed to delete stock record.");
     }
   };
+  
 
   const handleSave = (newData) => {
     setData((prevData) => [newData, ...prevData]); // Add new data at the beginning

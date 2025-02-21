@@ -109,21 +109,35 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-        const response = await axios.post(`${BASE_URL}/stock-consumed`, formData);
-        alert(response.data.message);
-
-        if (response.status === 200) {
-            handleSave(formData); // Pass the new data to the parent component
-            handleClose(); // Close the modal after saving
-            window.location.reload(); // Refresh the page after closing the modal
-        }
-    } catch (error) {
-        console.error("Error adding stock:", error);
-        alert("Failed to add stock.");
+  
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      formDataToSend.append(key, formData[key]);
+    });
+  
+    // Append file if selected
+    if (formData.attachment) {
+      formDataToSend.append("attachment", formData.attachment);
     }
-};
-
+  
+    try {
+      const response = await axios.post(`${BASE_URL}/stock-consumed`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      alert(response.data.message);
+  
+      if (response.status === 200) {
+        handleSave({ ...formData, attachment: response.data.attachment });
+        handleClose();
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error adding stock:", error);
+      alert("Failed to add stock.");
+    }
+  };
+  
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
