@@ -7,32 +7,45 @@ import { AuthContext } from "../../Context/AuthContext";
 const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUpdate }) => {
   const { user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
-    date: "",
-    product: "",
-    quantity_out: "",
+    dateTime: "",
+    productName: "",
+    quantity: "",
     units: "",
+    attachment: "",
     description: "",
+    userId: "",
+    siteManager: "",
+    siteCode: "",
+    siteName: "",
+    siteId: "",
   });
   const [products, setProducts] = useState([]);
+  const [sites, setSites] = useState([]);
 
   useEffect(() => {
     if (stockConsumedData) {
       setFormData({
-        date: stockConsumedData.date || "",
-        product: stockConsumedData.product || "",
-        quantity_out: stockConsumedData.quantity_out || "",
+        dateTime: stockConsumedData.dateTime || "",
+        productName: stockConsumedData.productName || "",
+        quantity: stockConsumedData.quantity || "",
         units: stockConsumedData.units || "",
+        attachment: stockConsumedData.attachment || "",
         description: stockConsumedData.description || "",
+        userId: stockConsumedData.userId || "",
+        siteManager: stockConsumedData.siteManager || "",
+        siteCode: stockConsumedData.siteCode || "",
+        siteName: stockConsumedData.siteName || "",
+        siteId: stockConsumedData.siteId || "",
       });
     }
   }, [stockConsumedData]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!user?.id) return;
+      if (!user?.id || !formData.siteName) return;
       try {
         const response = await axios.get(`${BASE_URL}/fetch-all-products`, {
-          params: { userId: user?.id },
+          params: { userId: user?.id, siteName: formData.siteName },
         });
         if (Array.isArray(response.data)) {
           setProducts(response.data);
@@ -42,31 +55,44 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
       }
     };
     fetchProducts();
-  }, [user?.id]);
+  }, [user?.id, formData.siteName]);
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
     const productData = products.find((item) => item.product === selectedProduct);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      product: selectedProduct,
+      productName: selectedProduct,
       units: productData?.units || "",
     }));
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "file" ? files[0] : value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key !== "attachment") {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+    if (formData.attachment && formData.attachment instanceof File) {
+      formDataToSend.append("attachment", formData.attachment);
+    }
     try {
-      const response = await axios.put(`${BASE_URL}/stock-consumed/${stockConsumedData.id}`, formData);
-
+      const response = await axios.put(`${BASE_URL}/stock-consumed/${stockConsumedData.id}`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       if (response.status === 200) {
-        handleUpdate({ ...stockConsumedData, ...formData }); // Update parent state
-        handleClose(); // Close modal
+        handleUpdate({ ...stockConsumedData, ...formData, attachment: response.data.attachment });
+        handleClose();
         alert("Stock consumed record updated successfully!");
       } else {
         alert("Failed to update stock consumed record.");
@@ -86,32 +112,18 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formDate">
-                <Form.Label>Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                />
+              <Form.Group controlId="formDateTime">
+                <Form.Label>Date & Time</Form.Label>
+                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} onChange={handleChange} required />
               </Form.Group>
             </Col>
             <Col md={6}>
-              <Form.Group controlId="formProduct">
+              <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="product"
-                  value={formData.product}
-                  onChange={handleProductChange}
-                  required
-                >
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
                   <option value="">Select Product</option>
                   {[...new Set(products.map((item) => item.product))].map((product, index) => (
-                    <option key={index} value={product}>
-                      {product}
-                    </option>
+                    <option key={index} value={product}>{product}</option>
                   ))}
                 </Form.Control>
               </Form.Group>
@@ -121,24 +133,21 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
             <Col md={6}>
               <Form.Group controlId="formQuantity">
                 <Form.Label>Quantity</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="quantity_out"
-                  value={formData.quantity_out}
-                  onChange={handleChange}
-                  required
-                />
+                <Form.Control type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group controlId="formUnits">
                 <Form.Label>Units</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="units"
-                  value={formData.units}
-                  readOnly
-                />
+                <Form.Control type="text" name="units" value={formData.units} readOnly />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col md={12}>
+              <Form.Group controlId="formAttachment">
+                <Form.Label>Attachment</Form.Label>
+                <Form.Control type="file" name="attachment" onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>
@@ -146,20 +155,11 @@ const EditStockConsumedModal = ({ show, handleClose, stockConsumedData, handleUp
             <Col md={12}>
               <Form.Group controlId="formDescription">
                 <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                />
+                <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
               </Form.Group>
             </Col>
           </Row>
-
-          <Button variant="warning" type="submit" className="w-100 mt-3">
-            Update
-          </Button>
+          <Button variant="warning" type="submit" className="w-100 mt-3">Update</Button>
         </Form>
       </Modal.Body>
     </Modal>
