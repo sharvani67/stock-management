@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import DataTable from "../../layout/DataTable";
 import StockConsumedForm from "./StockConsumedForm";
-import ViewStockConsumed from "../StockConsumed/View_Stockconsumed"; // Import the View Modal
+import ViewStockConsumed from "../StockConsumed/View_Stockconsumed";
+import EditStockConsumedModal from "../StockConsumed/EditStockcomsumed"; // Import Edit Modal
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
@@ -20,42 +21,35 @@ const StockConsumedTable = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  const handleOpen = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
-
-  const fetchStockConsumedRecords = async () => {
-    try {
-      if (!user?.id) return;
-
-      const response = await axios.get(`${BASE_URL}/stock-consumed`, {
-        params: { userid: user.id },
-      });
-
-      console.log("Filtered API Response:", response.data);
-
-      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      setData(sortedData);
-    } catch (error) {
-      console.error("Error fetching stock-consumed records:", error);
-      setError("Failed to load data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (user?.id) {
       fetchStockConsumedRecords();
     }
   }, [user]);
 
+  const fetchStockConsumedRecords = async () => {
+    try {
+      if (!user?.id) return;
+      const response = await axios.get(`${BASE_URL}/stock-consumed`, {
+        params: { userid: user.id },
+      });
+      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setData(sortedData);
+    } catch (error) {
+      setError("Failed to load data");
+      console.error("Error fetching stock-consumed records:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpen = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+
   const handleView = (stock) => {
-    console.log("View button clicked, Stock Data:", stock);
     setSelectedStock(stock);
     setShowViewModal(true);
   };
-  
 
   const handleEdit = (stock) => {
     setSelectedStock(stock);
@@ -64,24 +58,24 @@ const StockConsumedTable = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-
     try {
       const response = await axios.delete(`${BASE_URL}/stock-consumed/${id}`);
-
       if (response.status === 200) {
-        alert("Stock record deleted successfully!");
         setData((prevData) => prevData.filter((item) => item.id !== id));
-      } else {
-        alert(response.data.message);
+        alert("Stock record deleted successfully!");
       }
     } catch (error) {
-      console.error("Error deleting stock record:", error);
       alert("Failed to delete stock record.");
+      console.error("Error deleting stock record:", error);
     }
   };
 
   const handleSave = (newData) => {
     setData((prevData) => [newData, ...prevData]);
+  };
+
+  const handleUpdate = (updatedStock) => {
+    setData((prevData) => prevData.map((item) => (item.id === updatedStock.id ? updatedStock : item)));
   };
 
   const columns = useMemo(
@@ -133,11 +127,17 @@ const StockConsumedTable = () => {
           <DataTable columns={columns} data={data} />
         )}
 
-        {/* Add the View Stock Consumed Modal */}
-        <ViewStockConsumed 
-          show={showViewModal} 
-          handleClose={() => setShowViewModal(false)} 
-          stockConsumedData={selectedStock} 
+        <ViewStockConsumed
+          show={showViewModal}
+          handleClose={() => setShowViewModal(false)}
+          stockConsumedData={selectedStock}
+        />
+
+        <EditStockConsumedModal
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          stockConsumedData={selectedStock}
+          handleUpdate={handleUpdate}
         />
       </div>
     </div>
