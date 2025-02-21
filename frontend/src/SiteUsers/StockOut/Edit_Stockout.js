@@ -6,12 +6,15 @@ import { BASE_URL } from "../../ApiService/Api";
 
 const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) => {
   const { user } = useContext(AuthContext);
-  const [formData, setFormData] = useState({ ...stockOutData });
+  const [formData, setFormData] = useState({ ...stockOutData, dateTime: "" });
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    setFormData({ ...stockOutData });
+    setFormData({
+      ...stockOutData,
+      dateTime: stockOutData.date || "",
+    });
   }, [stockOutData]);
 
   useEffect(() => {
@@ -85,7 +88,13 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formDestinationSite">
+              <Form.Group>
+                <Form.Label>Date & Time</Form.Label>
+                <Form.Control type="datetime-local" name="dateTime" value={formData.dateTime} readOnly />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
                 <Form.Label>Destination Site</Form.Label>
                 <Form.Control as="select" name="destinationSite" value={formData.destinationSite} onChange={handleChange} required>
                   <option value="">Select Destination Site</option>
@@ -95,8 +104,10 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
                 </Form.Control>
               </Form.Group>
             </Col>
+          </Row>
+          <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formProductName">
+              <Form.Group>
                 <Form.Label>Product Name</Form.Label>
                 <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
                   <option value="">Select Product</option>
@@ -106,30 +117,30 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
                 </Form.Control>
               </Form.Group>
             </Col>
-          </Row>
-          <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formQuantity">
+              <Form.Group>
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control type="number" placeholder="Enter quantity" name="quantity_out" value={formData.quantity_out} onChange={handleChange} required />
               </Form.Group>
             </Col>
+          </Row>
+          <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formUnits">
+              <Form.Group>
                 <Form.Label>Units</Form.Label>
                 <Form.Control type="text" name="units" value={formData.units} readOnly />
               </Form.Group>
             </Col>
-          </Row>
-          <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formAttachment">
+              <Form.Group>
                 <Form.Label>Attachment</Form.Label>
                 <Form.Control type="file" name="attachment" onChange={handleChange} />
               </Form.Group>
             </Col>
-            <Col md={6}>
-              <Form.Group controlId="formDescription">
+          </Row>
+          <Row className="mb-3">
+            <Col md={12}>
+              <Form.Group>
                 <Form.Label>Description</Form.Label>
                 <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
               </Form.Group>
