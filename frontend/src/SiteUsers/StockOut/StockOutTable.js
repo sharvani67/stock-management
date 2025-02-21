@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";
 import StockOutModal from "./StockOutForm"; // Form for adding stock-out
-import ViewStockOut from "./View_Stockout";
+import ViewStockout from "./View_Stockout"; // View modal
 import EditStockOut from "./Edit_Stockout"; // Edit modal
 import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
@@ -57,11 +57,6 @@ const StockOutTable = () => {
     setSelectedStockOut(stockOut);
     setShowViewModal(true);
   };
-  
-  useEffect(() => {
-    console.log("Updated ShowViewModal state:", showViewModal);
-  }, [showViewModal]);
-  
 
   const handleEdit = (stockOut) => {
     setSelectedStockOut(stockOut);
@@ -90,6 +85,7 @@ const StockOutTable = () => {
   const columns = React.useMemo(
     () => [
       { Header: "Date", accessor: "date" },
+      { Header: "Time", accessor: "time" },
       { Header: "Destination Site", accessor: "receiver" },
       { Header: "Product Name", accessor: "product" },
       { Header: "Quantity", accessor: "quantity_out" },
@@ -142,12 +138,11 @@ const StockOutTable = () => {
         <StockOutModal show={showModal} handleClose={handleClose} handleSave={handleSave} />
 
         {/* View Stock-Out Modal */}
-        <ViewStockOut
-  show={showViewModal}  // Controls visibility instead of conditionally rendering
-  handleClose={() => setShowViewModal(false)}
-  stockOutData={selectedStockOut}
-/>
-
+        <ViewStockout
+          show={showViewModal}
+          handleClose={() => setShowViewModal(false)}
+          stockoutData={selectedStockOut}
+        />
 
         {/* Edit Stock-Out Modal */}
         {selectedStockOut && (

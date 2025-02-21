@@ -8,7 +8,7 @@ const ViewStockout = ({ show, handleClose, stockoutData }) => {
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title>View Stock-Out Details</Modal.Title>
+        <Modal.Title>Stock-Out Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Table bordered striped>
