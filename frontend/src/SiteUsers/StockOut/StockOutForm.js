@@ -117,12 +117,23 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const formDataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSend.append(key, value);
+    });
+  
     try {
-      const response = await axios.post(`${BASE_URL}/stock-out`, formData);
+      const response = await axios.post(`${BASE_URL}/stock-out`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
       alert(response.data.message);
       if (response.status === 200) {
-        handleSave(formData); // Pass the new data to the parent component
-        handleClose(); // Close the modal after saving
+        handleSave(formData); // Pass new data to parent component
+        handleClose(); // Close modal after saving
         window.location.reload(); // Refresh the page after closing the modal
       } else {
         alert(response.data.message);
@@ -132,6 +143,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
       alert("Failed to add stock.");
     }
   };
+  
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>

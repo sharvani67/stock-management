@@ -169,9 +169,23 @@ app.get("/stock-out", (req, res) => {
 });
 
 
-app.post("/stock-out", (req, res) => {
-  const {
+const multer = require("multer");
+const path = require("path");
 
+// Configure Multer for file storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Ensure this folder exists
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+const upload = multer({ storage });
+
+app.post("/stock-out", upload.single("attachment"), (req, res) => {
+  const {
     dateTime,
     supplierName,
     supplier_id,
@@ -179,7 +193,6 @@ app.post("/stock-out", (req, res) => {
     productName,
     product_id,
     units,
-    attachment,
     description,
     quantity,
     quantity_out,
@@ -190,20 +203,20 @@ app.post("/stock-out", (req, res) => {
     siteManager,
     siteCode,
     siteName,
-    siteId
+    siteId,
   } = req.body;
 
-  const transaction_type = "Stock Out";  // Example (could be dynamic if needed)
-  const time = new Date(dateTime).toLocaleTimeString(); // Format time from dateTime
-  
-  // Insert data into the database using the query
+  const attachment = req.file ? req.file.filename : null; // Store file path or filename
+  const transaction_type = "Stock Out";
+  const time = new Date(dateTime).toLocaleTimeString();
+
   const query = `
-      INSERT INTO stockledger (
-          site_name, site_code, date, time, transaction_type, supplier,
-          supplier_id, receiver, product, product_id,
-          units,attachment,
-    description, quantity_in, quantity_out, available_quantity, invoice_no, tran_id,userid,sitemanager,siteid
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+    INSERT INTO stockledger (
+      site_name, site_code, date, time, transaction_type, supplier,
+      supplier_id, receiver, product, product_id,
+      units, attachment, description, quantity_in, quantity_out, 
+      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
@@ -229,9 +242,7 @@ app.post("/stock-out", (req, res) => {
       tran_id,
       userId,
       siteManager,
-      siteId
-      
-     
+      siteId,
     ],
     (err, result) => {
       if (err) {
@@ -243,6 +254,7 @@ app.post("/stock-out", (req, res) => {
     }
   );
 });
+
 
 app.post("/stock-consumed", (req, res) => {
   // Destructure the incoming data from the request body
