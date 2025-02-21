@@ -12,7 +12,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     productName: "",
     quantity_out: "",
     units: "",
-    attachment:"",
+    
     description:"",
     attachment: null,
     status: "",

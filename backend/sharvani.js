@@ -629,24 +629,30 @@ app.put('/update-stock-in/:id', (req, res) => {
   });
 });
 
-// Delete Stock-In Record API
 app.delete('/stock-in/:id', (req, res) => {
-  const stockInId = req.params.id;
-  const sql = 'DELETE FROM stockin_table WHERE sNo = ?';
+  const id = req.params.id; // Use "id" as per your table structure
 
-  db.query(sql, [stockInId], (err, result) => {
+  if (!id) {
+    return res.status(400).json({ success: false, message: 'Invalid stock ID' });
+  }
+
+  const sql = 'DELETE FROM stockledger WHERE id = ?';
+
+  db.query(sql, [id], (err, result) => {
     if (err) {
-      console.error('Error deleting stock-in record:', err);
-      return res.status(500).json({ success: false, message: 'Failed to delete stock-in record' });
+      console.error('Error deleting stock record:', err);
+      return res.status(500).json({ success: false, message: 'Failed to delete stock record' });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: 'Stock-in record not found' });
+      return res.status(404).json({ success: false, message: 'Stock record not found' });
     }
 
-    res.json({ success: true, message: 'Stock-in record deleted successfully' });
+    res.json({ success: true, message: 'Stock record deleted successfully' });
   });
 });
+
+
 
 
 const PORT = 5000;

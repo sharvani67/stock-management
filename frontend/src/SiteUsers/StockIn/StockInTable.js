@@ -41,23 +41,33 @@ const StockInTable = () => {
   }, [user]);
 
   
-  const handleDelete = async (stockInId) => {
+  const handleDelete = async (id) => {
+    if (!id) {
+      alert("Invalid stock ID.");
+      return;
+    }
+  
+    console.log("Deleting stock record with ID:", id); // Debugging
+  
     if (!window.confirm("Are you sure you want to delete this record?")) return;
   
     try {
-      const response = await axios.delete(`${BASE_URL}/stock-in/${stockInId}`);
-      
+      const response = await axios.delete(`${BASE_URL}/stock-in/${id}`);
+  
       if (response.data.success) {
-        setPurchaseData(prevData => prevData.filter(stock => stock.sNo !== stockInId));
-        alert("Stock-in record deleted successfully.");
+        setPurchaseData(prevData => prevData.filter(stock => stock.id !== id));
+        alert("Stock record deleted successfully.");
       } else {
-        alert(response.data.message || "Failed to delete stock-in record.");
+        alert(response.data.message || "Failed to delete stock record.");
       }
     } catch (error) {
-      console.error("Error deleting stock-in record:", error);
+      console.error("Error deleting stock record:", error);
       alert("An error occurred while deleting the record.");
     }
   };
+  
+  
+  
   
 
   
@@ -78,9 +88,10 @@ const StockInTable = () => {
           <Button variant="outline-warning" size="sm" onClick={() => { setSelectedStock(row.original); setShowEditModal(true); }}>
             <FaEdit />
           </Button>
-          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.original.sNo)}>
-            <FaTrashAlt />
-          </Button>
+         <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.original.id)}>
+         <FaTrashAlt />
+       </Button>
+       
         </div>
       ),
     },
