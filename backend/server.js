@@ -278,6 +278,7 @@ app.get('/sites', (req, res) => {
     res.send(results);
   });
 });
+
 app.post("/stock-out", upload.single("attachment"), (req, res) => {
   const {
     dateTime,
@@ -298,20 +299,21 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
     siteCode,
     siteName,
     siteId,
-    receiverId,  // Ensure this is correctly passed from the frontend
+    receiverId,
   } = req.body;
 
   const attachment = req.file ? req.file.filename : null;
   const transaction_type = "Stock Out";
   const time = new Date(dateTime).toLocaleTimeString();
 
+  // Insert into stockledger table
   const query = `
     INSERT INTO stockledger (
       site_name, site_code, date, time, transaction_type, supplier,
       supplier_id, receiver_id, receiver, product, product_id,
       units, attachment, description, quantity_in, quantity_out, 
       available_quantity, invoice_no, tran_id, userid, sitemanager, siteid
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)
   `;
 
   db.query(
@@ -324,7 +326,7 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       transaction_type,
       supplierName,
       supplier_id,
-      receiverId,  // Ensure this is correct
+      receiverId,
       destinationSite,
       productName,
       product_id,
@@ -346,15 +348,14 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
         res.status(500).json({ message: "Failed to add stock" });
       } else {
         // Insert into notifications table
-        const notificationMessage = `Stock Out: ${quantity_out} ${units} of ${productName} sent to ${destinationSite}`;
         const notificationQuery = `
-          INSERT INTO notifications (receiver_id, site_id, site_name, destination_site, message, read_status)
-          VALUES (?, ?, ?, ?, ?, ?)
+          INSERT INTO notifications (receiver_id, site_id, site_name, destination_site, read_status)
+          VALUES (?, ?, ?, ?, ?)
         `;
 
         db.query(
           notificationQuery,
-          [receiverId, siteId, siteName, destinationSite, notificationMessage, 0],
+          [receiverId, siteId, siteName, destinationSite, 0],
           (notifErr, notifResult) => {
             if (notifErr) {
               console.error("Error inserting notification:", notifErr);
@@ -366,11 +367,10 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
                 siteId,
                 siteName,
                 destinationSite,
-                message: notificationMessage,
                 read: 0,
               });
 
-              res.status(200).json({ message: "Stock added successfully & notification sent" });
+              res.status(200).json({ message: "Stock added successfully" });
             }
           }
         );
@@ -378,7 +378,6 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
     }
   );
 });
-
 
 app.get("/stock-out", (req, res) => {
   const { userid } = req.query; // Get userid from request query
@@ -914,12 +913,9 @@ app.post("/notifications/mark-read", (req, res) => {
   });
 });
 
+// Emit real-time notifications via WebSocket
 io.on("connection", (socket) => {
   console.log("WebSocket connected");
-
-  socket.on("joinSite", (siteId) => {
-    socket.join(siteId); // Join a room for the site ID
-  });
 
   socket.on("requestNotificationCount", (siteId) => {
     const query = `SELECT COUNT(*) AS unreadCount FROM notifications WHERE receiver_id = ? AND read_status = 0`;

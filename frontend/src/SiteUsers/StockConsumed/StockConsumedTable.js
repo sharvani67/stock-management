@@ -8,8 +8,11 @@ import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../../ApiService/Api";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaFilePdf, FaFileExcel  } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 const StockConsumedTable = () => {
   const { user } = useContext(AuthContext);
@@ -79,6 +82,45 @@ const StockConsumedTable = () => {
   const handleUpdate = (updatedStock) => {
     setData((prevData) => prevData.map((item) => (item.id === updatedStock.id ? updatedStock : item)));
   };
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Stock Consumed Records", 20, 10);
+
+    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "Description"];
+    const tableRows = data.map((item) => [
+      item.date,
+      item.product,
+      item.quantity_out,
+      item.units,
+      item.description,
+    ]);
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("StockConsumedRecords.pdf");
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "StockConsumedData");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "StockConsumedRecords.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
 
   const columns = useMemo(
     () => [
@@ -113,6 +155,14 @@ const StockConsumedTable = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Consumed Records</h1>
+        <div>
+            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
+              <FaFilePdf /> Export as PDF
+            </Button>
+            <Button variant="success" onClick={exportToExcel}>
+              <FaFileExcel /> Export as Excel
+            </Button>
+          </div>
         <div className="d-flex justify-content-end mb-3">
           <Button variant="primary" onClick={handleOpen}>
             Add Stock Consumed

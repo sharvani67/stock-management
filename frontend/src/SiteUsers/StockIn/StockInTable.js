@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
-import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaEye, FaPlus,FaFilePdf, FaFileExcel  } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import UserNavbar from '../Navbar/UserNavbar';
 import { AuthContext } from "../../Context/AuthContext";
@@ -10,6 +10,9 @@ import { BASE_URL } from '../../ApiService/Api';
 import ViewStockInModal from './View_Stockin';
 
 import EditStockIn from './Update_Stockin';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
 const StockInTable = () => {
   const { user } = useContext(AuthContext);
@@ -66,7 +69,43 @@ const StockInTable = () => {
     }
   };
   
-  
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Stock In Records", 20, 10);
+    
+    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "Supplier Name"];
+    const tableRows = purchaseData.map(item => [
+      item.date, item.product, item.quantity_in, item.units, item.supplier
+    ]);
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("StockInRecords.pdf");
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(purchaseData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "StockInData");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+    // Create a Blob from the Excel buffer
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+
+    // Create a temporary download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "StockInRecords.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
   
   
 
@@ -102,6 +141,14 @@ const StockInTable = () => {
       <UserNavbar />
       <div className="container mt-5">
         <h1 className="mb-4">StockIn Management</h1>
+        <div>
+            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
+              <FaFilePdf /> Export as PDF
+            </Button>
+            <Button variant="success" onClick={exportToExcel}>
+              <FaFileExcel /> Export as Excel
+            </Button>
+          </div>
 
         {loading && <p>Loading data...</p>}
         {error && <p className="text-danger">{error}</p>}

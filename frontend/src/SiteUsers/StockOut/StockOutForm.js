@@ -12,7 +12,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     productName: "",
     quantity_out: "",
     units: "",
-    
+    receiverId: "",
     description:"",
     attachment: null,
     status: "",
@@ -47,10 +47,21 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "file" ? files[0] : value,
-    });
+
+    // Handle destination site selection and store its respective ID as receiverId
+    if (name === "destinationSite") {
+      const selectedSite = sites.find((site) => site.siteName === value);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        destinationSite: value,
+        receiverId: selectedSite ? selectedSite.id : "",
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === "file" ? files[0] : value,
+      });
+    }
   };
 
   useEffect(() => {
@@ -179,7 +190,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
                 >
                   <option value="">Select Destination Site</option>
                   {sites
-                    .filter(site => site.id !== formData.siteId)
+                    .filter((site) => site.id !== formData.siteId)
                     .map((site) => (
                       <option key={site.id} value={site.siteName}>
                         {site.siteName}

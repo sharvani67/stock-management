@@ -4,6 +4,9 @@ import UserNavbar from "./Navbar/UserNavbar";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../ApiService/Api";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 const AllocatedStock = () => {
   const { user, logout } = useContext(AuthContext);
@@ -112,20 +115,54 @@ const AllocatedStock = () => {
             className="form-select"
             style={{ width: "150px" }}
           >
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
+            <option value="Received">Received</option>
+            <option value="Pending">Pending</option>
           </select>
         ),
       },
     ],
     []
   );
+  // Export to PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Allocated Stock Report", 14, 10);
+    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "From Site"];
+    const tableRows = data.map(({ date, product, quantity_out, units, site_name }) => [
+      date, product, quantity_out, units, site_name,
+    ]);
+    doc.autoTable({ head: [tableColumn], body: tableRows });
+    doc.save("Allocated_Stock_Report.pdf");
+  };
+
+  // Export to Excel
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(data.map(({ date, product, quantity_out, units, site_name }) => ({
+      Date: date,
+      "Product Name": product,
+      Quantity: quantity_out,
+      Units: units,
+      "From Site": site_name,
+    })));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Allocated Stock");
+    XLSX.writeFile(wb, "Allocated_Stock_Report.xlsx");
+  };
 
   return (
     <div>
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Allocated Stock</h1>
+        {/* Export Buttons */}
+        <div className="mb-3">
+          <button className="btn btn-primary me-2" onClick={exportToPDF}>
+            Export as PDF
+          </button>
+          <button className="btn btn-success" onClick={exportToExcel}>
+            Export as Excel
+          </button>
+        </div>
         {/* Display the data table only when the data is loaded */}
         {!loading ? <DataTable columns={columns} data={data} /> : <p>Loading...</p>}
       </div>

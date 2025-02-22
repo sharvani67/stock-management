@@ -4,6 +4,10 @@ import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../../ApiService/Api";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
+
 
 const StockSummary = () => {
   const { user } = useContext(AuthContext);
@@ -121,6 +125,36 @@ const StockSummary = () => {
     fetchStockData();
   }, [user?.id]);
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Stock Summary Report", 14, 10);
+
+    const tableColumn = ["Product Name", "Stock In", "Units", "Stock Out", "Stock Consumed", "Remaining Stock"];
+    const tableRows = stockData.map((row) => [
+      row.product,
+      row.stockIn,
+      row.units,
+      row.stockOut,
+      row.stockConsumed,
+      row.remainingStock,
+    ]);
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    doc.save("Stock_Summary.pdf");
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(stockData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Stock Summary");
+    XLSX.writeFile(workbook, "Stock_Summary.xlsx");
+  };
+
   // Define table columns
   const columns = [
     { Header: "Product Name", accessor: "product" },
@@ -136,6 +170,10 @@ const StockSummary = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Summary</h1>
+        <div className="mb-3">
+          <button className="btn btn-primary me-2" onClick={exportToPDF}>Export as PDF</button>
+          <button className="btn btn-success" onClick={exportToExcel}>Export as Excel</button>
+        </div>
         {loading ? <p>Loading data...</p> : <DataTable columns={columns} data={stockData} />}
       </div>
     </div>

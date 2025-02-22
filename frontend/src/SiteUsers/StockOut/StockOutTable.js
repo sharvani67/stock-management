@@ -8,8 +8,11 @@ import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
-import { FaEdit, FaTrashAlt, FaEye, FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaPlus,FaFilePdf,FaFileExcel } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 const StockOutTable = () => {
   const { user } = useContext(AuthContext);
@@ -91,6 +94,44 @@ const StockOutTable = () => {
       prevData.map((item) => (item.id === updatedData.id ? updatedData : item))
     );
   };
+  // Export table data as PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Stock Out Records", 14, 10);
+    const tableColumn = ["Date", "Time", "Destination Site", "Product Name", "Quantity", "Units"];
+    const tableRows = data.map((item) => [
+      item.date,
+      item.time,
+      item.receiver,
+      item.product,
+      item.quantity_out,
+      item.units,
+    ]);
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save("StockOutRecords.pdf");
+  };
+
+  // Export table data as Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(data.map(({ date, time, receiver, product, quantity_out, units }) => ({
+      Date: date,
+      Time: time,
+      "Destination Site": receiver,
+      "Product Name": product,
+      Quantity: quantity_out,
+      Units: units,
+    })));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "StockOutRecords");
+    XLSX.writeFile(workbook, "StockOutRecords.xlsx");
+  };
+
 
   const columns = React.useMemo(
     () => [
@@ -138,10 +179,19 @@ const StockOutTable = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Out Records</h1>
+        <div>
+            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
+              <FaFilePdf /> Export as PDF
+            </Button>
+            <Button variant="success" onClick={exportToExcel}>
+              <FaFileExcel /> Export as Excel
+            </Button>
+          </div>
         <div className="d-flex justify-content-end mb-3">
           <Button variant="primary" onClick={handleOpen}>
             <FaPlus /> Stock Out Form
           </Button>
+          
         </div>
 
         {/* Add Stock-Out Modal */}
