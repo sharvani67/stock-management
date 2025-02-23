@@ -15,12 +15,14 @@ const AdminPurchase = () => {
     axios
       .get(`http://localhost:5000/api/stockledger/purchase/${siteId}`)
       .then((response) => {
-        setData(response.data);
+        // Sort data by date in descending order (latest first)
+        const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setData(sortedData);
       })
       .catch((error) => {
         console.error("Error fetching purchase data:", error);
       });
-
+  
     // Fetch site details to get the site name
     axios
       .get(`http://localhost:5000/api/adminsites/${siteId}`)
@@ -39,8 +41,9 @@ const AdminPurchase = () => {
       .finally(() => {
         setLoading(false);
       });
-
+  
   }, [siteId]);
+  
 
   // Define table columns for DataTable
   const columns = [

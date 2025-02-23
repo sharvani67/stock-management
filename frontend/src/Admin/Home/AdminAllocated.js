@@ -15,12 +15,14 @@ const AdminAllocated = () => {
     axios
       .get(`http://localhost:5000/api/stockledger/allocated/${siteId}`)
       .then((response) => {
-        setData(response.data);
+        // Sort data by date in descending order (latest first)
+        const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setData(sortedData);
       })
       .catch((error) => {
         console.error("Error fetching allocated data:", error);
       });
-
+  
     // Fetch site details to get the site name
     axios
       .get(`http://localhost:5000/api/adminsites/${siteId}`)
@@ -39,8 +41,9 @@ const AdminAllocated = () => {
       .finally(() => {
         setLoading(false);
       });
-
+  
   }, [siteId]);
+  
 
   // Define table columns for DataTable
   const columns = [
@@ -50,6 +53,7 @@ const AdminAllocated = () => {
     { Header: "Quantity", accessor: "quantity_out" },
     { Header: "Units", accessor: "units" },
     { Header: "Description", accessor: "description" },
+    { Header: "Status", accessor: "status", Cell: ({ value }) => value || "N/A" },
     { Header: "Attachment", accessor: "attachment", Cell: ({ value }) => value || "N/A" },
   ];
 

@@ -310,8 +310,8 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       site_name, site_code, date, time, transaction_type, supplier,
       supplier_id, receiver_id, receiver, product, product_id,
       units, attachment, description, quantity_in, quantity_out, 
-      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid,status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   db.query(
@@ -339,6 +339,7 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       userId,
       siteManager,
       siteId,
+      "Pending" 
     ],
     (err, result) => {
       if (err) {
@@ -920,6 +921,24 @@ app.get("/api/adminsites", (req, res) => {
   });
 });
 
+// Update status from "Pending" to "Received"
+app.put("/allocated/updateStatus/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const query = `UPDATE stockledger SET status = 'Received' WHERE id = ?`;
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error("Error updating status:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.json({ success: true, message: "Status updated to Received" });
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // GET API to Fetch All Stockledger Data
 app.get("/api/stockledger", (req, res) => {

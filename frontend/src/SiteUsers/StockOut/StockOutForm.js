@@ -13,15 +13,16 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     quantity_out: "",
     units: "",
     receiverId: "",
-    description:"",
+    description: "",
     attachment: null,
-    status: "",
+    status: "Pending", // Set default status as "Pending"
     userId: "",
     siteManager: "",
     siteCode: "",
     siteName: "",
-    siteId: ""
+    siteId: "",
   });
+  
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
  

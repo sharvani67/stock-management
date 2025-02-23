@@ -8,7 +8,6 @@ const AdminHome = () => {
     <div>
       <AdminNavbar/>
       <div className="container mt-4">
-        <h2>Sites</h2>
         <SiteCards />
       </div>
     </div>
