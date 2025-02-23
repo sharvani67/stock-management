@@ -26,6 +26,12 @@ import StockSummaryTable from './SiteUsers/Reports/ReportsTable';
 import UserDashboard from './SiteUsers/Userdashboard/UserDashboard';
 import AllocatedStock from './SiteUsers/AllocatedTable';
 import Home from './SiteUsers/Home/Home'; // ✅ Fixed Import (Ensure File is Named Home.js)
+import AdminHome from './Admin/Home/AdminHome';
+import AdminOutput from './Admin/Home/AdminOutput';
+import AdminPurchase from './Admin/Home/AdminPurchase';
+import AdminConsumption from './Admin/Home/AdminConsumption';
+import AdminStockout from './Admin/Home/AdminStockout';
+import AdminAllocated from './Admin/Home/AdminAllocated';
 
 function App() {
   return (
@@ -58,7 +64,14 @@ function App() {
               <Route path="/summary" element={<StockSummaryTable />} />
               <Route path="/userdashboard" element={<UserDashboard />} />
               <Route path="/allocatedtable" element={<AllocatedStock />} />
-              <Route path="/home" element={<Home />} /> {/* ✅ Fixed Routing */}
+              <Route path="/home" element={<Home />}/>
+              <Route path="/adminhome" element={<AdminHome />} /> {/* ✅ Fixed Routing */}
+              {/* <Route path="/admin-output/:siteId/:type" element={<AdminOutput />} /> */}
+              {/* Individual Routes for Transactions */}
+        <Route path="/admin-output/:siteId/Purchase" element={<AdminPurchase />} />
+        <Route path="/admin-output/:siteId/Consumption" element={<AdminConsumption/>} />
+        <Route path="/admin-output/:siteId/StockOut" element={<AdminStockout />} />
+        <Route path="/admin-output/:siteId/Allocated" element={<AdminAllocated />} />
             </Routes>
           </div>
         </div>

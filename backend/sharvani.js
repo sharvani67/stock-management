@@ -852,7 +852,7 @@ app.get("/fetch-all-products", (req, res) => {
 });
 
 // API to Fetch Stockledger where receiver_id matches
-app.get("/api/stockledger/:receiver_id", (req, res) => {
+app.get("/api/stockledger/allocated/:receiver_id", (req, res) => {
   const { receiver_id } = req.params;
 
   const query = "SELECT * FROM stockledger WHERE receiver_id = ?";
@@ -861,6 +861,60 @@ app.get("/api/stockledger/:receiver_id", (req, res) => {
     if (err) {
       console.error("Error fetching data:", err);
       return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/stockledger/purchase/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Purchase'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/stockledger/consumption/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Consumption'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/stockledger/stockout/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Stock Out'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+
+// Fetch Sites API
+app.get("/api/adminsites", (req, res) => {
+  const query = "SELECT id, siteName,siteManager FROM sites";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
     }
     res.json(results);
   });
