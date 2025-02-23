@@ -52,7 +52,16 @@ const AdminConsumption = () => {
     { Header: "Quantity", accessor: "quantity_out" },
     { Header: "Units", accessor: "units" },
     { Header: "Description", accessor: "description" },
-    { Header: "Attachment", accessor: "attachment", Cell: ({ value }) => value || "N/A" },
+    { 
+      Header: "Attachment", 
+      accessor: "attachment", 
+      Cell: ({ value }) => 
+        value ? (
+          <a href={`http://localhost:5000/uploads/${value}`} target="_blank" rel="noopener noreferrer">
+            View Attachment
+          </a>
+        ) : "N/A"
+    },
   ];
 
   return (

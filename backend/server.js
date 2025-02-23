@@ -278,7 +278,6 @@ app.get('/sites', (req, res) => {
     res.send(results);
   });
 });
-
 app.post("/stock-out", upload.single("attachment"), (req, res) => {
   const {
     dateTime,
@@ -299,21 +298,20 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
     siteCode,
     siteName,
     siteId,
-    receiverId,
+    receiverId,  // Ensure this is correctly passed from the frontend
   } = req.body;
 
   const attachment = req.file ? req.file.filename : null;
   const transaction_type = "Stock Out";
   const time = new Date(dateTime).toLocaleTimeString();
 
-  // Insert into stockledger table
   const query = `
     INSERT INTO stockledger (
       site_name, site_code, date, time, transaction_type, supplier,
       supplier_id, receiver_id, receiver, product, product_id,
       units, attachment, description, quantity_in, quantity_out, 
-      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?)
+      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid,status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   db.query(
@@ -326,7 +324,7 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       transaction_type,
       supplierName,
       supplier_id,
-      receiverId,
+      receiverId,  // Ensure this is correct
       destinationSite,
       productName,
       product_id,
@@ -341,6 +339,7 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       userId,
       siteManager,
       siteId,
+      "Pending" 
     ],
     (err, result) => {
       if (err) {
@@ -348,14 +347,15 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
         res.status(500).json({ message: "Failed to add stock" });
       } else {
         // Insert into notifications table
+        const notificationMessage = `Stock Out: ${quantity_out} ${units} of ${productName} sent to ${destinationSite}`;
         const notificationQuery = `
-          INSERT INTO notifications (receiver_id, site_id, site_name, destination_site, read_status)
-          VALUES (?, ?, ?, ?, ?)
+          INSERT INTO notifications (receiver_id, site_id, site_name, destination_site, message, read_status)
+          VALUES (?, ?, ?, ?, ?, ?)
         `;
 
         db.query(
           notificationQuery,
-          [receiverId, siteId, siteName, destinationSite, 0],
+          [receiverId, siteId, siteName, destinationSite, notificationMessage, 0],
           (notifErr, notifResult) => {
             if (notifErr) {
               console.error("Error inserting notification:", notifErr);
@@ -367,10 +367,11 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
                 siteId,
                 siteName,
                 destinationSite,
+                message: notificationMessage,
                 read: 0,
               });
 
-              res.status(200).json({ message: "Stock added successfully" });
+              res.status(200).json({ message: "Stock added successfully & notification sent" });
             }
           }
         );
@@ -378,6 +379,7 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
     }
   );
 });
+
 
 app.get("/stock-out", (req, res) => {
   const { userid } = req.query; // Get userid from request query
@@ -851,7 +853,7 @@ app.get("/fetch-all-products", (req, res) => {
 });
 
 // API to Fetch Stockledger where receiver_id matches
-app.get("/api/stockledger/:receiver_id", (req, res) => {
+app.get("/api/stockledger/allocated/:receiver_id", (req, res) => {
   const { receiver_id } = req.params;
 
   const query = "SELECT * FROM stockledger WHERE receiver_id = ?";
@@ -865,6 +867,78 @@ app.get("/api/stockledger/:receiver_id", (req, res) => {
   });
 });
 
+app.get("/api/stockledger/purchase/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Purchase'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/stockledger/consumption/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Consumption'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/api/stockledger/stockout/:siteId", (req, res) => {
+  const { siteId } = req.params;
+
+  const query = "SELECT * FROM stockledger WHERE siteid = ? AND transaction_type = 'Stock Out'";
+
+  db.query(query, [siteId], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
+
+// Fetch Sites API
+app.get("/api/adminsites", (req, res) => {
+  const query = "SELECT id, siteName,siteManager FROM sites";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// Update status from "Pending" to "Received"
+app.put("/allocated/updateStatus/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const query = `UPDATE stockledger SET status = 'Received' WHERE id = ?`;
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error("Error updating status:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.json({ success: true, message: "Status updated to Received" });
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // GET API to Fetch All Stockledger Data
 app.get("/api/stockledger", (req, res) => {
@@ -913,9 +987,12 @@ app.post("/notifications/mark-read", (req, res) => {
   });
 });
 
-// Emit real-time notifications via WebSocket
 io.on("connection", (socket) => {
   console.log("WebSocket connected");
+
+  socket.on("joinSite", (siteId) => {
+    socket.join(siteId); // Join a room for the site ID
+  });
 
   socket.on("requestNotificationCount", (siteId) => {
     const query = `SELECT COUNT(*) AS unreadCount FROM notifications WHERE receiver_id = ? AND read_status = 0`;

@@ -600,33 +600,46 @@ app.put("/stock-consumed/:id", upload.single("attachment"), (req, res) => {
   }
   
   const { dateTime, productName, quantity, units, description } = req.body;
-  const attachment = req.file ? req.file.filename : null; 
+  
+  // Fetch existing attachment from the database if no new file is uploaded
+  const fetchExistingAttachmentQuery = `SELECT attachment FROM stockledger WHERE id = ?`;
 
-  console.log("Parsed data:", { stockId, dateTime, productName, quantity, units, description, attachment });
-
-  const updateQuery = `
-    UPDATE stockledger SET 
-      date = ?, 
-      product = ?, 
-      quantity_out = ?, 
-      units = ?, 
-      description = ?, 
-      attachment = ?
-    WHERE id = ?
-  `;
-
-  const queryParams = [dateTime, productName, quantity, units, description, attachment, stockId];
-
-  db.query(updateQuery, queryParams, (err, result) => {
+  db.query(fetchExistingAttachmentQuery, [stockId], (err, rows) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database error" });
     }
-    
-    console.log("Update successful", result);
-    res.status(200).json({ message: "Stock consumed record updated successfully", attachment });
+
+    const existingAttachment = rows.length > 0 ? rows[0].attachment : null;
+    const attachment = req.file ? req.file.filename : existingAttachment; // Retain old attachment if no new file
+
+    console.log("Parsed data:", { stockId, dateTime, productName, quantity, units, description, attachment });
+
+    const updateQuery = `
+      UPDATE stockledger SET 
+        date = ?, 
+        product = ?, 
+        quantity_out = ?, 
+        units = ?, 
+        description = ?, 
+        attachment = ?
+      WHERE id = ?
+    `;
+
+    const queryParams = [dateTime, productName, quantity, units, description, attachment, stockId];
+
+    db.query(updateQuery, queryParams, (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      console.log("Update successful", result);
+      res.status(200).json({ message: "Stock consumed record updated successfully", attachment });
+    });
   });
 });
+
 
 app.delete("/stock-consumed/:id", (req, res) => {
   const stockId = req.params.id;
