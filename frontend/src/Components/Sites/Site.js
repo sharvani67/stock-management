@@ -6,8 +6,9 @@ import { FaEdit, FaTrashAlt, FaEye, FaPlus } from 'react-icons/fa';
 import EditSite from './EditSite';
 import ViewSite from './ViewSite';
 import axios from 'axios';
-import Sidebar from '../../Shared/SideBar/SideBar';
+
 import { BASE_URL } from '../../ApiService/Api';
+import AdminNavbar from '../../Admin/Navbar/Navbar';
 
 const SiteTable = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -99,7 +100,7 @@ const SiteTable = () => {
 
   return (
     <div className="admintablelayoutContainer">
-      <Sidebar onToggleSidebar={setCollapsed} />
+      < AdminNavbar />
       <div className={`admintablelayout ${collapsed ? 'collapsed' : ''}`}>
         <div className="container mt-5">
           <h1 className="mb-4">Site Management</h1>

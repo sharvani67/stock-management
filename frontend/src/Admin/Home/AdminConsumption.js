@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import the reusable DataTable component
+import AdminNavbar from "../Navbar/Navbar";
 
 const AdminConsumption = () => {
   const { siteId } = useParams();
@@ -53,6 +54,7 @@ const AdminConsumption = () => {
 
   return (
     <div className="container mt-4">
+      <AdminNavbar />
       <h2 className="text-center">
         Consumption Details for {loading ? "Loading..." : siteName}
       </h2>

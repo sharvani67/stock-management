@@ -1,0 +1,148 @@
+/* 🌟 SiteCards Container */
+.sitecards-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 15px;
+    text-align: center;
+  }
+  
+  /* 🌟 Header Title */
+  .sitecards-heading {
+    font-size: 26px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .sitecards-heading::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #ff8c00, #f8d210);
+    margin: 5px auto 0;
+    border-radius: 2px;
+  }
+  
+  /* 🌟 Card Styling */
+  .sitecard {
+    background: linear-gradient(135deg, #ffffff, #f9f9f9);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .sitecard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* 🌟 Card Title */
+  .sitecard-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  /* 🌟 Card Text */
+  .sitecard-text {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  /* 🌟 Buttons */
+  .sitecard-btn {
+    flex: 1;
+    margin: 5px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+    color: white;
+  }
+  
+  /* 🌟 Button Colors */
+  .btn-purchase {
+    background: linear-gradient(135deg, #99ed72, #86eb8b);
+  }
+  
+  .btn-consumption {
+    background: linear-gradient(135deg, #f8a41e, #f39c12);
+  }
+  
+  .btn-stockout {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+  }
+  
+  .btn-allocated {
+    background: linear-gradient(135deg, #2e86c1, #1f618d);
+  }
+  
+  /* 🌟 Button Hover Effects */
+  .sitecard-btn:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  
+  /* 🌟 Responsive Design */
+  @media (max-width: 992px) {
+    .sitecard-btn {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .sitecard {
+      text-align: center;
+    }
+  
+    .sitecard-title {
+      font-size: 18px;
+    }
+  
+    .sitecard-text {
+      font-size: 14px;
+    }
+  
+    .sitecard-btn {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .sitecards-container {
+      padding: 10px;
+    }
+  
+    .sitecards-heading {
+      font-size: 22px;
+    }
+  
+    .sitecard-btn {
+      width: 100%;
+      margin: 5px 0;
+    }
+  }
+  
+  /* 🌟 No Sites Message */
+  .no-sites {
+    font-size: 18px;
+    color: #888;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  

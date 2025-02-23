@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../Home/SiteCards.css"; // Import the updated CSS
 
 const SiteCards = () => {
   const [sites, setSites] = useState([]);
@@ -23,41 +24,30 @@ const SiteCards = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="sitecards-container">
+      <h2 className="sitecards-heading">🏗️ Active Construction Sites</h2>
       <div className="row">
         {sites.length > 0 ? (
           sites.map((site) => (
-            <div key={site.id} className="col-md-4 mb-4">
-              <div className="card shadow-sm">
+            <div key={site.id} className="col-lg-4 col-md-6 col-sm-12 mb-4">
+              <div className="card sitecard">
                 <div className="card-body">
-                  <h5 className="card-title">Site Name: {site.siteName}</h5>
-                  <p className="card-text">Site Manager: {site.siteManager}</p>
-                  <p className="card-text">Site ID: {site.id}</p>
+                  <h5 className="sitecard-title">{site.siteName}</h5>
+                  <p className="sitecard-text"><strong>👷 Manager:</strong> {site.siteManager}</p>
+                  <p className="sitecard-text"><strong>🏷️ Site ID:</strong> {site.id}</p>
 
                   <div className="btn-group d-flex flex-wrap">
-                    <button
-                      className="btn btn-primary m-1"
-                      onClick={() => handleNavigation(site.id, "Purchase")}
-                    >
-                      Purchase
+                    <button className="btn sitecard-btn btn-purchase" onClick={() => handleNavigation(site.id, "Purchase")}>
+                      🛒 Purchase
                     </button>
-                    <button
-                      className="btn btn-warning m-1"
-                      onClick={() => handleNavigation(site.id, "Consumption")}
-                    >
-                      Consumption
+                    <button className="btn sitecard-btn btn-consumption" onClick={() => handleNavigation(site.id, "Consumption")}>
+                      🔥 Consumption
                     </button>
-                    <button
-                      className="btn btn-danger m-1"
-                      onClick={() => handleNavigation(site.id, "StockOut")}
-                    >
-                      Stock Out
+                    <button className="btn sitecard-btn btn-stockout" onClick={() => handleNavigation(site.id, "StockOut")}>
+                      📦 Stock Out
                     </button>
-                    <button
-                      className="btn btn-success m-1"
-                      onClick={() => handleNavigation(site.id, "Allocated")}
-                    >
-                      Allocated
+                    <button className="btn sitecard-btn btn-allocated" onClick={() => handleNavigation(site.id, "Allocated")}>
+                      ✅ Allocated
                     </button>
                   </div>
                 </div>
@@ -65,7 +55,7 @@ const SiteCards = () => {
             </div>
           ))
         ) : (
-          <p>No sites available</p>
+          <p className="no-sites">🚧 No active sites available</p>
         )}
       </div>
     </div>

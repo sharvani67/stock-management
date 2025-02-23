@@ -6,9 +6,10 @@ import ModalPopup from './AddUser';
 import ViewUser from './ViewUser';
 import EditUser from './EditUser';
 import axios from 'axios';
-import Sidebar from '../../Shared/SideBar/SideBar';
-import '../../CSS/AdminTable.css';
+
+import '../../CSS/AdminPaneltable.css';
 import { BASE_URL } from '../../ApiService/Api';
+import AdminNavbar from '../../Admin/Navbar/Navbar';
 
 const Table = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -103,9 +104,9 @@ const Table = () => {
   ];
 
   return (
-    <div className="admintablelayoutContainer">
-    <Sidebar onToggleSidebar={setCollapsed} />
-    <div className={`admintablelayout ${collapsed ? "collapsed" : ""}`}>
+    <div className="adminpaneltablelayoutContainer">
+    < AdminNavbar />
+    <div className={`adminpaneltablelayout ${collapsed ? "collapsed" : ""}`}>
       <h1 className="mb-4">Users</h1>
       <div className="d-flex justify-content-end mb-3">
         <Button variant="primary" className="add-button" onClick={handleAddUser}>

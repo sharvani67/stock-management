@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import the reusable DataTable component
+import AdminNavbar from "../Navbar/Navbar";
 
 const AdminPurchase = () => {
   const { siteId } = useParams();
@@ -53,6 +54,8 @@ const AdminPurchase = () => {
   ];
 
   return (
+    <div>
+      <AdminNavbar />
     <div className="container mt-4">
       <h2 className="text-center">
         Purchase Details for {loading ? "Loading..." : siteName}
@@ -62,6 +65,7 @@ const AdminPurchase = () => {
       ) : (
         <DataTable columns={columns} data={data} initialSearchValue="" />
       )}
+    </div>
     </div>
   );
 };

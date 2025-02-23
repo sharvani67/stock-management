@@ -1,0 +1,143 @@
+/* 🌟 Professional Navbar Styling */
+.adminnavbar {
+  background: rgba(6, 172, 243, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 5px 20px;
+  font-size: 18px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* 🌟 Logo */
+.adminnavbar-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 10%;
+  object-fit: cover;
+}
+
+/* 🌟 Navbar Brand */
+.adminnavbar-brand {
+  font-weight: bold;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: #f8d210;
+  transition: color 0.3s ease-in-out;
+}
+
+.adminnavbar-brand:hover {
+  color: #ffcc00;
+}
+
+/* 🌟 Navbar Links */
+/* 🌟 Navbar Links */
+.adminnavbar-nav .adminnavbar-link {
+  color: #ffffff !important; /* Force white color */
+  padding: 10px 15px;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease-in-out;
+}
+
+.adminnavbar-nav .adminnavbar-link:hover {
+  color: #f8d210;
+}
+
+.adminnavbar-nav .adminnavbar-link::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 0%;
+  background-color: #f8d210;
+  transition: width 0.3s ease-in-out;
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+}
+
+.adminnavbar-nav .adminnavbar-link:hover::after {
+  width: 100%;
+}
+
+/* 🌟 Navbar Icons */
+.adminnavbar-icon {
+  font-size: 20px;
+}
+
+/* 🌟 Logout Button */
+.adminnavbar-logout-btn {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  padding: 7px 15px;
+  margin-top: 5px;
+  margin-left: 20px;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.adminnavbar-logout-btn:hover {
+  background: linear-gradient(135deg, #c82333, #a71d2a);
+  transform: scale(1.05);
+}
+
+/* 🌟 Navbar Toggler Animation */
+.adminnavbar-toggler {
+  border: none;
+  outline: none;
+}
+
+.adminnavbar-toggler:focus {
+  box-shadow: none;
+}
+
+.adminnavbar-toggler-rotate {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* 🌟 Responsive Design */
+@media (max-width: 768px) {
+  .adminnavbar-nav {
+    text-align: center;
+  }
+
+  .adminnavbar-nav .nav-item {
+    margin-bottom: 10px;
+  }
+
+  .adminnavbar-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .adminnavbar-brand {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .adminnavbar-logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .adminnavbar-brand {
+    font-size: 18px;
+  }
+
+  .adminnavbar-logout-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .adminnavbar-icon {
+    font-size: 18px;
+  }
+}

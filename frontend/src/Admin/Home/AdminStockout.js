@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import DataTable component
+import AdminNavbar from "../Navbar/Navbar";
 
 const AdminStockout = () => {
   const { siteId } = useParams();
@@ -54,6 +55,7 @@ const AdminStockout = () => {
 
   return (
     <div className="container mt-4">
+      <AdminNavbar />
       <h2 className="text-center">
         Stock Out Details for {loading ? "Loading..." : siteName}
       </h2>
