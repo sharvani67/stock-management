@@ -15,17 +15,23 @@ const server = http.createServer(app);
 const multer = require("multer");
 const path = require("path");
 
-// Configure Multer for file storage
+// Configure multer to store files with the original extension
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure this folder exists
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Save files in the 'uploads' folder
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname); // Get file extension (e.g., .jpg, .png)
+    const filename = file.fieldname + "-" + Date.now() + ext; // Create unique filename
+    cb(null, filename);
   },
 });
 
-const upload = multer({ storage });
+// Initialize multer with the storage config
+const upload = multer({ storage: storage });
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 const io = require("socket.io")(server, {
   cors: {
@@ -37,6 +43,10 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 });
+
+// Serve static files from the "uploads" directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Ensure this line is correct
+
 // Database connection
 const db = mysql.createConnection({
   host: "localhost", // Your MySQL server host
@@ -382,13 +392,12 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
 
 
 app.get("/stock-out", (req, res) => {
-  const { userid } = req.query; // Get userid from request query
+  const { userid } = req.query;
 
   if (!userid) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
-  // Base SQL query with condition
   let sqlQuery = "SELECT * FROM stockledger WHERE transaction_type = 'Stock Out' AND userid = ?";
   let queryParams = [userid];
 
@@ -403,28 +412,20 @@ app.get("/stock-out", (req, res) => {
 });
 
 // API route with file upload
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+const uploads = require("multer")({ dest: "uploads/" }); // Ensure multer is correctly configured
+
 app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
   const stockId = req.params.id;
-  const {
-    date, // Use 'date' instead of 'dateTime'
-    destinationSite,
-    productName,
-    quantity_out,
-    units,
-    description,
-  } = req.body;
+  const { date, destinationSite, productName, quantity_out, units, description } = req.body;
 
-  const attachment = req.file ? req.file.filename : null; // Save new file or keep null
-
-  console.log("Updating stock ID:", stockId);
-  console.log("Received Data:", req.body);
-  console.log("Uploaded File:", req.file);
+  const newAttachment = req.file ? req.file.filename : null; // Now stores in 'filename.jpg' format
 
   if (!stockId) {
     return res.status(400).json({ success: false, message: "Stock ID is required" });
   }
 
-  // First, get the existing record to check if there's already an attachment
   const getExistingSql = "SELECT attachment FROM stockledger WHERE id = ?";
   db.query(getExistingSql, [stockId], (err, results) => {
     if (err) {
@@ -437,7 +438,7 @@ app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
     }
 
     const existingAttachment = results[0].attachment;
-    const finalAttachment = attachment || existingAttachment; // Keep old file if no new upload
+    const finalAttachment = newAttachment || existingAttachment; // Keep old file if no new one uploaded
 
     const updateSql = `
       UPDATE stockledger 
@@ -467,6 +468,8 @@ app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
     });
   });
 });
+
+
  
 // DELETE Stock-Out Record
 app.delete("/stock-out/:id", (req, res) => {
