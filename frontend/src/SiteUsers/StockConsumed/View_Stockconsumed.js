@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const BASE_URL = "http://localhost:5000/uploads/"; // Adjust this based on your backend setup
 const ViewStockConsumed = ({ show, handleClose, stockConsumedData }) => {
   if (!stockConsumedData) return null;
 
@@ -51,8 +52,20 @@ const ViewStockConsumed = ({ show, handleClose, stockConsumedData }) => {
               <th>Attachment</th>
               <td>
                 {stockConsumedData.attachment ? (
-                  <a href={stockConsumedData.attachment} target="_blank" rel="noopener noreferrer">
-                    View Attachment
+                  <a
+                    href={`${BASE_URL}${stockConsumedData.attachment}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={`${BASE_URL}${stockConsumedData.attachment}`}
+                      alt="Attachment"
+                      style={{
+                        width: "100px",
+                        height: "auto",
+                        cursor: "pointer",
+                      }}
+                    />
                   </a>
                 ) : (
                   "No Attachment"
