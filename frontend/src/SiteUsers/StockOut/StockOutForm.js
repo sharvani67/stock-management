@@ -22,10 +22,11 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     siteName: "",
     siteId: "",
   });
-  
+
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
- 
+  const [units, setUnits] = useState([]);
+
 
 
   useEffect(() => {
@@ -115,33 +116,44 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     fetchProducts();
   }, [user?.id, formData.siteName]);
 
-  const handleProductChange = (e) => {
-    const selectedProduct = e.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      productName: selectedProduct,
-      units: products.find((item) => item.product === selectedProduct)?.units || "",
-    }));
-  };
-  
 
- 
+  useEffect(() => {
+    // Fetch units from the API
+    const fetchUnits = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/units`);
+        if (response.ok) {
+          const data = await response.json();
+          setUnits(data); // Update the units state
+        } else {
+          console.error("Failed to fetch units");
+        }
+      } catch (error) {
+        console.error("Error fetching units:", error);
+      }
+    };
+
+    fetchUnits();
+  }, []);
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-  
+
     try {
       const response = await axios.post(`${BASE_URL}/stock-out`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       alert(response.data.message);
       if (response.status === 200) {
         handleSave(formData); // Pass new data to parent component
@@ -155,7 +167,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
       alert("Failed to add stock.");
     }
   };
-  
+
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -205,7 +217,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleChange} required>
                   <option value="">Select Product</option>
                   {[...new Set(products.map((item) => item.product))].map((product, index) => (
                     <option key={index} value={product}>{product}</option>
@@ -228,11 +240,28 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
             </Col>
           </Row>
           <Row className="mb-3">
-            
+
             <Col md={6}>
-              <Form.Group controlId="formUnits">
-                <Form.Label>Units</Form.Label>
-                <Form.Control type="text" name="units" value={formData.units} readOnly />
+              <Form.Group className="mb-3">
+                <Form.Label>Unit Name:</Form.Label>
+
+                <Form.Select
+                  name="units"
+                  value={formData.units}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select a Unit</option>
+                  {units.map((unit) => (
+                    <option key={unit.id} value={unit.name}>
+                      {unit.name}
+                    </option>
+                  ))}
+
+                </Form.Select>
+
+
+
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -246,15 +275,15 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
           </Row>
-        
+
           <Row>
-                              <Col md={12}>
-                                <Form.Group controlId="formDescription">
-                                  <Form.Label>Description</Form.Label>
-                                  <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
-                                </Form.Group>
-                              </Col>
-                            </Row>
+            <Col md={12}>
+              <Form.Group controlId="formDescription">
+                <Form.Label>Description</Form.Label>
+                <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
+              </Form.Group>
+            </Col>
+          </Row>
           <Button variant="primary" type="submit" className="w-100">
             Save
           </Button>

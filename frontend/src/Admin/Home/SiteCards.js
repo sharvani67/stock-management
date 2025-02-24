@@ -34,7 +34,7 @@ const SiteCards = () => {
                 <div className="card-body">
                   <h5 className="sitecard-title">{site.siteName}</h5>
                   <p className="sitecard-text"><strong>👷 Manager:</strong> {site.siteManager}</p>
-                  <p className="sitecard-text"><strong>🏷️ Site ID:</strong> {site.id}</p>
+                  
 
                   <div className="btn-group d-flex flex-wrap">
                     <button className="btn sitecard-btn btn-purchase" onClick={() => handleNavigation(site.id, "Purchase")}>

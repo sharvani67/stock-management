@@ -13,13 +13,14 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
   });
   const [sites, setSites] = useState([]);
   const [products, setProducts] = useState([]);
+  const [units, setUnits] = useState([]);
 
   useEffect(() => {
     if (stockOutData) {
       setFormData({
         ...stockOutData,
         dateTime: stockOutData.date || "",
-        destinationSite: stockOutData.receiver || "", 
+        destinationSite: stockOutData.receiver || "",
         productName: stockOutData.product || "",// Ensure destination site is prefilled
       });
     }
@@ -70,15 +71,26 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
     fetchProducts();
   }, [user?.id, formData.siteName]);
 
-  const handleProductChange = (e) => {
-    const selectedProduct = e.target.value;
-    const productData = products.find((item) => item.product === selectedProduct);
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      productName: selectedProduct,
-      units: productData?.units || "",
-    }));
-  };
+
+  useEffect(() => {
+    // Fetch units from the API
+    const fetchUnits = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/units`);
+        if (response.ok) {
+          const data = await response.json();
+          setUnits(data); // Update the units state
+        } else {
+          console.error("Failed to fetch units");
+        }
+      } catch (error) {
+        console.error("Error fetching units:", error);
+      }
+    };
+
+    fetchUnits();
+  }, []);
+
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -90,7 +102,7 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formDataToSend = new FormData();
     formDataToSend.append("date", formData.dateTime);
     formDataToSend.append("destinationSite", formData.destinationSite);
@@ -99,21 +111,22 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
     formDataToSend.append("units", formData.units);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("id", formData.id);
-  
+
     // Append the file only if a new one is selected
     if (formData.attachment instanceof File) {
       formDataToSend.append("attachment", formData.attachment);
     }
-  
+
     try {
       const response = await axios.put(`${BASE_URL}/stock-out/${formData.id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (response.status === 200) {
         handleUpdate(response.data); // Update parent component
         handleClose(); // Close modal
         alert(response.data.message || "Stock-Out updated successfully");
+        window.location.reload(); // Reload the page after successful update
       } else {
         alert(response.data.message || "Failed to update stock-out");
       }
@@ -122,7 +135,7 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
       alert("Failed to update stock.");
     }
   };
-  
+
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" centered>
@@ -168,7 +181,7 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleProductChange} required>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleChange} required>
                   <option value="">Select Product</option>
                   {[...new Set(products.map((item) => item.product))].map((product, index) => (
                     <option key={index} value={product}>{product}</option>
@@ -192,9 +205,26 @@ const EditStockOutModal = ({ show, handleClose, stockOutData, handleUpdate }) =>
           </Row>
           <Row className="mb-3">
             <Col md={6}>
-              <Form.Group controlId="formUnits">
-                <Form.Label>Units</Form.Label>
-                <Form.Control type="text" name="units" value={formData.units} readOnly />
+              <Form.Group className="mb-3">
+                <Form.Label>Unit Name:</Form.Label>
+
+                <Form.Select
+                  name="units"
+                  value={formData.units}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select a Unit</option>
+                  {units.map((unit) => (
+                    <option key={unit.id} value={unit.name}>
+                      {unit.name}
+                    </option>
+                  ))}
+
+                </Form.Select>
+
+
+
               </Form.Group>
             </Col>
             <Col md={6}>

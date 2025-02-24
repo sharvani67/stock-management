@@ -121,6 +121,21 @@ const AllocatedStock = () => {
         accessor: "site_name",
       },
       {
+        Header: "Attachment",
+        accessor: "attachment",
+        Cell: ({ value }) => (
+          value ? (
+            <a href={`http://localhost:5000/uploads/${value}`} target="_blank" rel="noopener noreferrer">
+            View Attachment
+          </a>
+          ) : (
+            <span style={{ color: "gray" }}>No Attachment</span>
+          )
+        ),
+      },
+      
+
+      {
         Header: "Status",
         accessor: "status",
         Cell: ({ row }) => (

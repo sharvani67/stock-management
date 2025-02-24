@@ -108,6 +108,7 @@ const EditStockIn = ({ show, handleClose, stockData, handleUpdate }) => {
       const result = await response.json();
       if (result.success) {
         alert('Stock-In updated successfully');
+        window.location.reload(); // Reload the page after successful update
         handleUpdate(result);
         handleClose();
       } else {

@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
+import { useState,useContext } from "react";
+import { AuthContext } from "../../Context/AuthContext";
 import { FiLogOut, FiUsers } from "react-icons/fi"; // Import icons
 import { MdLocationOn } from "react-icons/md"; // Icon for sites
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -8,6 +9,13 @@ import logo from "../../assets/images/MSlogo.jpg"; // Import your logo (place in
 
 const AdminNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+   // Logout function
+   const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark adminnavbar">
@@ -48,7 +56,7 @@ const AdminNavbar = () => {
             
             {/* Logout */}
             <li className="nav-item">
-              <button className="btn adminnavbar-logout-btn">
+              <button className="btn adminnavbar-logout-btn"onClick={handleLogout}>
                 <FiLogOut className="adminnavbar-logout-icon" /> Logout
               </button>
             </li>

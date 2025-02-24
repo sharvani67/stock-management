@@ -23,6 +23,7 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
 
   const [products, setProducts] = useState([]);
   const [sites, setSites] = useState([]);
+  const [units, setUnits] = useState([]);
 
   // Fetch Sites for the Logged-in User
   useEffect(() => {
@@ -94,14 +95,25 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
     fetchProducts();
   }, [user?.id, formData.siteName]);
 
-  const handleProductChange = (e) => {
-    const selectedProduct = e.target.value;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      productName: selectedProduct,
-      units: products.find((item) => item.product === selectedProduct)?.units || "",
-    }));
-  };
+ useEffect(() => {
+     // Fetch units from the API
+     const fetchUnits = async () => {
+       try {
+         const response = await fetch(`${BASE_URL}/units`);
+         if (response.ok) {
+           const data = await response.json();
+           setUnits(data); // Update the units state
+         } else {
+           console.error("Failed to fetch units");
+         }
+       } catch (error) {
+         console.error("Error fetching units:", error);
+       }
+     };
+ 
+     fetchUnits();
+   }, []);
+
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     setFormData({
@@ -164,7 +176,7 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
             <Col md={6}>
               <Form.Group controlId="formProductName">
                 <Form.Label>Product Name</Form.Label>
-                <Form.Control as="select" name="productName" value={formData.productName} onChange={(e) => handleProductChange(e)} required>
+                <Form.Control as="select" name="productName" value={formData.productName} onChange={handleChange}required>
                   <option value="">Select Product</option>
                   {[...new Set(products.map((item) => item.product))].map((product, index) => (
                     <option key={index} value={product}>{product}</option>
@@ -185,10 +197,27 @@ const StockConsumedForm = ({ show, handleClose, handleSave }) => {
             </Col>
 
             <Col md={6}>
-              <Form.Group controlId="formUnits">
-                <Form.Label>Units</Form.Label>
-                <Form.Control type="text" name="units" value={formData.units} readOnly />
-              </Form.Group>
+              <Form.Group className="mb-3">
+                        <Form.Label>Unit Name:</Form.Label>
+                        
+                          <Form.Select
+                            name="units"
+                            value={formData.units}
+                            onChange={handleChange}
+                            required
+                          >
+                            <option value="">Select a Unit</option>
+                            {units.map((unit) => (
+                              <option key={unit.id} value={unit.name}>
+                                {unit.name}
+                              </option>
+                            ))}
+
+                          </Form.Select>
+                
+                       
+
+                      </Form.Group>
             </Col>
           </Row>
           <Row className="mb-3">

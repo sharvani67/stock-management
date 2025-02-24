@@ -1,92 +1,143 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 import {
   FaHome,
-  FaBell,
+  FaBoxOpen,
+  FaTruck,
+  FaChartPie,
+  FaFileAlt,
   FaBars,
   FaUserCircle,
+  FaTachometerAlt,
+  FaBell,
   FaCode,
+  FaUserAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
+import "./UserNavbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
 import logo from "../../assets/images/MSlogo.jpg";
-import io from "socket.io-client";
-import "./UserNavbar.css";
-
+import io from "socket.io-client";  // Import socket.io client // ✅ Ensure the logo is in the correct folder
+const socket = io(BASE_URL);  // Initialize WebSocket connection
 const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSiteCodeOpen, setIsSiteCodeOpen] = useState(false);
+  const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
   const [siteCodes, setSiteCodes] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
+  const [userDetails, setUserDetails] = useState(null);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // Get current URL
   const profileRef = useRef(null);
-  const siteId = user?.siteId;
-  const [socket, setSocket] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
 
-  useEffect(() => {
-    if (!user?.id) return;
 
-    const newSocket = io(BASE_URL, {
-      transports: ["polling", "websocket"],
-    });
+  const toggleNavbar = () => setIsOpen(!isOpen);
+  const toggleProfileMenu = () => setIsProfileOpen((prev) => !prev);
+  const toggleSiteCode = () => setIsSiteCodeOpen((prev) => !prev);
 
-    setSocket(newSocket);
-
-    newSocket.on("connect", () => {
-      console.log("Connected to WebSocket server.");
-    });
-
-    newSocket.on("connect_error", (err) => {
-      console.error("WebSocket connection error:", err);
-    });
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [user?.id]);
-
-  useEffect(() => {
-    if (!socket || !siteId) return;
-
-    const handleNotification = (notification) => {
-      if (notification.receiverId === siteId) {
-        console.log("New notification received:", notification);
-        setNotificationCount((prev) => prev + 1);
-      }
-    };
-
-    socket.on("newNotification", handleNotification);
-
-    return () => {
-      socket.off("newNotification", handleNotification);
-    };
-  }, [socket, siteId]);
-
+  // Logout function
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const markNotificationsAsRead = () => {
-    fetch(`${BASE_URL}/notifications/mark-read`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteId }),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        console.log("Notifications marked as read.");
-        setNotificationCount(0);
-      })
-      .catch((error) =>
-        console.error("Error marking notifications as read:", error)
-      );
+  // Fetch Site Codes
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchSites = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/sites`);
+        if (!response.ok) throw new Error("Failed to fetch sites");
+
+        const data = await response.json();
+        setSiteCodes(data.filter((site) => site.userId === user.id));
+      } catch (error) {
+        console.error("Error fetching sites:", error);
+      }
+    };
+
+    fetchSites();
+  }, [user?.id]);
+
+  // Fetch User Details
+  const fetchUserDetails = async () => {
+    if (!isUserDetailsOpen) {
+      try {
+        const response = await fetch(`${BASE_URL}/users`);
+        if (!response.ok) throw new Error("Failed to fetch user details");
+
+        const data = await response.json();
+        setUserDetails(data.find((userItem) => userItem.id === user.id));
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    }
+    setIsUserDetailsOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/notifications/count/${user.id}`);
+        if (!response.ok) throw new Error("Failed to fetch notifications");
+
+        const data = await response.json();
+        setNotificationCount(data.unreadCount);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotificationCount();
+  }, [user?.id]);
+  useEffect(() => {
+    const socket = io(BASE_URL);
+
+    if (user?.id) {
+      socket.emit("joinSite", user.id); // Join room for real-time updates
+
+      socket.on("updateNotificationCount", (count) => {
+        setNotificationCount(count);
+      });
+    }
+
+    return () => socket.disconnect();
+  }, [user?.id]);
+
+  const handleMarkNotificationsRead = async () => {
+    try {
+      await fetch(`${BASE_URL}/notifications/mark-read`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteId: user.id }),
+      });
+      setNotificationCount(0); // Reset count after marking as read
+    } catch (error) {
+      console.error("Error marking notifications as read:", error);
+    }
+  };
+
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+        setIsSiteCodeOpen(false);
+        setIsUserDetailsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="navbar">
@@ -95,33 +146,83 @@ const UserNavbar = () => {
           <img src={logo} alt="MS Constructions Logo" />
         </Link>
       </div>
-      <button className="navbar-toggler" onClick={() => setIsOpen(!isOpen)}>
+      <button className="navbar-toggler" onClick={toggleNavbar}>
         <FaBars />
       </button>
 
       <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
         <li>
+          <Link to="/home" className={location.pathname === "/home" ? "active" : ""}>
+            <FaHome />
+            Home
+          </Link>
+        </li>
+
+        <li>
           <Link
-            to="/home"
-            className={location.pathname === "/home" ? "active" : ""}
+            to="/userdashboard"
+            className={location.pathname === "/userdashboard" ? "active" : ""}
           >
-            <FaHome /> Home
+            <FaTachometerAlt />
+            Dashboard
           </Link>
         </li>
         <li>
           <Link
-            to="/notifications"
-            onClick={markNotificationsAsRead}
-            className={notificationCount > 0 ? "active" : ""}
+            to="/stockintable"
+            className={location.pathname === "/stockintable" ? "active" : ""}
           >
-            <FaBell /> Notifications{" "}
-            {notificationCount > 0 && <span>({notificationCount})</span>}
+            <FaBoxOpen />
+            Purchase
           </Link>
         </li>
+        <li>
+          <Link
+            to="/stockout"
+            className={location.pathname === "/stockout" ? "active" : ""}
+          >
+            <FaTruck />
+            Stock Out
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/stockconsumed"
+            className={location.pathname === "/stockconsumed" ? "active" : ""}
+          >
+            <FaChartPie />
+            Stock Consumed
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/allocatedtable"
+            className={location.pathname === "/allocatedtable" ? "active" : ""}
+          >
+            <FaBoxOpen />
+            StockIn (Allocated)
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/summary"
+            className={location.pathname === "/summary" ? "active" : ""}
+          >
+            <FaFileAlt />
+            Reports
+          </Link>
+        </li>
+        <li>
+          <Link to="/allocatedtable" className={location.pathname === "" ? "active" : ""} onClick={handleMarkNotificationsRead}>
+            <FaBell />
+             {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+          </Link>
+        </li>
+
       </ul>
 
       <div className="navbar-profile" ref={profileRef}>
-        <div className="profile-icon" onClick={() => setIsProfileOpen((prev) => !prev)}>
+        <div className="profile-icon" onClick={toggleProfileMenu}>
           <FaUserCircle />
           <span>Profile</span>
         </div>
@@ -130,7 +231,7 @@ const UserNavbar = () => {
           <div className="profile-dropdown">
             <ul>
               <li>
-                <button className="dropdown-button" onClick={() => setIsSiteCodeOpen((prev) => !prev)}>
+                <button className="dropdown-button" onClick={toggleSiteCode}>
                   <FaCode /> Site Code {isSiteCodeOpen ? "▲" : "▼"}
                 </button>
                 {isSiteCodeOpen && (
@@ -154,6 +255,25 @@ const UserNavbar = () => {
                     ) : (
                       <p>No site codes available.</p>
                     )}
+                  </div>
+                )}
+              </li>
+
+              <li>
+                <button className="dropdown-button" onClick={fetchUserDetails}>
+                  <FaUserAlt /> My Profile {isUserDetailsOpen ? "▲" : "▼"}
+                </button>
+                {isUserDetailsOpen && userDetails && (
+                  <div className="dropdown-content">
+                    <p>
+                      <strong>Name:</strong> {userDetails.name}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {userDetails.email}
+                    </p>
+                    <p>
+                      <strong>Role:</strong> {userDetails.role}
+                    </p>
                   </div>
                 )}
               </li>

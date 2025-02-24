@@ -33,18 +33,6 @@ const ViewStockConsumed = ({ show, handleClose, stockConsumedData }) => {
               <td>{stockConsumedData.units || "N/A"}</td>
             </tr>
             <tr>
-              <th>Site Manager</th>
-              <td>{stockConsumedData.site_manager || "N/A"}</td>
-            </tr>
-            <tr>
-              <th>Site Code</th>
-              <td>{stockConsumedData.site_code || "N/A"}</td>
-            </tr>
-            <tr>
-              <th>Site Name</th>
-              <td>{stockConsumedData.site_name || "N/A"}</td>
-            </tr>
-            <tr>
               <th>Description</th>
               <td>{stockConsumedData.description || "N/A"}</td>
             </tr>

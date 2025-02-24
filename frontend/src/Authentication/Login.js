@@ -16,18 +16,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // ✅ Static Admin Check BEFORE API Call
+    if (formData.email === "admin@gmail.com" && formData.password === "admin@123") {
+      login({ email: "admin@gmail.com", role: "admin" }); // Store admin details
+      navigate("/adminhome"); // Redirect to Admin Dashboard
+      return; // Stop further execution
+    }
+  
     try {
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        login(data.user); // Set user in context
-        navigate("/home"); // Redirect to dashboard
+        login(data.user); // Store user details
+  
+        navigate("/home"); // Redirect Normal Users to Home
       } else {
         const errData = await response.json();
         setError(errData.message);
@@ -37,6 +45,7 @@ const Login = () => {
       setError("An error occurred. Please try again.");
     }
   };
+  
 
   return (
     <Container fluid className="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -77,9 +86,7 @@ const Login = () => {
                   Login
                 </Button>
               </Form>
-              <p className="text-center mt-3">
-                Don’t have an account? <a href="/register">Register here</a>
-              </p>
+              
             </Card.Body>
           </Card>
         </Col>
