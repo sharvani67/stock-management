@@ -75,8 +75,8 @@ body {
 
 .navbar-links li {
   margin: 0 10px;
-  margin-left: 0px;
-  padding-left: 2px;
+  margin-left: 10px;
+  padding-left: 20px;
 }
 
 .navbar-links a {
@@ -227,3 +227,25 @@ body {
 }
 
 /* Larger Screens (Laptop and Desktop) */
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  
+.bell-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}

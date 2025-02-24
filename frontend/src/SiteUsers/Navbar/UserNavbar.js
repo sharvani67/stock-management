@@ -194,15 +194,7 @@ const UserNavbar = () => {
             Stock Consumed
           </Link>
         </li>
-        <li>
-          <Link
-            to="/allocatedtable"
-            className={location.pathname === "/allocatedtable" ? "active" : ""}
-          >
-            <FaBoxOpen />
-            StockIn (Allocated)
-          </Link>
-        </li>
+       
         <li>
           <Link
             to="/summary"
@@ -213,11 +205,21 @@ const UserNavbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/allocatedtable" className={location.pathname === "" ? "active" : ""} onClick={handleMarkNotificationsRead}>
-            <FaBell />
-             {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
-          </Link>
-        </li>
+  <Link
+    to="/allocatedtable"
+    className={location.pathname === "/allocatedtable" ? "active" : ""}
+    onClick={handleMarkNotificationsRead}
+    style={{ display: "flex", alignItems: "center" }}
+  >
+    <span className="bell-container">
+      <FaBell />
+      {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+    </span>
+  </Link>
+</li>
+
+
+
 
       </ul>
 
