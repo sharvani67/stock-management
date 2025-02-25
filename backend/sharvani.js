@@ -308,7 +308,8 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
     siteCode,
     siteName,
     siteId,
-    receiverId,  // Ensure this is correctly passed from the frontend
+    receiverId,
+    document_no,  // Ensure this is correctly passed from the frontend
   } = req.body;
 
   const attachment = req.file ? req.file.filename : null;
@@ -320,8 +321,8 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       site_name, site_code, date, time, transaction_type, supplier,
       supplier_id, receiver_id, receiver, product, product_id,
       units, attachment, description, quantity_in, quantity_out, 
-      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid,status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+      available_quantity, invoice_no, tran_id, userid, sitemanager, siteid,status,document_no
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
   `;
 
   db.query(
@@ -349,7 +350,8 @@ app.post("/stock-out", upload.single("attachment"), (req, res) => {
       userId,
       siteManager,
       siteId,
-      "Pending" 
+      "Pending", 
+      document_no,
     ],
     (err, result) => {
       if (err) {
@@ -418,7 +420,7 @@ const uploads = require("multer")({ dest: "uploads/" }); // Ensure multer is cor
 
 app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
   const stockId = req.params.id;
-  const { date, destinationSite, productName, quantity_out, units, description } = req.body;
+  const { date, destinationSite, productName, quantity_out, units, description,document_no } = req.body;
 
   const newAttachment = req.file ? req.file.filename : null; // Now stores in 'filename.jpg' format
 
@@ -449,10 +451,11 @@ app.put("/stock-out/:id", upload.single("attachment"), (req, res) => {
         quantity_out = ?, 
         units = ?, 
         description = ?, 
-        attachment = ?
+        attachment = ?,
+        document_no= ?
       WHERE id = ?`;
 
-    const values = [date, destinationSite, productName, quantity_out, units, description, finalAttachment, stockId];
+    const values = [date, destinationSite, productName, quantity_out, units, description, finalAttachment, document_no,stockId];
 
     db.query(updateSql, values, (updateErr, result) => {
       if (updateErr) {
@@ -1021,6 +1024,72 @@ io.on("connection", (socket) => {
   });
 });
 
+// ✅ Update user (PUT)
+app.put('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, mobile, email, role } = req.body;
+
+  // Check if user exists
+  db.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user
+    db.query(
+      'UPDATE users SET name = ?, mobile = ?, email = ?, role = ? WHERE id = ?',
+      [name, mobile, email, role, id],
+      (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        res.json({ message: 'User updated successfully' });
+      }
+    );
+  });
+});
+
+// ✅ Delete user (DELETE)
+// ✅ DELETE User API
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
+    if (err) {
+      console.error('Database Error:', err);
+      return res.status(500).json({ error: 'Database error occurred' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  });
+});
+
+
+// Update site details
+app.put('/sites/:id', async (req, res) => {
+  const siteId = req.params.id;
+  const { siteCode, siteName, location, city, state, siteManager, managerMobile } = req.body;
+
+  try {
+      const updateQuery = `
+          UPDATE sites 
+          SET siteCode = ?, siteName = ?, location = ?, city = ?, state = ?, siteManager = ?, managerMobile = ? 
+          WHERE id = ?
+      `;
+
+      await db.query(updateQuery, [siteCode, siteName, location, city, state, siteManager, managerMobile, siteId]);
+
+      res.status(200).json({ message: 'Site updated successfully' });
+  } catch (error) {
+      console.error('Error updating site:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {

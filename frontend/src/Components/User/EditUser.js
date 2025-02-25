@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { BASE_URL } from '../../ApiService/Api';
 
-const EditUser = ({ user, showModal, handleClose, handleSave }) => {
+const EditUser = ({ user, showModal, handleClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: '',
     role: '',
   });
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -20,18 +25,40 @@ const EditUser = ({ user, showModal, handleClose, handleSave }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = () => {
-    handleSave(formData);
-    handleClose();
+  const handleSubmit = async () => {
+    if (!user || !user.id) {
+      setErrorMessage("Invalid user data.");
+      return;
+    }
+
+    try {
+      // PUT request to update user
+      const response = await axios.put(`${BASE_URL}/users/${user.id}`, formData);
+
+      if (response.status === 200) {
+        setSuccessMessage("User updated successfully!");
+        setTimeout(() => {
+          handleClose();
+          window.location.reload(); // Refresh the page to reflect changes
+        }, 1000);
+      } else {
+        setErrorMessage("Failed to update user. Please try again.");
+      }
+    } catch (error) {
+      setErrorMessage("Error updating user. Please check the API.");
+      console.error("Update error:", error);
+    }
   };
 
   return (
-    <Modal show={showModal} onHide={handleClose}  centered className="edit-form-modal">
+    <Modal show={showModal} onHide={handleClose} centered className="edit-form-modal">
       <Modal.Header closeButton>
         <Modal.Title>Edit User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form  className="edit-form">
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+        {successMessage && <Alert variant="success">{successMessage}</Alert>}
+        <Form className="edit-form">
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control

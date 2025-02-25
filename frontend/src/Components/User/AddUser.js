@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 import { BASE_URL } from '../../ApiService/Api';
 
@@ -11,6 +11,8 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
     role: "",
     password: "",
   });
+
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -42,11 +44,24 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
 
   const handleSubmit = async () => {
     try {
+      // Fetch existing users to check for duplicate email
+      const response = await axios.get(`${BASE_URL}/users`);
+      const users = response.data;
+
+      // Check if the entered email already exists
+      const isEmailExists = users.some(existingUser => existingUser.email === formData.email);
+
+      if (isEmailExists) {
+        setAlertMessage("Email ID already exists. Please use a different email.");
+        return;
+      }
+
       if (user) {
         // Update logic can be added here
       } else {
         await axios.post(`${BASE_URL}/users`, formData);
       }
+      
       handleClose(); // Close the modal
       window.location.reload();
     } catch (error) {
@@ -60,6 +75,7 @@ const ModalPopup = ({ user, showModal, handleClose }) => {
         <Modal.Title>{user ? "Edit User" : "Add New User"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {alertMessage && <Alert variant="danger">{alertMessage}</Alert>}
         <Form>
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>

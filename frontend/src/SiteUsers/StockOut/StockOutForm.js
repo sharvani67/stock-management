@@ -20,6 +20,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
     siteManager: "",
     siteCode: "",
     siteName: "",
+    document_no: "",
     siteId: "",
   });
 
@@ -265,6 +266,23 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
             <Col md={6}>
+              <Form.Group controlId="formDoc">
+                <Form.Label>Document No</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Enter Document Number"
+                  name="document_no"
+                  value={formData.document_no}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          
+          </Row>
+
+          <Row>
+          <Col md={6}>
               <Form.Group controlId="formAttachment">
                 <Form.Label>Attachment</Form.Label>
                 <Form.Control
@@ -274,10 +292,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
                 />
               </Form.Group>
             </Col>
-          </Row>
-
-          <Row>
-            <Col md={12}>
+            <Col md={6}>
               <Form.Group controlId="formDescription">
                 <Form.Label>Description</Form.Label>
                 <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />

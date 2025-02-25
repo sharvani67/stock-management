@@ -20,8 +20,8 @@ const ViewStockout = ({ show, handleClose, stockoutData }) => {
               <td>{stockoutData.date || "N/A"}</td>
             </tr>
             <tr>
-              <th>Time</th>
-              <td>{stockoutData.time || "N/A"}</td>
+              <th>Document No</th>
+              <td>{stockoutData.document_no || "N/A"}</td>
             </tr>
             <tr>
               <th>Destination Site</th>
