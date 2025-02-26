@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../../ApiService/Api";
 
 const AdminOutput = () => {
   const { siteId, type } = useParams(); // Get siteId and type from URL params
@@ -13,16 +14,16 @@ const AdminOutput = () => {
 
     switch (type) {
       case "Purchase":
-        url = `http://localhost:5000/api/stockledger/purchase/${siteId}`;
+        url = `${BASE_URL}/api/stockledger/purchase/${siteId}`;
         break;
       case "Consumption":
-        url = `http://localhost:5000/api/stockledger/consumption/${siteId}`;
+        url = `${BASE_URL}/api/stockledger/consumption/${siteId}`;
         break;
       case "StockOut":
-        url = `http://localhost:5000/api/stockledger/stockout/${siteId}`;
+        url = `${BASE_URL}/api/stockledger/stockout/${siteId}`;
         break;
       case "Allocated":
-        url = `http://localhost:5000/api/stockledger/allocated/${siteId}`;
+        url = `${BASE_URL}/api/stockledger/allocated/${siteId}`;
         break;
       default:
         return;

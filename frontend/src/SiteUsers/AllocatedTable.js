@@ -100,9 +100,18 @@ const AllocatedStock = () => {
   // Define columns for the table
   const columns = useMemo(
     () => [
-      {
-        Header: "Date",
-        accessor: "date",
+      { 
+        Header: 'Date', 
+        accessor: 'date',
+        Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
+          timeZone: 'Asia/Kolkata', 
+          day: '2-digit', 
+          month: '2-digit', 
+          year: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        })
       },
       {
         Header: "Product Name",
@@ -125,7 +134,7 @@ const AllocatedStock = () => {
         accessor: "attachment",
         Cell: ({ value }) => (
           value ? (
-            <a href={`http://localhost:5000/uploads/${value}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${BASE_URL}/uploads/${value}`} target="_blank" rel="noopener noreferrer">
             View Attachment
           </a>
           ) : (

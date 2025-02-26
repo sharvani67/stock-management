@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../Home/SiteCards.css"; // Import the updated CSS
+import "../Home/SiteCards.css"; 
+import { BASE_URL } from "../../ApiService/Api";// Import the updated CSS
 
 const SiteCards = () => {
   const [sites, setSites] = useState([]);
@@ -9,7 +10,7 @@ const SiteCards = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/adminsites")
+      .get(`${BASE_URL}/api/adminsites`)
       .then((response) => {
         setSites(response.data);
       })

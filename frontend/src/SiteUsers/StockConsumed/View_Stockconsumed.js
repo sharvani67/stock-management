@@ -1,8 +1,9 @@
 import React from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BASE_URL } from "../../ApiService/Api";
 
-const BASE_URL = "http://localhost:5000/uploads/"; // Adjust this based on your backend setup
+const BASEURL = `${BASE_URL}/uploads/`; // Adjust this based on your backend setup
 const ViewStockConsumed = ({ show, handleClose, stockConsumedData }) => {
   if (!stockConsumedData) return null;
 
@@ -41,12 +42,12 @@ const ViewStockConsumed = ({ show, handleClose, stockConsumedData }) => {
               <td>
                 {stockConsumedData.attachment ? (
                   <a
-                    href={`${BASE_URL}${stockConsumedData.attachment}`}
+                    href={`${BASEURL}${stockConsumedData.attachment}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src={`${BASE_URL}${stockConsumedData.attachment}`}
+                      src={`${BASEURL}${stockConsumedData.attachment}`}
                       alt="Attachment"
                       style={{
                         width: "100px",

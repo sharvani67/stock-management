@@ -1,8 +1,9 @@
 import React from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { BASE_URL } from "../../ApiService/Api";
 
-const BASE_URL = "http://localhost:5000/uploads/"; // Adjust this based on your backend setup
+const BASEURL = `${BASE_URL}/uploads/`; // Adjust this based on your backend setup
 
 const ViewStockout = ({ show, handleClose, stockoutData }) => {
   if (!stockoutData) return null; // Prevents rendering if there's no data
@@ -47,8 +48,8 @@ const ViewStockout = ({ show, handleClose, stockoutData }) => {
               <th>Attachment</th>
               <td>
                 {stockoutData.attachment ? (
-                  <a href={`${BASE_URL}${stockoutData.attachment}`} target="_blank" rel="noopener noreferrer">
-                    <img src={`${BASE_URL}${stockoutData.attachment}`} alt="Attachment" style={{ width: "100px", height: "auto", cursor: "pointer" }} />
+                  <a href={`${BASEURL}${stockoutData.attachment}`} target="_blank" rel="noopener noreferrer">
+                    <img src={`${BASEURL}${stockoutData.attachment}`} alt="Attachment" style={{ width: "100px", height: "auto", cursor: "pointer" }} />
                   </a>
                 ) : (
                   "No Attachment"

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import the reusable DataTable component
 import AdminNavbar from "../Navbar/Navbar";
+import { BASE_URL } from "../../ApiService/Api";
 
 const AdminConsumption = () => {
   const { siteId } = useParams();
@@ -13,7 +14,7 @@ const AdminConsumption = () => {
   useEffect(() => {
     // Fetch consumption data
     axios
-      .get(`http://localhost:5000/api/stockledger/consumption/${siteId}`)
+      .get(`${BASE_URL}/api/stockledger/consumption/${siteId}`)
       .then((response) => {
         // Sort data by date in descending order (latest first)
         const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -25,7 +26,7 @@ const AdminConsumption = () => {
   
     // Fetch site details to get the site name
     axios
-      .get(`http://localhost:5000/api/adminsites/${siteId}`)
+      .get(`${BASE_URL}/api/adminsites/${siteId}`)
       .then((response) => {
         console.log("Site API Response:", response.data); // Debugging step
         if (response.data && response.data.siteName) {
@@ -47,7 +48,19 @@ const AdminConsumption = () => {
 
   // Define table columns for DataTable
   const columns = [
-    { Header: "Date", accessor: "date", Cell: ({ value }) => value || "N/A" },
+    { 
+      Header: 'Date', 
+      accessor: 'date',
+      Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
+        timeZone: 'Asia/Kolkata', 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+      })
+    },
     { Header: "Product", accessor: "product" },
     { Header: "Quantity", accessor: "quantity_out" },
     { Header: "Units", accessor: "units" },
@@ -57,7 +70,7 @@ const AdminConsumption = () => {
       accessor: "attachment", 
       Cell: ({ value }) => 
         value ? (
-          <a href={`http://localhost:5000/uploads/${value}`} target="_blank" rel="noopener noreferrer">
+          <a href={`${BASE_URL}/uploads/${value}`} target="_blank" rel="noopener noreferrer">
             View Attachment
           </a>
         ) : "N/A"

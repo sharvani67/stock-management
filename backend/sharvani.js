@@ -1069,27 +1069,30 @@ app.delete('/users/:id', (req, res) => {
   });
 });
 
+// Update Site API
+app.put('/update-site/:id', (req, res) => {
+  const siteId = req.params.id; // Get siteId from URL
+  const { siteCode, siteName, location, city, state, siteManager, managerMobile, userId } = req.body;
 
-// Update site details
-app.put('/sites/:id', async (req, res) => {
-  const siteId = req.params.id;
-  const { siteCode, siteName, location, city, state, siteManager, managerMobile } = req.body;
-
-  try {
-      const updateQuery = `
-          UPDATE sites 
-          SET siteCode = ?, siteName = ?, location = ?, city = ?, state = ?, siteManager = ?, managerMobile = ? 
-          WHERE id = ?
-      `;
-
-      await db.query(updateQuery, [siteCode, siteName, location, city, state, siteManager, managerMobile, siteId]);
-
-      res.status(200).json({ message: 'Site updated successfully' });
-  } catch (error) {
-      console.error('Error updating site:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+  if (!siteId || !siteCode || !siteName || !location || !city || !state || !siteManager || !managerMobile || !userId) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
+
+  const updateQuery = `UPDATE sites SET siteCode = ?, siteName = ?, location = ?, city = ?, state = ?, siteManager = ?, managerMobile = ?, userId = ? WHERE id = ?`;
+  const values = [siteCode, siteName, location, city, state, siteManager, managerMobile, userId, siteId];
+
+  db.query(updateQuery, values, (err, result) => {
+    if (err) {
+      console.error('Error updating site:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Site not found' });
+    }
+    res.json({ message: 'Site updated successfully' });
+  });
 });
+
 
 const PORT = 5000;
 app.listen(PORT, () => {

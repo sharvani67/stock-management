@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import the reusable DataTable component
 import AdminNavbar from "../Navbar/Navbar";
+import { BASE_URL } from "../../ApiService/Api";
 
 const AdminPurchase = () => {
   const { siteId } = useParams();
@@ -13,7 +14,7 @@ const AdminPurchase = () => {
   useEffect(() => {
     // Fetch purchase data
     axios
-      .get(`http://localhost:5000/api/stockledger/purchase/${siteId}`)
+      .get(`${BASE_URL}/api/stockledger/purchase/${siteId}`)
       .then((response) => {
         // Sort data by date in descending order (latest first)
         const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -25,7 +26,7 @@ const AdminPurchase = () => {
   
     // Fetch site details to get the site name
     axios
-      .get(`http://localhost:5000/api/adminsites/${siteId}`)
+      .get(`${BASE_URL}/api/adminsites/${siteId}`)
       .then((response) => {
         console.log("Site API Response:", response.data); // Debugging step
         if (response.data && response.data.siteName) {
@@ -47,7 +48,19 @@ const AdminPurchase = () => {
 
   // Define table columns for DataTable
   const columns = [
-    { Header: "Date", accessor: "date", Cell: ({ value }) => value || "N/A" },
+    { 
+      Header: 'Date', 
+      accessor: 'date',
+      Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
+        timeZone: 'Asia/Kolkata', 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+      })
+    },
     { Header: "Bill.No", accessor: "invoice_no" },
     { Header: "Supplier", accessor: "supplier" },
     { Header: "Product", accessor: "product" },
