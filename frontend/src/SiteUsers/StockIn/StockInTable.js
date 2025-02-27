@@ -83,58 +83,63 @@ const StockInTable = () => {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Stock In Records", 20, 10);
-
+  
     const tableColumn = [
-      "Date",
+      "Date & Time",
+      "Bill Number",
       "Product Name",
-      "Quantity",
-      "Units",
       "Supplier Name",
+      "Unit Name",
+      "Price",
+      "Quantity",
+      "Total Price",
+      "Description"
     ];
-    const tableRows = purchaseData.map((item) => [
-      item.date,
-      item.product,
-      item.quantity_in,
-      item.units,
-      item.supplier,
+  
+    const tableRows = purchaseData.map(({ date, invoice_no, product, supplier, units, price, quantity_in, total_price, description }) => [
+      new Date(date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      invoice_no,
+      product,
+      supplier,
+      units,
+      price,
+      quantity_in,
+      total_price,
+      description
     ]);
-
+  
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
+      startY: 20,
+      styles: { fontSize: 10, cellPadding: 3 },
+      headStyles: { fillColor: [0, 0, 255] } // Blue header for better readability
     });
-
+  
     doc.save("StockInRecords.pdf");
   };
-
+  
   const exportToExcel = () => {
-    // Extract only the required fields
-    const filteredData = purchaseData.map(
-      ({ date, product, quantity_in, units, supplier }) => ({
-        Date: date,
-        "Product Name": product,
-        Quantity: quantity_in,
-        Units: units,
-        "Supplier Name": supplier,
-      })
-    );
-
+    const filteredData = purchaseData.map(({ date, invoice_no, product, supplier, units, price, quantity_in, total_price, description }) => ({
+      "Date & Time": new Date(date).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      "Bill Number": invoice_no,
+      "Product Name": product,
+      "Supplier Name": supplier,
+      "Unit Name": units,
+      "Price": price,
+      "Quantity": quantity_in,
+      "Total Price": total_price,
+      "Description": description
+    }));
+  
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "StockInData");
-
-    // Convert workbook to binary array
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-
-    // Create a Blob from the Excel buffer
-    const blob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-    });
-
-    // Create a temporary download link
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+  
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -144,7 +149,7 @@ const StockInTable = () => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-
+  
   const columns = [
     {
       Header: "Date",

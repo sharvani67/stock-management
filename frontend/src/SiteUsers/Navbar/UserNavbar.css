@@ -15,6 +15,7 @@
 .navbar-logo img {
   height: 50px;
   max-width: 150px;
+  border: 2px solid #181818;
 }
 
 .navbar-toggler {
@@ -28,8 +29,10 @@
 
 .navbar-links {
   display: flex;
-  gap: 20px;
+  gap: 60px;
   list-style: none;
+  margin-top: 15px;
+ 
 }
 
 .navbar-links li a {
@@ -43,7 +46,7 @@
 }
 
 .navbar-links li a:hover {
-  color: #eca129;
+  color: #060606;
 }
 
 /* Profile Section */
@@ -119,7 +122,7 @@
   border-radius: 6px;
   padding: 10px;
   width: 100%;
-  color: #555;
+  color: #212020;
 }
 
 .profile-dropdown .dropdown-content ul {
@@ -131,7 +134,7 @@
 .profile-dropdown .dropdown-content li {
   font-size: 14px;
   margin-bottom: 8px;
-color:#858383;
+  color:#181818;
 }
 
 /* Bell Icon */
@@ -170,17 +173,18 @@ color:#858383;
 
   .navbar-toggler {
     display: block;
+    margin-left:20px ;
   }
 
   .navbar-links {
     position: absolute;
-    top: 60px;
+    top: 55px;
     left: 0;
     width: 100%;
     flex-direction: column;
     background: #4398ec;
     display: none;
-    padding: 10px 0;
+    padding: 20px 20px;
   }
 
   .navbar-links.active {
@@ -199,8 +203,9 @@ color:#858383;
   .bell-container {
     position: relative;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: #333;
+    
   }
 
   .badge {
@@ -210,7 +215,7 @@ color:#858383;
     background: red;
     color: white;
     font-size: 12px;
-    padding: 2px 6px;
+    padding: 3px 6px;
     
     border-radius: 50%;
   }
@@ -229,7 +234,7 @@ color:#858383;
 .be{
   padding-right: 0px;
   margin-right: 60px;
-  color: #333;
+  color: #131313;
 }
 
 

@@ -6,7 +6,7 @@ const ViewStockIn = ({ show, handleClose, stockInData }) => {
 
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered>
-      <Modal.Header closeButton>
+      <Modal.Header className="bg-primary text-white" closeButton>
         <Modal.Title>View Stock-In Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>

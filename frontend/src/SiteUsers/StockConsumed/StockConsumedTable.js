@@ -99,65 +99,62 @@ const StockConsumedTable = () => {
     );
   };
   const exportToPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Stock Consumed Records", 20, 10);
+     const doc = new jsPDF();
+     doc.text("Stock Consumed Records", 20, 10);
+   
+     const tableColumn = ["Date & Time", "Product Name", "Quantity", "Unit Name","Attachment No", "Description"];
+     const tableRows = data.map(({ date, product, quantity_out, units,attachment, description }) => [
+       new Date(date).toLocaleString('en-IN', {
+         timeZone: 'Asia/Kolkata',
+         day: '2-digit',
+         month: '2-digit',
+         year: 'numeric',
+         hour: '2-digit',
+         minute: '2-digit',
+         second: '2-digit'
+       }),
+       product,
+       quantity_out,
+       units,
+       attachment || "N/A",
+       description
+     ]);
+   
+     doc.autoTable({
+       head: [tableColumn],
+       body: tableRows,
+     });
+   
+     doc.save("StockConsumedRecords.pdf");
+   };
 
-    const tableColumn = [
-      "Date",
-      "Product Name",
-      "Quantity",
-      "Units",
-      "Description",
-    ];
-    const tableRows = data.map((item) => [
-      item.date,
-      item.product,
-      item.quantity_out,
-      item.units,
-      item.description,
-    ]);
-
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-    });
-
-    doc.save("StockConsumedRecords.pdf");
-  };
-
-  const exportToExcel = () => {
-    // Extract only the required fields
-    const filteredData = data.map(
-      ({ date, product, quantity_out, units, description }) => ({
-        Date: date,
-        "Product Name": product,
-        Quantity: quantity_out,
-        Units: units,
-        Description: description,
-      })
-    );
-
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "StockConsumedData");
-
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const blob = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-    });
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "StockConsumedRecords.xlsx";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  };
+ const exportToExcel = () => {
+     const filteredData = data.map(({ date, product, quantity_out, units,attachment, description }) => ({
+       Date: date,
+       "Product Name": product,
+       Quantity: quantity_out,
+       "Unit Name": units,
+       "Attachment No": attachment || "N/A",
+       Description: description
+     }));
+   
+     const worksheet = XLSX.utils.json_to_sheet(filteredData);
+     const workbook = XLSX.utils.book_new();
+     XLSX.utils.book_append_sheet(workbook, worksheet, "StockConsumedData");
+   
+     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+     const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+   
+     const url = window.URL.createObjectURL(blob);
+     const a = document.createElement("a");
+     a.href = url;
+     a.download = "StockConsumedRecords.xlsx";
+     document.body.appendChild(a);
+     a.click();
+     document.body.removeChild(a);
+     window.URL.revokeObjectURL(url);
+   };
+   
 
   const columns = useMemo(
     () => [

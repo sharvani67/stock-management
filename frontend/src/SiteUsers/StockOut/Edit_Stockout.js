@@ -288,7 +288,7 @@ const EditStockOutModal = ({
             </Col>
           </Row>
 
-          <Button variant="warning" type="submit" className="w-100">
+          <Button variant="warning" type="submit" className="w-100 mt-3">
             Update
           </Button>
         </Form>

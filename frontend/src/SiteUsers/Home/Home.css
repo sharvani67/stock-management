@@ -2,7 +2,8 @@
 .home-container {
     font-family: "Poppins", sans-serif;
     text-align: center;
-    padding: 0 20px;
+    padding: 0;
+    margin-top: 70px;
 }
 
 /* Hero Section */
@@ -177,6 +178,7 @@
 @media screen and (max-width: 768px) {
     .hero-section {
         height: 50vh;
+        
     }
 
     .hero-section h1 {
@@ -189,6 +191,8 @@
 
     .menu-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        margin-left: 60px;
+        
     }
 
     .menu-item {

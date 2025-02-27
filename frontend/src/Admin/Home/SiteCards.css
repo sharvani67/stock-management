@@ -4,6 +4,7 @@
     margin: auto;
     padding: 30px 15px;
     text-align: center;
+    
   }
   
   /* 🌟 Header Title */
@@ -15,6 +16,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
+    margin-top: 60px;
     display: inline-block;
   }
   

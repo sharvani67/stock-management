@@ -121,7 +121,7 @@ const EditStockIn = ({ show, handleClose, stockData, handleUpdate }) => {
 
   return (
     <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+      <Modal.Header className="bg-warning text-white" closeButton>
         <Modal.Title>Edit Stock-In</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -202,7 +202,7 @@ const EditStockIn = ({ show, handleClose, stockData, handleUpdate }) => {
             <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleInputChange} />
           </Form.Group>
           <div className="text-center">
-            <Button type="submit" variant="primary">Update</Button>
+            <Button className="bg-warning text-white mt-3" type="submit" variant="primary">Update</Button>
           </div>
         </Form>
       </Modal.Body>

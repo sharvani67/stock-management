@@ -105,49 +105,61 @@ const StockOutTable = () => {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Stock Out Records", 14, 10);
+  
+    // Define table columns
     const tableColumn = [
-      "Date",
-      "Time",
+      "Date & Time",
       "Destination Site",
       "Product Name",
       "Quantity",
-      "Units",
+      "Unit Name",
+      "Document No",
+      "Attachment No",
+      "Description"
     ];
+  
+    // Map data into table rows
     const tableRows = data.map((item) => [
-      item.date,
-      item.time,
+      `${item.date} ${item.time}`, // Combining Date & Time
       item.receiver,
       item.product,
       item.quantity_out,
       item.units,
+      item.document_no,
+      item.attachment || "N/A", // Assuming attachment can be empty
+      item.description || "N/A" // Assuming description can be empty
     ]);
-
+  
     doc.autoTable({
       head: [tableColumn],
       body: tableRows,
+      startY: 20,
     });
-
+  
     doc.save("StockOutRecords.pdf");
   };
+  
 
   // Export table data as Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
-      data.map(({ date, time, receiver, product, quantity_out, units }) => ({
-        Date: date,
-        Time: time,
+      data.map(({ date, time, receiver, product, quantity_out, units, document_no, attachment, description }) => ({
+        "Date & Time": `${date} ${time}`,
         "Destination Site": receiver,
         "Product Name": product,
         Quantity: quantity_out,
-        Units: units,
+        "Unit Name": units,
+        "Document No": document_no,
+        "Attachment No": attachment || "N/A",
+        Description: description || "N/A",
       }))
     );
-
+  
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "StockOutRecords");
     XLSX.writeFile(workbook, "StockOutRecords.xlsx");
   };
-
+  
   const columns = React.useMemo(
     () => [
       {

@@ -6,6 +6,7 @@
 .addpurchase .card {
     border: 2px solid black; /* Remove border */
     border-radius: 8px; /* Rounded corners */
+    margin-top: 60px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     overflow: hidden;
 }
