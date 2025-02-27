@@ -7,6 +7,11 @@ import { BASE_URL } from "../../ApiService/Api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import {
+  FaFilePdf,
+  FaFileExcel,
+} from "react-icons/fa";
+import "../StockIn/Si_pdfExcel.css";
 
 
 const StockSummary = () => {
@@ -170,9 +175,9 @@ const StockSummary = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Summary</h1>
-        <div className="mb-3">
-          <button className="btn btn-primary me-2" onClick={exportToPDF}>Export as PDF</button>
-          <button className="btn btn-success" onClick={exportToExcel}>Export as Excel</button>
+        <div className="d-flex flex-wrap gap-2 mb-3">
+          <button className="pdfbutton" onClick={exportToPDF}><FaFilePdf className="me-2" /> Export as PDF</button>
+          <button className="excelbutton" onClick={exportToExcel}><FaFileExcel className="me-2" />Export as Excel</button>
         </div>
         {loading ? <p>Loading data...</p> : <DataTable columns={columns} data={stockData} />}
       </div>

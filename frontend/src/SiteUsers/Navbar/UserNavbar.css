@@ -1,98 +1,49 @@
-/* Navbar Container */
-body {
-  margin: 0;
-  padding-top: 50px; /* Adjust this value based on navbar height */
-}
-
+/* Base Navbar Styles */
 .navbar {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  background-color: #1883ee;
   padding: 10px 20px;
-  background-color: #007bff;
   color: white;
+  position: fixed;
   width: 100%;
-  box-sizing: border-box;
-  position: fixed; /* Makes the navbar constant */
-  top: 0; /* Positions it at the top */
-  left: 0;
-  z-index: 1050; /* Ensures it stays above other content */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  top: 0;
+  z-index: 1000;
 }
 
-/* ✅ Logo Styling */
 .navbar-logo img {
-  height: 40px;
-  width: auto;
+  height: 50px;
+  max-width: 150px;
 }
 
-.navbar-logo {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
-}
-
-/* Hide logo on mobile and tablet (screens <= 768px) */
-@media (max-width: 768px) {
-  .navbar-logo {
-    display: none; /* Hide logo */
-  }
-
-  .navbar-logo img {
-    display: none; /* Also hide image */
-  }
-
-  .navbar-links {
-    flex-direction: column;
-    /* align-items: center; */
-    padding-left: 20px;
-    margin-left: 10px;
-  }
-
-  .navbar-links li {
-    text-align: center;
-    padding-left: 20px;
-  }
-}
-
-/* Toggler Button */
 .navbar-toggler {
-  display: none;
   background: none;
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 1.8rem;
   cursor: pointer;
+  display: none;
 }
 
-/* Navigation Links */
 .navbar-links {
   display: flex;
+  gap: 20px;
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
-.navbar-links li {
-  margin: 0 10px;
-  margin-left: 10px;
-  padding-left: 20px;
-}
-
-.navbar-links a {
+.navbar-links li a {
   text-decoration: none;
   color: white;
-  font-size: 18px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
+  gap: 8px;
+  transition: color 0.3s;
 }
 
-.navbar-links a:hover {
-  color: #ffcc00; /* Highlight color on hover */
-}
-
-.navbar-links a svg {
-  margin-right: 8px;
+.navbar-links li a:hover {
+  color: #eca129;
 }
 
 /* Profile Section */
@@ -180,72 +131,106 @@ body {
 .profile-dropdown .dropdown-content li {
   font-size: 14px;
   margin-bottom: 8px;
-  color: #555;
+color:#858383;
 }
 
-/* Responsive Design for devices with screen width <= 768px (Mobile + iPad) */
-@media (max-width: 768px) {
+/* Bell Icon */
+.bell-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  margin-right: 60px;
+}
+
+/* Ensure the navbar layout adapts for mobile */
+@media screen and (max-width: 1024px) {
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  /* Container for left-side elements (toggle button, logo) */
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
   .navbar-toggler {
     display: block;
   }
 
   .navbar-links {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background-color: #007bff;
     position: absolute;
-    top: 100%;
+    top: 60px;
     left: 0;
-    padding: 0px 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    flex-direction: column;
+    background: #4398ec;
+    display: none;
+    padding: 10px 0;
   }
 
   .navbar-links.active {
     display: flex;
   }
 
-  .navbar-links li {
-    margin: 10px 0;
-    text-align: center;
+  /* Profile and Bell container on the right */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
   }
 
-  .navbar-profile {
-    margin-left: 10px;
-  }
-}
-
-/* Further responsiveness for very small screens (e.g., phones) */
-@media (max-width: 480px) {
-  .navbar-logo {
-    font-size: 20px;
+  /* Bell Icon styling */
+  .bell-container {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #333;
   }
 
-  .navbar-links a {
-    font-size: 16px;
+  .badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    
+    border-radius: 50%;
+  }
+
+  /* Adjust profile icon */
+  .profile-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .bel{
+    padding-right: 20px;
   }
 }
-
-/* Larger Screens (Laptop and Desktop) */
-
-.badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.be{
+  padding-right: 0px;
+  margin-right: 60px;
+  color: #333;
 }
-  
-.bell-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+
+
+

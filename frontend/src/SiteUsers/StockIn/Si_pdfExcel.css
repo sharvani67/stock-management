@@ -1,0 +1,48 @@
+.mb-4{
+    margin-top: 100px;
+}
+.pdfbutton, .excelbutton {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+/* PDF Button */
+.pdfbutton {
+    background-color: #dc3545; /* Red color for PDF button */
+}
+
+.pdfbutton:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Excel Button */
+.excelbutton {
+    background-color: #28a745; /* Green color for Excel button */
+}
+
+.excelbutton:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Responsive Styling */
+@media screen and (max-width: 576px) {
+    .d-flex.flex-wrap {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pdfbutton, .excelbutton {
+        width: 100%;
+        font-size: 12px;
+        padding: 8px 15px;
+        justify-content: center;
+    }
+}

@@ -8,11 +8,18 @@ import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
 import { BASE_URL } from "../../ApiService/Api";
-import { FaEdit, FaTrashAlt, FaEye, FaFilePdf, FaFileExcel  } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaEye,
+  FaFilePdf,
+  FaFileExcel,
+} from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import "../StockIn/Si_pdfExcel.css";
 
 const StockConsumedTable = () => {
   const { user } = useContext(AuthContext);
@@ -36,7 +43,9 @@ const StockConsumedTable = () => {
       const response = await axios.get(`${BASE_URL}/stock-consumed`, {
         params: { userid: user.id },
       });
-      const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedData = response.data.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
       setData(sortedData);
     } catch (error) {
       setError("Failed to load data");
@@ -61,32 +70,45 @@ const StockConsumedTable = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-  
+
     try {
       const response = await axios.delete(`${BASE_URL}/stock-consumed/${id}`);
-      
+
       if (response.status === 200) {
         setData((prevData) => prevData.filter((item) => item.id !== id));
         alert("Stock record deleted successfully!");
       }
     } catch (error) {
       alert("Failed to delete stock record.");
-      console.error("Error deleting stock record:", error.response?.data || error.message);
+      console.error(
+        "Error deleting stock record:",
+        error.response?.data || error.message
+      );
     }
   };
-  
+
   const handleSave = (newData) => {
     setData((prevData) => [newData, ...prevData]);
   };
 
   const handleUpdate = (updatedStock) => {
-    setData((prevData) => prevData.map((item) => (item.id === updatedStock.id ? updatedStock : item)));
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === updatedStock.id ? updatedStock : item
+      )
+    );
   };
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Stock Consumed Records", 20, 10);
 
-    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "Description"];
+    const tableColumn = [
+      "Date",
+      "Product Name",
+      "Quantity",
+      "Units",
+      "Description",
+    ];
     const tableRows = data.map((item) => [
       item.date,
       item.product,
@@ -104,12 +126,28 @@ const StockConsumedTable = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    // Extract only the required fields
+    const filteredData = data.map(
+      ({ date, product, quantity_out, units, description }) => ({
+        Date: date,
+        "Product Name": product,
+        Quantity: quantity_out,
+        Units: units,
+        Description: description,
+      })
+    );
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "StockConsumedData");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -121,21 +159,21 @@ const StockConsumedTable = () => {
     window.URL.revokeObjectURL(url);
   };
 
-
   const columns = useMemo(
     () => [
-      { 
-        Header: 'Date', 
-        accessor: 'date',
-        Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
-          timeZone: 'Asia/Kolkata', 
-          day: '2-digit', 
-          month: '2-digit', 
-          year: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit' 
-        })
+      {
+        Header: "Date",
+        accessor: "date",
+        Cell: ({ value }) =>
+          new Date(value).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
       },
       { Header: "Product Name", accessor: "product" },
       { Header: "Quantity", accessor: "quantity_out" },
@@ -146,13 +184,25 @@ const StockConsumedTable = () => {
         accessor: "actions",
         Cell: ({ row }) => (
           <div className="d-flex align-items-center gap-2">
-            <Button variant="outline-info" size="sm" onClick={() => handleView(row.original)}>
+            <Button
+              variant="outline-info"
+              size="sm"
+              onClick={() => handleView(row.original)}
+            >
               <FaEye />
             </Button>
-            <Button variant="outline-warning" size="sm" onClick={() => handleEdit(row.original)}>
+            <Button
+              variant="outline-warning"
+              size="sm"
+              onClick={() => handleEdit(row.original)}
+            >
               <FaEdit />
             </Button>
-            <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.original.id)}>
+            <Button
+              variant="outline-danger"
+              size="sm"
+              onClick={() => handleDelete(row.original.id)}
+            >
               <FaTrashAlt />
             </Button>
           </div>
@@ -167,21 +217,33 @@ const StockConsumedTable = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Consumed Records</h1>
-        <div>
-            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
-              <FaFilePdf /> Export as PDF
-            </Button>
-            <Button variant="success" onClick={exportToExcel}>
-              <FaFileExcel /> Export as Excel
-            </Button>
-          </div>
+        <div className="d-flex flex-wrap gap-2 mb-3">
+          <Button
+            variant="secondary"
+            className="pdfbutton"
+            onClick={exportToPDF}
+          >
+            <FaFilePdf className="me-2" /> Export as PDF
+          </Button>
+          <Button
+            variant="success"
+            className="excelbutton"
+            onClick={exportToExcel}
+          >
+            <FaFileExcel className="me-2" /> Export as Excel
+          </Button>
+        </div>
         <div className="d-flex justify-content-end mb-3">
           <Button variant="primary" onClick={handleOpen}>
             Add Stock Consumed
           </Button>
         </div>
 
-        <StockConsumedForm show={showModal} handleClose={handleClose} handleSave={handleSave} />
+        <StockConsumedForm
+          show={showModal}
+          handleClose={handleClose}
+          handleSave={handleSave}
+        />
 
         {loading ? (
           <p>Loading...</p>

@@ -8,11 +8,19 @@ import { Button } from "react-bootstrap";
 import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
 import { BASE_URL } from "../../ApiService/Api";
-import { FaEdit, FaTrashAlt, FaEye, FaPlus,FaFilePdf,FaFileExcel } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaEye,
+  FaPlus,
+  FaFilePdf,
+  FaFileExcel,
+} from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import "../StockIn/Si_pdfExcel.css";
 
 const StockOutTable = () => {
   const { user } = useContext(AuthContext);
@@ -68,10 +76,10 @@ const StockOutTable = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-  
+
     try {
       const response = await axios.delete(`${BASE_URL}/stock-out/${id}`);
-  
+
       if (response.status === 200) {
         alert("Stock record deleted successfully!");
         setData((prevData) => prevData.filter((item) => item.id !== id)); // Remove from UI
@@ -83,7 +91,6 @@ const StockOutTable = () => {
       alert("Failed to delete stock record.");
     }
   };
-  
 
   const handleSave = (newData) => {
     setData((prevData) => [newData, ...prevData]); // Add new data at the beginning
@@ -98,7 +105,14 @@ const StockOutTable = () => {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Stock Out Records", 14, 10);
-    const tableColumn = ["Date", "Time", "Destination Site", "Product Name", "Quantity", "Units"];
+    const tableColumn = [
+      "Date",
+      "Time",
+      "Destination Site",
+      "Product Name",
+      "Quantity",
+      "Units",
+    ];
     const tableRows = data.map((item) => [
       item.date,
       item.time,
@@ -118,35 +132,37 @@ const StockOutTable = () => {
 
   // Export table data as Excel
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(data.map(({ date, time, receiver, product, quantity_out, units }) => ({
-      Date: date,
-      Time: time,
-      "Destination Site": receiver,
-      "Product Name": product,
-      Quantity: quantity_out,
-      Units: units,
-    })));
+    const worksheet = XLSX.utils.json_to_sheet(
+      data.map(({ date, time, receiver, product, quantity_out, units }) => ({
+        Date: date,
+        Time: time,
+        "Destination Site": receiver,
+        "Product Name": product,
+        Quantity: quantity_out,
+        Units: units,
+      }))
+    );
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "StockOutRecords");
     XLSX.writeFile(workbook, "StockOutRecords.xlsx");
   };
 
-
   const columns = React.useMemo(
     () => [
-      { 
-        Header: 'Date', 
-        accessor: 'date',
-        Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
-          timeZone: 'Asia/Kolkata', 
-          day: '2-digit', 
-          month: '2-digit', 
-          year: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit' 
-        })
+      {
+        Header: "Date",
+        accessor: "date",
+        Cell: ({ value }) =>
+          new Date(value).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
       },
       { Header: "Document No", accessor: "document_no" },
       { Header: "Destination Site", accessor: "receiver" },
@@ -193,23 +209,34 @@ const StockOutTable = () => {
       <UserNavbar />
       <div className="container mt-4">
         <h1 className="mb-4">Stock Out Records</h1>
-        <div>
-            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
-              <FaFilePdf /> Export as PDF
-            </Button>
-            <Button variant="success" onClick={exportToExcel}>
-              <FaFileExcel /> Export as Excel
-            </Button>
-          </div>
+        <div className="d-flex flex-wrap gap-2 mb-3">
+          <Button
+            variant="secondary"
+            className="pdfbutton"
+            onClick={exportToPDF}
+          >
+            <FaFilePdf className="me-2" /> Export as PDF
+          </Button>
+          <Button
+            variant="success"
+            className="excelbutton"
+            onClick={exportToExcel}
+          >
+            <FaFileExcel className="me-2" /> Export as Excel
+          </Button>
+        </div>
         <div className="d-flex justify-content-end mb-3">
           <Button variant="primary" onClick={handleOpen}>
             <FaPlus /> Stock Out Form
           </Button>
-          
         </div>
 
         {/* Add Stock-Out Modal */}
-        <StockOutModal show={showModal} handleClose={handleClose} handleSave={handleSave} />
+        <StockOutModal
+          show={showModal}
+          handleClose={handleClose}
+          handleSave={handleSave}
+        />
 
         {/* View Stock-Out Modal */}
         <ViewStockout
@@ -228,7 +255,11 @@ const StockOutTable = () => {
           />
         )}
 
-        {loading ? <p>Loading...</p> : <DataTable columns={columns} data={data} />}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <DataTable columns={columns} data={data} />
+        )}
       </div>
     </div>
   );

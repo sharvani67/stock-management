@@ -1,18 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { Button } from 'react-bootstrap';
-import DataTable from '../../layout/DataTable'; // Assuming you have a DataTable component
-import { FaEdit, FaTrashAlt, FaEye, FaPlus,FaFilePdf, FaFileExcel  } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import UserNavbar from '../Navbar/UserNavbar';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { Button } from "react-bootstrap";
+import DataTable from "../../layout/DataTable"; // Assuming you have a DataTable component
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaEye,
+  FaPlus,
+  FaFilePdf,
+  FaFileExcel,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import UserNavbar from "../Navbar/UserNavbar";
 import { AuthContext } from "../../Context/AuthContext";
-import { BASE_URL } from '../../ApiService/Api';
-import ViewStockInModal from './View_Stockin';
+import { BASE_URL } from "../../ApiService/Api";
+import ViewStockInModal from "./View_Stockin";
 
-import EditStockIn from './Update_Stockin';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import * as XLSX from 'xlsx';
+import EditStockIn from "./Update_Stockin";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
+import "../StockIn/Si_pdfExcel.css"
 
 const StockInTable = () => {
   const { user } = useContext(AuthContext);
@@ -31,7 +39,9 @@ const StockInTable = () => {
         const response = await axios.get(`${BASE_URL}/stock-in`, {
           params: { userid: user.id },
         });
-        const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedData = response.data.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
         setPurchaseData(sortedData);
       } catch (err) {
         console.error("Error fetching stock-in records:", err);
@@ -43,22 +53,23 @@ const StockInTable = () => {
     fetchStockInRecords();
   }, [user]);
 
-  
   const handleDelete = async (id) => {
     if (!id) {
       alert("Invalid stock ID.");
       return;
     }
-  
+
     console.log("Deleting stock record with ID:", id); // Debugging
-  
+
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-  
+
     try {
       const response = await axios.delete(`${BASE_URL}/stock-in/${id}`);
-  
+
       if (response.data.success) {
-        setPurchaseData(prevData => prevData.filter(stock => stock.id !== id));
+        setPurchaseData((prevData) =>
+          prevData.filter((stock) => stock.id !== id)
+        );
         alert("Stock record deleted successfully.");
       } else {
         alert(response.data.message || "Failed to delete stock record.");
@@ -68,14 +79,24 @@ const StockInTable = () => {
       alert("An error occurred while deleting the record.");
     }
   };
-  
+
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Stock In Records", 20, 10);
-    
-    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "Supplier Name"];
-    const tableRows = purchaseData.map(item => [
-      item.date, item.product, item.quantity_in, item.units, item.supplier
+
+    const tableColumn = [
+      "Date",
+      "Product Name",
+      "Quantity",
+      "Units",
+      "Supplier Name",
+    ];
+    const tableRows = purchaseData.map((item) => [
+      item.date,
+      item.product,
+      item.quantity_in,
+      item.units,
+      item.supplier,
     ]);
 
     doc.autoTable({
@@ -87,14 +108,31 @@ const StockInTable = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(purchaseData);
+    // Extract only the required fields
+    const filteredData = purchaseData.map(
+      ({ date, product, quantity_in, units, supplier }) => ({
+        Date: date,
+        "Product Name": product,
+        Quantity: quantity_in,
+        Units: units,
+        "Supplier Name": supplier,
+      })
+    );
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "StockInData");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    // Convert workbook to binary array
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
     // Create a Blob from the Excel buffer
-    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
 
     // Create a temporary download link
     const url = window.URL.createObjectURL(blob);
@@ -106,43 +144,58 @@ const StockInTable = () => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-  
-  
 
-  
   const columns = [
-    { 
-      Header: 'Date', 
-      accessor: 'date',
-      Cell: ({ value }) => new Date(value).toLocaleString('en-IN', { 
-        timeZone: 'Asia/Kolkata', 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-      })
-    },
-    { Header: 'Product Name', accessor: 'product' },
-    { Header: 'Quantity', accessor: 'quantity_in' },
-    { Header: 'Units', accessor: 'units' },
-    { Header: 'Supplier Name', accessor: 'supplier' },
     {
-      Header: 'Actions',
-      accessor: 'actions',
+      Header: "Date",
+      accessor: "date",
+      Cell: ({ value }) =>
+        new Date(value).toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+    },
+    { Header: "Product Name", accessor: "product" },
+    { Header: "Quantity", accessor: "quantity_in" },
+    { Header: "Units", accessor: "units" },
+    { Header: "Supplier Name", accessor: "supplier" },
+    {
+      Header: "Actions",
+      accessor: "actions",
       Cell: ({ row }) => (
         <div className="d-flex align-items-center gap-2">
-          <Button variant="outline-info" size="sm" onClick={() => { setSelectedStock(row.original); setShowViewModal(true); }}>
+          <Button
+            variant="outline-info"
+            size="sm"
+            onClick={() => {
+              setSelectedStock(row.original);
+              setShowViewModal(true);
+            }}
+          >
             <FaEye />
           </Button>
-          <Button variant="outline-warning" size="sm" onClick={() => { setSelectedStock(row.original); setShowEditModal(true); }}>
+          <Button
+            variant="outline-warning"
+            size="sm"
+            onClick={() => {
+              setSelectedStock(row.original);
+              setShowEditModal(true);
+            }}
+          >
             <FaEdit />
           </Button>
-         <Button variant="outline-danger" size="sm" onClick={() => handleDelete(row.original.id)}>
-         <FaTrashAlt />
-       </Button>
-       
+          <Button
+            variant="outline-danger"
+            size="sm"
+            onClick={() => handleDelete(row.original.id)}
+          >
+            <FaTrashAlt />
+          </Button>
         </div>
       ),
     },
@@ -151,16 +204,25 @@ const StockInTable = () => {
   return (
     <div>
       <UserNavbar />
+      
       <div className="container mt-5">
         <h1 className="mb-4">StockIn Management</h1>
-        <div>
-            <Button variant="secondary" className="me-2" onClick={exportToPDF}>
-              <FaFilePdf /> Export as PDF
-            </Button>
-            <Button variant="success" onClick={exportToExcel}>
-              <FaFileExcel /> Export as Excel
-            </Button>
-          </div>
+        <div className="d-flex flex-wrap gap-2 mb-3">
+          <Button
+            variant="secondary"
+            className="pdfbutton"
+            onClick={exportToPDF}
+          >
+            <FaFilePdf className="me-2" /> Export as PDF
+          </Button>
+          <Button
+            variant="success"
+            className="excelbutton"
+            onClick={exportToExcel}
+          >
+            <FaFileExcel className="me-2" /> Export as Excel
+          </Button>
+        </div>
 
         {loading && <p>Loading data...</p>}
         {error && <p className="text-danger">{error}</p>}
@@ -176,9 +238,19 @@ const StockInTable = () => {
         <DataTable columns={columns} data={purchaseData} />
       </div>
 
-      <ViewStockInModal show={showViewModal} handleClose={() => setShowViewModal(false)} stockInData={selectedStock} />
+      <ViewStockInModal
+        show={showViewModal}
+        handleClose={() => setShowViewModal(false)}
+        stockInData={selectedStock}
+      />
 
-      {showEditModal && <EditStockIn show={showEditModal} handleClose={() => setShowEditModal(false)} stockData={selectedStock} />}
+      {showEditModal && (
+        <EditStockIn
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          stockData={selectedStock}
+        />
+      )}
     </div>
   );
 };

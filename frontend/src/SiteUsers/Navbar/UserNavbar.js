@@ -204,7 +204,7 @@ const UserNavbar = () => {
             Reports
           </Link>
         </li>
-        <li>
+        {/* <li>
   <Link
     to="/allocatedtable"
     className={location.pathname === "/allocatedtable" ? "active" : ""}
@@ -216,14 +216,30 @@ const UserNavbar = () => {
       {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
     </span>
   </Link>
-</li>
+</li> */}
 
 
 
 
       </ul>
+      
 
       <div className="navbar-profile" ref={profileRef}>
+        <div className="bel">
+        
+  <Link
+    to="/allocatedtable"
+    className={location.pathname === "/allocatedtable" ? "active" : ""}
+    onClick={handleMarkNotificationsRead}
+    style={{ display: "flex", alignItems: "center" }}
+  >
+    <span className="bell-container">
+      <FaBell className="be" />
+      {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+    </span>
+  </Link>
+
+        </div>
         <div className="profile-icon" onClick={toggleProfileMenu}>
           <FaUserCircle />
           <span>Profile</span>
