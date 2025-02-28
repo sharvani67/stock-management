@@ -48,6 +48,12 @@
 .navbar-links li a:hover {
   color: #060606;
 }
+/* Highlight active link */
+.navbar-links li a.active {
+  color: #f7db0b; /* Yellow color */
+  font-weight: bold;
+}
+
 
 /* Profile Section */
 .navbar-profile {
@@ -189,6 +195,7 @@
 
   .navbar-links.active {
     display: flex;
+    color:#f7db0b;
   }
 
   /* Profile and Bell container on the right */

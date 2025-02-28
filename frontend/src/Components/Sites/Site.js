@@ -63,9 +63,22 @@ const SiteTable = () => {
     setShowEditModal(true);
   };
 
-  const handleDelete = (siteCode) => {
-    setSiteData((prevData) => prevData.filter((site) => site.siteCode !== siteCode));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this site?")) return;
+  
+    try {
+      await axios.delete(`${BASE_URL}/delete-sites/${id}`);
+      
+      // Remove deleted site from the state
+      setSiteData((prevData) => prevData.filter((site) => site.id !== id));
+  
+      alert("Site deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting site:", error);
+      alert("Failed to delete site. Please try again.");
+    }
   };
+  
 
   const columns = [
     { Header: 'Site Code', accessor: 'siteCode' },
@@ -89,7 +102,7 @@ const SiteTable = () => {
           <Button
             variant="outline-danger"
             size="sm"
-            onClick={() => handleDelete(row.original.siteCode)}
+            onClick={() => handleDelete(row.original.id)}
           >
             <FaTrashAlt />
           </Button>

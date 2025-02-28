@@ -130,6 +130,10 @@ const AllocatedStock = () => {
         accessor: "site_name",
       },
       {
+        Header: "Description",
+        accessor: "description",
+      },
+      {
         Header: "Attachment",
         accessor: "attachment",
         Cell: ({ value }) => (
@@ -165,9 +169,9 @@ const AllocatedStock = () => {
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.text("Allocated Stock Report", 14, 10);
-    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "From Site", "Status"];
-    const tableRows = data.map(({ date, product, quantity_out, units, site_name, status }) => [
-      date, product, quantity_out, units, site_name, status,
+    const tableColumn = ["Date", "Product Name", "Quantity", "Units", "From Site","description","attachment" ,"Status"];
+    const tableRows = data.map(({ date, product, quantity_out, units, site_name,description,attachment, status }) => [
+      date, product, quantity_out, units, site_name,description,attachment, status,
     ]);
     doc.autoTable({ head: [tableColumn], body: tableRows });
     doc.save("Allocated_Stock_Report.pdf");
@@ -175,12 +179,14 @@ const AllocatedStock = () => {
 
   // Export to Excel
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(data.map(({ date, product, quantity_out, units, site_name, status }) => ({
+    const ws = XLSX.utils.json_to_sheet(data.map(({ date, product, quantity_out, units, site_name,description,attachment, status }) => ({
       Date: date,
       "Product Name": product,
       Quantity: quantity_out,
       Units: units,
       "From Site": site_name,
+      Description:description,
+      Attachment:attachment,
       Status: status,
     })));
     const wb = XLSX.utils.book_new();

@@ -1092,7 +1092,32 @@ app.put('/update-site/:id', (req, res) => {
     res.json({ message: 'Site updated successfully' });
   });
 });
+// DELETE API - Remove site by ID
+app.delete("/delete-sites/:id", (req, res) => {
+  const { id } = req.params;
 
+  // Check if the site exists
+  db.query("SELECT * FROM sites WHERE id = ?", [id], (err, result) => {
+      if (err) {
+          console.error("Error fetching site:", err);
+          return res.status(500).json({ message: "Internal Server Error" });
+      }
+
+      if (result.length === 0) {
+          return res.status(404).json({ message: "Site not found" });
+      }
+
+      // Delete the site
+      db.query("DELETE FROM sites WHERE id = ?", [id], (err, result) => {
+          if (err) {
+              console.error("Error deleting site:", err);
+              return res.status(500).json({ message: "Error deleting site" });
+          }
+
+          res.json({ message: "Site deleted successfully" });
+      });
+  });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => {
