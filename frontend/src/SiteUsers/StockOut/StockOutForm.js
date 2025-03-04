@@ -299,7 +299,7 @@ const StockOutModal = ({ show, handleClose, handleSave }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="primary" type="submit" className="w-100" >
+          <Button variant="primary" type="submit" className="w-100 mt-3" >
             Save
           </Button>
         </Form>

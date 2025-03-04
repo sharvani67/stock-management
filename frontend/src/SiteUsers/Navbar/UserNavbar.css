@@ -50,7 +50,7 @@
 }
 /* Highlight active link */
 .navbar-links li a.active {
-  color: #f7db0b; /* Yellow color */
+  color: #f7db0b; 
   font-weight: bold;
 }
 

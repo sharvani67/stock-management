@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import the reusable DataTable component
-import AdminNavbar from "../Navbar/Navbar";
+import AdminNavbar from "../Navbar/Navbar"; // Use correct file name
+ // Ensure correct import
 import { BASE_URL } from "../../ApiService/Api";
+import "../Home/Al.css"
 
 const AdminConsumption = () => {
   const { siteId } = useParams();
@@ -23,7 +25,7 @@ const AdminConsumption = () => {
       .catch((error) => {
         console.error("Error fetching consumption data:", error);
       });
-  
+
     // Fetch site details to get the site name
     axios
       .get(`${BASE_URL}/api/adminsites/${siteId}`)
@@ -42,9 +44,8 @@ const AdminConsumption = () => {
       .finally(() => {
         setLoading(false);
       });
-  
+
   }, [siteId]);
-  
 
   // Define table columns for DataTable
   const columns = [
@@ -78,17 +79,22 @@ const AdminConsumption = () => {
   ];
 
   return (
-    <div className="container mt-4">
+    <>
+      {/* Navbar is fixed, so we add padding below */}
       <AdminNavbar />
-      <h2 className="text-center">
-        Consumption Details for {loading ? "Loading..." : siteName}
-      </h2>
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <DataTable columns={columns} data={data} initialSearchValue="" />
-      )}
-    </div>
+      <div className="body">
+      <div className="admin-content container mt-5">
+        <h2 className="text-center">
+          Consumption Details for {loading ? "Loading..." : siteName}
+        </h2>
+        {loading ? (
+          <p className="text-center">Loading...</p>
+        ) : (
+          <DataTable columns={columns} data={data} initialSearchValue="" />
+        )}
+      </div>
+      </div>
+    </>
   );
 };
 

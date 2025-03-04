@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import DataTable from "../../layout/DataTable";  // Import DataTable component
-import AdminNavbar from "../Navbar/Navbar";
+import AdminNavbar from "../Navbar/Navbar";  // ✅ Correct Navbar import
 import { BASE_URL } from "../../ApiService/Api";
+import "../Home/Al.css"
 
 const AdminStockout = () => {
   const { siteId } = useParams();
@@ -80,16 +81,20 @@ const AdminStockout = () => {
   ];
 
   return (
-    <div className="container mt-4">
-      <AdminNavbar />
-      <h2 className="text-center">
-        Stock Out Details for {loading ? "Loading..." : siteName}
-      </h2>
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <DataTable columns={columns} data={data} initialSearchValue="" />
-      )}
+    <div>
+      <AdminNavbar />  {/* ✅ Ensure the navbar is at the top */}
+      <div className="body">
+      <div className="container mt-4">
+        <h2 className="text-center">
+          Stock Out Details for {loading ? "Loading..." : siteName}
+        </h2>
+        {loading ? (
+          <p className="text-center">Loading...</p>
+        ) : (
+          <DataTable columns={columns} data={data} initialSearchValue="" />
+        )}
+      </div>
+    </div>
     </div>
   );
 };

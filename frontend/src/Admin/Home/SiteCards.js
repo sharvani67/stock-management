@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Home/SiteCards.css"; 
+
 import { BASE_URL } from "../../ApiService/Api";// Import the updated CSS
 
 const SiteCards = () => {
